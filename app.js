@@ -330,23 +330,42 @@ function insertServiceToDoc(id) {
     const service = SERVICE_CATALOG.find(s => s.id === id);
     if (!service) return;
 
-    // Buscamos el contenedor de servicios en la página actual
+    // Buscamos la página visible actualmente
     const currentPage = document.querySelector('.page:not(.hidden)');
-    if (!currentPage) return;
-
-    const list = currentPage.querySelector('.content-body ul');
-    if (!list) {
-        showModal('⚠️', 'Oops', 'No encontré una lista de servicios en esta página para insertar el bloque.');
+    if (!currentPage) {
+        showModal('⚠️', 'Oops', 'Por favor, selecciona o crea una página primero.');
         return;
     }
 
+    const contentBody = currentPage.querySelector('.content-body');
+    if (!contentBody) {
+        showModal('⚠️', 'Oops', 'Esta página no permite insertar bloques de servicios (ej: Portada).');
+        return;
+    }
+
+    // Buscamos o creamos la lista
+    let list = contentBody.querySelector('ul');
+    if (!list) {
+        // Si no hay lista, creamos un contenedor bonito para los nuevos servicios
+        const wrapper = document.createElement('div');
+        wrapper.className = 'dynamic-services-list';
+        wrapper.style.marginTop = '20px';
+        wrapper.innerHTML = '<p style="font-weight: 700; color: var(--brand-purple); margin-bottom: 10px;">SERVICIOS ADICIONALES:</p><ul></ul>';
+        contentBody.appendChild(wrapper);
+        list = wrapper.querySelector('ul');
+    }
+
     const li = document.createElement('li');
+    li.style.marginBottom = '20px';
+    li.style.listStyle = 'none';
     li.innerHTML = `
-        <strong>${service.title}</strong><br>
-        <span style="font-size: 0.9rem; opacity: 0.85;">${service.description}</span>
-        <ul style="margin-top: 5px; font-size: 0.85rem; opacity: 0.75; border-left: 2px solid var(--brand-purple); padding-left: 10px;">
-            ${service.points.map(p => `<li>${p}</li>`).join('')}
-        </ul>
+        <div class="service-inserted-item" style="border-left: 3px solid var(--brand-purple); padding-left: 15px;">
+            <strong style="font-size: 1.1rem; color: #1e293b;">${service.icon} ${service.title}</strong><br>
+            <p style="font-size: 0.9rem; opacity: 0.8; margin: 5px 0 10px 0;">${service.description}</p>
+            <ul style="font-size: 0.85rem; opacity: 0.7; padding-left: 20px;">
+                ${service.points.map(p => `<li>${p}</li>`).join('')}
+            </ul>
+        </div>
     `;
     
     list.appendChild(li);
