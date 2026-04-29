@@ -2103,7 +2103,7 @@ const MOTIVATIONAL_PHRASES = [
     "Tu próximo gran proyecto comienza con un sí."
 ];
 
-function showDashboard() {
+function showMainDashboard() {
     injectDashboardStyles();
     // Resetear scroll al inicio
     window.scrollTo(0, 0);
@@ -2112,10 +2112,10 @@ function showDashboard() {
     document.getElementById('dashboard-view').classList.remove('hidden');
     document.getElementById('editor-view').classList.add('hidden');
     document.getElementById('design-panel').classList.add('hidden');
-    renderDashboard();
+    renderMainDashboard();
 }
 
-async function renderDashboard(filterQuery = '') {
+async function renderMainDashboard(filterQuery = '') {
     const dash = document.getElementById('dashboard-view');
     const db = getSupabase();
     let registry = [];
@@ -2184,7 +2184,7 @@ async function renderDashboard(filterQuery = '') {
 
             <div class="search-wrapper">
                 <span class="search-icon">🔍</span>
-                <input type="text" class="search-input" placeholder="Buscar cliente o proyecto..." value="${filterQuery}" oninput="renderDashboard(this.value)">
+                <input type="text" class="search-input" placeholder="Buscar cliente o proyecto..." value="${filterQuery}" oninput="renderMainDashboard(this.value)">
             </div>
 
 
@@ -2295,7 +2295,7 @@ async function initApp() {
     
     // Mostrar dashboard si NO hay ID y no estamos en cliente
     if (!isEditing && !isClient && !hasId) {
-        showDashboard();
+        showMainDashboard();
         return;
     }
 
