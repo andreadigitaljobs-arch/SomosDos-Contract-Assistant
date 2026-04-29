@@ -2187,26 +2187,7 @@ async function renderDashboard(filterQuery = '') {
                 <input type="text" class="search-input" placeholder="Buscar cliente o proyecto..." value="${filterQuery}" oninput="renderDashboard(this.value)">
             </div>
 
-            ${!filterQuery && contracts.length > 0 ? `
-                <div class="dash-section-header" style="max-width: 1050px; margin: 0 auto 20px; display: flex; align-items: center; gap: 10px;">
-                    <span style="font-size: 1.2rem;">⏱️</span>
-                    <h2 style="font-size: 1.1rem; font-weight: 700; color: #1d1d1f; text-transform: uppercase; letter-spacing: 1px;">Proyectos Recientes</h2>
-                </div>
-                <div class="dash-grid" style="margin-bottom: 60px;">
-                    ${contracts.slice(0, 3).map(c => `
-                        <div class="dash-card contract-card recent-access" onclick="loadContract('${c.id}')" style="border-color: rgba(123, 63, 228, 0.3); background: rgba(255,255,255,0.8);">
-                            <div class="card-top">
-                                <h3 style="color: #7B3FE4;">${c.client || 'Sin nombre'}</h3>
-                                <p class="date">Última edición: ${new Date(c.timestamp).toLocaleDateString()}</p>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span class="badge-active">ACCESO RÁPIDO</span>
-                                <span style="font-size: 1.2rem;">⚡</span>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            ` : ''}
+
 
             <div class="dash-section-header" style="max-width: 1050px; margin: 0 auto 20px; display: flex; align-items: center; gap: 10px;">
                 <span style="font-size: 1.2rem;">📂</span>
