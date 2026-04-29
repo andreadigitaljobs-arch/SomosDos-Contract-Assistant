@@ -248,6 +248,26 @@ const injectHeaderStyles = () => {
             right: 0 !important;
         }
 
+        /* NORMALIZACIÓN DE ESPACIOS Y SOMBRAS FANTASMA */
+        #document-container {
+            margin-top: 0 !important;
+            padding-top: 0 !important;
+            margin-left: 300px !important;
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+        
+        #zoom-wrapper {
+            margin-top: 0 !important;
+            padding-top: 40px !important; /* Espacio limpio arriba del contrato */
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+
+        .is-client-mode #document-container {
+            margin-left: 0 !important;
+        }
+
         .header-right-actions { 
             display: flex; 
             align-items: center; 
@@ -1388,44 +1408,33 @@ async function captureZeroLoss(pageEl) {
                         clonedContent.style.background = `url(${buffer}) center / 100% 100% no-repeat`;
                     }
 
-                    // --- MOTOR DE ALTA FIDELIDAD (CANVAS TEXT RASTER) ---
+                    // --- MOTOR DE ALTA FIDELIDAD (STABLE CSS) ---
                     const gradientTargets = clonedContent.querySelectorAll('h2, h3, .gradient-text');
                     gradientTargets.forEach((el) => {
-                        const text = el.innerText;
-                        const style = window.getComputedStyle(el);
-                        const rect = { width: el.offsetWidth, height: el.offsetHeight };
-                        
-                        if (rect.width === 0 || rect.height === 0) return;
-
-                        const canvas = clonedDoc.createElement('canvas');
-                        canvas.width = rect.width * 2;
-                        canvas.height = rect.height * 2;
-                        const ctx = canvas.getContext('2d');
-                        
-                        ctx.scale(2, 2);
-                        ctx.font = style.font;
-                        ctx.textAlign = style.textAlign === 'center' ? 'center' : (style.textAlign === 'right' ? 'right' : 'left');
-                        ctx.textBaseline = 'middle';
-                        
-                        const grad = ctx.createLinearGradient(0, 0, rect.width, 0);
-                        const colors = SOMOSDOS_DNA[`theme${themeNum}`].primary;
-                        colors.forEach((c, i) => grad.addColorStop(i / (colors.length - 1), c));
-                        
-                        ctx.fillStyle = grad;
-                        const x = style.textAlign === 'center' ? rect.width / 2 : (style.textAlign === 'right' ? rect.width : 0);
-                        ctx.fillText(text, x, rect.height / 2);
-                        
-                        el.innerHTML = `<img src="${canvas.toDataURL()}" style="width:${rect.width}px; height:${rect.height}px; display: block; margin: ${style.textAlign === 'center' ? '0 auto' : '0'}">`;
                         el.style.background = 'none';
+                        el.style.webkitTextFillColor = 'initial';
+                        el.style.color = '#7B3FE4'; // Color de marca sólido para máxima estabilidad en PDF
+                        el.style.fontWeight = '800';
+                        el.style.textTransform = 'uppercase';
                     });
 
-                    // --- FIX DE TARJETAS ASTRO PARA PDF ---
+                    // --- FIX DE TARJETAS ASTRO PARA PDF (CONTRASTE) ---
                     const astroCards = clonedContent.querySelectorAll('.astro-service-card');
                     astroCards.forEach(card => {
                         card.style.background = '#ffffff';
                         card.style.backdropFilter = 'none';
                         card.style.border = '1px solid #e2e8f0';
                         card.style.boxShadow = 'none';
+                        
+                        // Forzar texto oscuro dentro de la tarjeta blanca
+                        const textElements = card.querySelectorAll('h3, p, span');
+                        textElements.forEach(te => {
+                            te.style.color = '#0f172a';
+                            if (te.tagName === 'SPAN') {
+                                te.style.background = '#f1f5f9';
+                                te.style.borderColor = '#e2e8f0';
+                            }
+                        });
                     });
 
                     // --- FIX DE VIDRIO (General) ---
@@ -1434,13 +1443,17 @@ async function captureZeroLoss(pageEl) {
                         el.style.backdropFilter = 'none';
                         el.style.backgroundColor = '#ffffff';
                         el.style.border = '1px solid #e2e8f0';
+                        const texts = el.querySelectorAll('h4, p, h2');
+                        texts.forEach(t => t.style.color = '#0f172a');
                     });
 
                     // --- FIX DE FIRMAS ---
                     const sigBoxes = clonedContent.querySelectorAll('.signature-box');
                     sigBoxes.forEach(box => {
                         box.style.background = '#ffffff';
-                        box.style.border = '2px dashed #cbd5e1';
+                        box.style.border = '1px solid #cbd5e1';
+                        const label = box.parentElement.querySelector('p, strong');
+                        if (label) label.style.color = '#ffffff'; // Mantener blanco sobre fondo oscuro del footer
                     });
 
                     // 2. FIX DE DIAGONAL & LOGO RESCUE (SVG Aurora)
