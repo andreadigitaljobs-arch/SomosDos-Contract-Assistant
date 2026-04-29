@@ -1442,14 +1442,12 @@ async function captureZeroLoss(pageEl) {
         });
 
         // 4. Restaurar Interfaz
-        backups.forEach(b => { b.el.innerHTML = b.html; b.el.style.cssText = b.styles; });
         container.style.transform = originalTransform;
         document.body.style.filter = 'none';
 
         return finalCanvas;
     } catch (err) {
         console.error("Fallo final:", err);
-        backups.forEach(b => { b.el.innerHTML = b.html; b.el.style.cssText = b.styles; });
         container.style.transform = originalTransform;
         document.body.style.filter = 'none';
         throw err;
