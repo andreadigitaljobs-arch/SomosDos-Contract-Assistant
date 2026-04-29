@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contrato SomosDos Studio</title>
+    <meta name="description" content="Acuerdo de colaboración profesional y creativo por SomosDos Studio.">
+
+    <!-- Open Graph (Link Preview) -->
+    <meta property="og:title" content="Contrato SomosDos Studio">
+    <meta property="og:description" content="Propuesta de colaboración creativa y compromiso profesional.">
+    <meta property="og:image" content="https://contratos.somosdostudio.com/assets/logo.png">
+    <meta property="og:type" content="website">
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=48.2.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+    <aside id="design-panel" class="design-side-panel">
+        <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h3>Diseño Profesional</h3>
+                <p>Ajustes globales del acuerdo</p>
+            </div>
+            <button class="btn-icon mobile-panel-close"
+                style="font-size: 1.5rem; background: transparent; border: none; cursor: pointer; display: none;"
+                onclick="toggleDesignPanel()">✕</button>
+        </div>
+
+        <div class="panel-section">
+            <label>TAMAÑO DEL LOGO</label>
+            <div class="control-row">
+                <span>Peq.</span>
+                <input type="range" min="30" max="150" value="60" oninput="resizeLogo(this.value, 'small')">
+                <span>Grd.</span>
+            </div>
+        </div>
+
+        <div class="panel-section">
+            <label>TAMAÑO LOGO PORTADA</label>
+            <div class="control-row">
+                <span>Peq.</span>
+                <input type="range" min="150" max="600" value="240" oninput="resizeLogo(this.value, 'main')">
+                <span>Grd.</span>
+            </div>
+        </div>
+
+        <div class="panel-section">
+            <label>ESTILO DEL DOCUMENTO</label>
+            <div class="style-selector">
+                <div class="style-dot dot-1 active" title="Blanco Minimal" onclick="setGlobalTheme(1)"></div>
+                <div class="style-dot dot-2" title="Creativo SomosDos" onclick="setGlobalTheme(2)"></div>
+                <div class="style-dot dot-3" title="Oscuro Premium" onclick="setGlobalTheme(3)"></div>
+            </div>
+            <p class="panel-hint">Selecciona un estilo para todas las páginas</p>
+        </div>
+
+        <div class="panel-section">
+            <label>MÁRGENES DE TEXTO</label>
+            <input type="range" min="0" max="300" value="40" oninput="resizeGlobalSpacing(this.value, 'text')">
+        </div>
+
+        <div class="panel-footer">
+            <button class="btn btn-pdf" style="width: 100%; margin-top: 10px;" onclick="generateProfessionalPDF()">📄
+                Generar PDF Real 4K</button>
+        </div>
+    </aside>
+
+    <header class="main-header">
+        <div class="logo-area">
+            <button id="mobile-toggle-design" class="btn-icon" style="display: none; margin-right: 10px;"
+                onclick="toggleDesignPanel()">☰</button>
+            <img src="assets/logo.png" alt="SomosDos Studio" class="brand-logo-nav">
+        </div>
+        <div class="actions">
+            <div class="zoom-controls">
+                <button id="zoom-fit" class="btn-icon" title="Ajustar">⛶</button>
+                <input type="range" id="zoom-range" min="10" max="200" value="100">
+                <span id="zoom-label">100%</span>
+            </div>
+            <div class="header-actions">
+                <!-- Acciones Principales -->
+                <div class="template-selector dropdown">
+                    <button class="btn btn-secondary"
+                        style="font-weight: 700; border: 1px solid #e2e8f0; color: #475569;">➕ Añadir Bloque</button>
+                    <div class="dropdown-content">
+                        <div class="menu-header">ESTRUCTURA</div>
+                        <a href="#" onclick="addNewPage('cover')">📄 Portada</a>
+                        <a href="#" onclick="addNewPage('content')">📝 Cuerpo de Texto</a>
+                        <a href="#" onclick="addNewPage('signatures')">✍🏻 Firmas</a>
+                        
+                        <div class="menu-sep"></div>
+                        <div class="menu-header">SERVICIOS</div>
+                        <a href="#" onclick="addNewPage('strategy')">🎯 Estrategia Digital</a>
+                        <a href="#" onclick="addNewPage('landing')">💻 Landing Page</a>
+                        
+                        <div class="menu-sep"></div>
+                        <div class="menu-header">ACUERDOS</div>
+                        <a href="#" onclick="addNewPage('exchange_simple')">🤝🏻 Intercambio Simple</a>
+                        <a href="#" onclick="addNewPage('exchange')">🤝🏻 Intercambio Full</a>
+                        <a href="#" onclick="addNewPage('note_alcance')">📝 Nota de Alcance</a>
+                        
+                        <div class="menu-header">FINANZAS</div>
+                        <a href="#" onclick="addNewPage('payment')">💰 Propuesta Económica</a>
+                    </div>
+                </div>
+
+                <div class="history-controls">
+                    <button class="btn btn-history" onclick="undo()" title="Deshacer (Ctrl+Z)">↺</button>
+                    <button class="btn btn-history" onclick="redo()" title="Rehacer (Ctrl+Y)">↻</button>
+                </div>
+
+                <div class="client-name-input-wrapper" title="Nombre del Cliente (Se guardará en la biblioteca)">
+                    <span class="client-icon">👤</span>
+                    <input type="text" id="global-client-name" class="global-client-name"
+                        placeholder="Nombre del Cliente..." oninput="syncClientName(this.value)">
+                </div>
+
+                <button class="btn btn-save" onclick="saveDocument(false)">💾 Guardar</button>
+                <button class="btn btn-publish" onclick="publishAgreement()">🚀 Publicar Link</button>
+                <button class="btn" id="btn-client-save" onclick="saveClientSignature()">✅ Guardar Firma y
+                    Enviar</button>
+
+                <div class="divider-v"></div>
+
+                <!-- Acciones de Visualización -->
+                <button id="toggle-client-mode" class="btn btn-client" onclick="toggleClientMode()">👤 Modo
+                    Cliente</button>
+
+                <button class="btn btn-library" onclick="showDashboard()"
+                    style="background: #f1f5f9; color: #1A1A2E; margin-right: 8px;">📂 Biblioteca</button>
+                <!-- Menú de Ajustes -->
+                <div class="dropdown">
+                    <button class="btn btn-settings">⚙️ Ajustes</button>
+                    <div class="dropdown-content">
+                        <a href="#" onclick="downloadAsImages('zip')">📦 Descargar Fotos 4K (ZIP)</a>
+                        <a href="#" onclick="downloadAsImages('single')">📸 Descargar Fotos 1 a 1</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" onclick="resetTool()" style="color: #ef4444;">🗑️ Reiniciar Herramienta</a>
+                    </div>
+                </div>
+
+                <button class="btn btn-ai" onclick="toggleIAPanel()" style="background: linear-gradient(135deg, #2D3EAF, #7B3FE4) !important; color: white !important; border: none; font-weight: 700; margin-right: 8px; padding: 10px 20px; border-radius: 50px; cursor: pointer;">🤖 Asistente SomosDos</button>
+                <div class="divider-v"></div>
+                <input type="file" id="file-input" style="display: none;" onchange="importJSON(event)">
+            </div> <!-- Final de header-actions -->
+        </div> <!-- Final de actions -->
+    </header>
+
+    <main id="document-container">
+        <!-- El elemento que realmente se escala para no mover el layout -->
+        <div id="zoom-wrapper">
+            <!-- Contenido dinámico cargado por app.js -->
+        </div>
+    </main>
+
+    <div id="loader" class="hidden loader">
+        <div class="loader-content">
+            <div class="loader-brand">
+                <img src="assets/logo.png" class="loader-logo">
+                <div class="loader-pulse"></div>
+            </div>
+            <h2 id="loader-title">Preparando Exportación</h2>
+            <p id="loader-msg">Iniciando motor de renderizado...</p>
+            <div class="loader-progress-container">
+                <div id="loader-progress" class="loader-progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TUTORIAL CLIENTE -->
+    <div id="client-tutorial" class="tutorial-overlay hidden">
+        <div class="tutorial-card">
+            <div class="tutorial-progress">
+                <div class="progress-dot active" data-step="1"></div>
+                <div class="progress-dot" data-step="2"></div>
+                <div class="progress-dot" data-step="3"></div>
+            </div>
+
+            <div class="tutorial-step" id="step-1">
+                <div class="tutorial-icon">👋🏻</div>
+                <h2>¡Hola! Bienvenido</h2>
+                <p>Estás viendo el acuerdo preparado por <strong>SomosDos Studio</strong>. Vamos a guiarte para que sea
+                    rápido y sencillo.</p>
+                <button class="btn btn-active" onclick="nextTutorialStep(2)">Empezar lectura</button>
+            </div>
+
+            <div class="tutorial-step hidden" id="step-2">
+                <div class="tutorial-icon">📖</div>
+                <h2>Lee con calma</h2>
+                <p>Desliza hacia abajo para revisar todos los puntos del acuerdo. Queremos que todo sea transparente
+                    para ti.</p>
+                <button class="btn btn-active" onclick="nextTutorialStep(3)">¿Cómo firmo?</button>
+            </div>
+
+            <div class="tutorial-step hidden" id="step-3">
+                <div class="tutorial-icon">✏️</div>
+                <h2>Firma al final</h2>
+                <p>Al final del documento encontrarás tu espacio de firma. Si estás de acuerdo, firma con el dedo o el
+                    ratón y dale a <strong>Guardar</strong>.</p>
+                <div class="info-alert">
+                    <small>💡 Si tienes dudas o quieres cambios, vuelve a WhatsApp y cuéntanoslo para ajustarlo de
+                        inmediato.</small>
+                </div>
+                <button class="btn btn-active" onclick="closeTutorial()">¡Entendido, vamos!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- IA COPILOT PANEL -->
+    <aside id="ia-panel" class="ia-side-panel">
+        <div class="ia-panel-header">
+            <div class="ia-title-group">
+                <span class="ia-badge">OFFICIAL</span>
+                <h3>Asistente SomosDos</h3>
+                <p>Tu aliado creativo inteligente</p>
+            </div>
+            <button class="btn-icon" onclick="toggleIAPanel()">✕</button>
+        </div>
+
+        <div class="ia-panel-content">
+            <div class="ia-input-zone">
+                <textarea id="ia-raw-input" placeholder="Cuéntame sobre el nuevo acuerdo... (Ej: Haz un intercambio con Juan de Astro Barber para una landing page)"></textarea>
+                <div class="ia-input-actions">
+                    <button id="ia-btn-record" class="btn-ia-action" onclick="toggleIARecording()">
+                        <span class="icon">🎤</span> Hablar
+                    </button>
+                    <button class="btn-ia-action" onclick="document.getElementById('ia-file-input').click()">
+                        <span class="icon">📎</span> Archivo
+                    </button>
+                    <input type="file" id="ia-file-input" hidden accept=".txt,audio/*" onchange="handleIAFileUpload(event)">
+                </div>
+                <button class="btn-ia-main-process" onclick="processIAInput(document.getElementById('ia-raw-input').value)">✨ Analizar y Extraer Datos</button>
+            </div>
+
+            <div id="ia-processing" class="ia-status hidden">
+                <div class="ia-spinner"></div>
+                <p>Analizando información...</p>
+            </div>
+
+            <div id="ia-results" class="ia-results-area hidden">
+                <label>INTENCIÓN DETECTADA</label>
+                <div id="ia-extracted-info" class="ia-info-card"></div>
+                
+                <div class="ia-overrides">
+                    <label>TIPO DE ACUERDO</label>
+                    <div class="ia-type-chips">
+                        <div class="ia-chip active" id="chip-collab" onclick="setIAAgreementType('collaboration')">🤝 Colaboración</div>
+                        <div class="ia-chip" id="chip-paid" onclick="setIAAgreementType('paid')">💰 Servicios Pagos</div>
+                    </div>
+                    
+                    <div id="ia-manual-price-box" class="ia-manual-input-box hidden">
+                        <label>INVERSIÓN TOTAL ($)</label>
+                        <input type="number" id="ia-input-price" placeholder="Ej: 1500" oninput="updateIAManualPrice(this.value)">
+                    </div>
+                </div>
+                
+                <button class="btn btn-ai-generate" onclick="generateSmartContract()">✨ Generar Acuerdo Profesional</button>
+            </div>
+        </div>
+
+        <div class="ia-panel-footer">
+            <p>💡 Puedes subir un .txt con notas o grabar un audio con los detalles de la reunión.</p>
+        </div>
+    </aside>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="app.js?v=47.0.0"></script>
+</body>
+
+</html>
