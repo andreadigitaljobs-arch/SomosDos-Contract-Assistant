@@ -1894,12 +1894,13 @@ async function initApp() {
     const isClient = urlParams.get('mode') === 'client';
     if (isClient) {
         document.body.classList.add('is-client-mode');
-        // Ocultar elementos de edición inmediatamente
+        // Ocultar elementos de edición inmediatamente y limpiar espacio
         const style = document.createElement('style');
         style.innerHTML = `
             .main-header, .design-panel, .zoom-controls, .floating-add-btn { display: none !important; }
-            #zoom-wrapper { margin-top: 20px !important; }
-            .page { box-shadow: 0 10px 40px rgba(0,0,0,0.1) !important; }
+            #zoom-wrapper { margin-top: 0 !important; padding-top: 40px !important; }
+            .page { box-shadow: 0 15px 50px rgba(0,0,0,0.12) !important; }
+            body { background: #fdfdfd !important; }
         `;
         document.head.appendChild(style);
     }
