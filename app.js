@@ -2105,8 +2105,9 @@ async function renderDashboard(filterQuery = '') {
     // Si hay base de datos, traer datos de la nube
     if (db) {
         try {
+            // Quitamos 'price' porque puede no existir en la tabla antigua
             const { data, error } = await db.from('agreements')
-                .select('id, client_name, created_at, price')
+                .select('id, client_name, created_at') 
                 .order('created_at', { ascending: false });
             
             if (!error && data) {
@@ -2114,8 +2115,10 @@ async function renderDashboard(filterQuery = '') {
                     id: item.id,
                     client: item.client_name,
                     timestamp: new Date(item.created_at).getTime(),
-                    price: item.price || 0
+                    price: 0 // Default a 0 si no existe la columna
                 }));
+            } else {
+                console.warn("Aviso de Supabase:", error);
             }
         } catch (e) { console.error("Error cargando biblioteca de nube:", e); }
     }
@@ -2265,12 +2268,39 @@ function createNewContract() {
     startEditor();
 }
 
-function loadContract(id) {
+async function loadContract(id) {
     localStorage.setItem('somosdos_current_contract_id', id);
-    const savedState = localStorage.getItem(`somosdos_contract_state_${id}`);
-    if (savedState) {
-        localStorage.setItem('somosdos_agreement_state', savedState);
+    
+    // 1. Intentar cargar formato nuevo (Estado de Páginas)
+    let savedState = localStorage.getItem(`somosdos_contract_state_${id}`);
+    
+    // 2. Si no está local, buscar en Supabase
+    if (!savedState) {
+        const db = getSupabase();
+        if (db) {
+            try {
+                const { data, error } = await db.from('agreements').select('*').eq('id', id).single();
+                if (!error && data) {
+                    // Si el contrato es antiguo (solo tiene html_content)
+                    if (data.html_content && !data.state) {
+                        const container = getContainer();
+                        if (container) container.innerHTML = data.html_content;
+                        // Convertir a formato nuevo para el futuro
+                        saveDocument();
+                        startEditor();
+                        return;
+                    }
+                    // Si tiene estado guardado en nube
+                    if (data.state) savedState = data.state;
+                }
+            } catch (e) { console.error("Error cargando de nube:", e); }
+        }
     }
+
+    if (savedState) {
+        localStorage.setItem('somosdos_agreement_state', typeof savedState === 'string' ? savedState : JSON.stringify(savedState));
+    }
+    
     startEditor();
 }
 
