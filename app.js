@@ -1256,7 +1256,6 @@ function generateGradientBuffer(themeNum, width, height) {
 // --- CAPTURA PIXEL-PARITY (DNA Match Engine) ---
 async function captureZeroLoss(pageEl) {
     const themeNum = pageEl.classList.contains('theme-3') ? 3 : (pageEl.classList.contains('theme-2') ? 2 : 1);
-    const dna = SOMOSDOS_DNA[`theme${themeNum}`];
     const content = pageEl.querySelector('.canvas-element');
     const container = getContainer();
 
@@ -1264,88 +1263,14 @@ async function captureZeroLoss(pageEl) {
 
     const originalTransform = container.style.transform;
     container.style.transform = 'scale(1)';
-    document.body.style.filter = 'blur(1px)';
     await new Promise(r => setTimeout(r, 450));
-
-    // RASTERIZACIÓN DE ADN (Manual Stop Mapping)
-    const targets = content.querySelectorAll('h2, h3, h4, .sig-name');
-    const backups = [];
-
-    for (const el of targets) {
-        // En Theme 3, H2 y el header de firmas son "Hero" (degradado completo)
-        const isTheme3Hero = themeNum === 3 && (el.tagName === 'H2' || el.closest('.signature-top'));
-        const hasDnaGradient = isTheme3Hero || themeNum === 2 || themeNum === 1;
-
-        if (hasDnaGradient) {
-            backups.push({ el: el, html: el.innerHTML, styles: el.style.cssText });
-            try {
-                const rect = el.getBoundingClientRect();
-                const scale = 5;
-                const pad = 10; // Padding de seguridad para evitar cortes
-                textCanvas.width = (rect.width + pad * 2) * scale;
-                textCanvas.height = rect.height * scale;
-                const tCtx = textCanvas.getContext('2d');
-                tCtx.scale(scale, scale);
-                tCtx.translate(pad, 0);
-
-                // ÁNGULO 135 GRADOS (Vector Diagonal)
-                const grad = tCtx.createLinearGradient(0, 0, rect.width, rect.height);
-
-                if (isTheme3Hero) {
-                    // ADN COMPLETO (SomosDos DNA)
-                    dna.primary.forEach((color, i) => grad.addColorStop(i / (dna.primary.length - 1), color));
-                } else {
-                    // PRIMARY ADN (2 COLORS)
-                    grad.addColorStop(0, dna.primary[0]);
-                    grad.addColorStop(1, dna.primary[1]);
-                }
-
-                tCtx.fillStyle = grad;
-                const style = window.getComputedStyle(el);
-                tCtx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
-                tCtx.textBaseline = 'top';
-
-                const textAlign = style.textAlign || 'left';
-                const lines = el.innerText.split('\n');
-                let y = 0;
-                
-                lines.forEach(line => {
-                    const text = line.trim();
-                    const metrics = tCtx.measureText(text);
-                    let x = 0;
-                    
-                    if (textAlign === 'center' || textAlign === 'center-aligned') {
-                        x = (rect.width - metrics.width) / 2;
-                    } else if (textAlign === 'right') {
-                        x = rect.width - metrics.width;
-                    }
-                    
-                    tCtx.fillText(text, x, y);
-                    y += (parseInt(style.lineHeight) || parseInt(style.fontSize)) * 1.1;
-                });
-
-                const img = new Image();
-                img.src = textCanvas.toDataURL();
-                img.style.cssText = `width: ${rect.width}px; height: ${rect.height}px; display: block; filter: none !important; opacity: 1 !important; transform: none !important;`;
-
-                el.innerHTML = '';
-                // Limpiar estilos que causan el "bloque blanco" en html2canvas
-                el.style.setProperty('background', 'transparent', 'important');
-                el.style.setProperty('-webkit-background-clip', 'initial', 'important');
-                el.style.setProperty('-webkit-text-fill-color', 'transparent', 'important');
-                el.style.setProperty('color', 'transparent', 'important');
-
-                el.appendChild(img);
-            } catch (e) { console.warn("Raster Error:", e); }
-        }
-    }
 
     try {
         const finalCanvas = await html2canvas(content, {
-            scale: 4,
+            scale: 3.5,
             useCORS: true,
             allowTaint: true,
-            backgroundColor: null, // Dejamos que el buffer dibuje el fondo real!
+            backgroundColor: null,
             logging: false,
             ignoreElements: (node) => node.classList?.contains('page-controls') || node.classList?.contains('btn-clear-sig'),
             onclone: (clonedDoc) => {
@@ -1353,19 +1278,64 @@ async function captureZeroLoss(pageEl) {
                 if (clonedContent) {
                     const width = clonedContent.offsetWidth || 800;
                     const height = clonedContent.offsetHeight || 1131;
-                    const buffer = generateGradientBuffer(themeNum, width * 2, height * 2);
-
+                    
                     if (themeNum === 3) {
-                        clonedContent.style.background = '#080812'; // El tema 3 es oscuro puro para evitar ruido extra
+                        clonedContent.style.background = '#080812';
                     } else {
-                        clonedContent.style.background = `url(${buffer}) center / 100% 100% no-repeat`; // Fondo integral con luces
+                        const buffer = generateGradientBuffer(themeNum, width * 2, height * 2);
+                        clonedContent.style.background = `url(${buffer}) center / 100% 100% no-repeat`;
                     }
 
+                    // --- FIX DE GRADIENTES (SVG VECTOR MAPPING) ---
+                    const gradientTargets = clonedContent.querySelectorAll('h2, h3, .gradient-text');
+                    gradientTargets.forEach((el, idx) => {
+                        const style = window.getComputedStyle(el);
+                        const colors = SOMOSDOS_DNA[`theme${themeNum}`].primary;
+                        
+                        // Creamos un SVG que reemplace el texto degradado (que html2canvas no ve)
+                        const svgNS = "http://www.w3.org/2000/svg";
+                        const svg = clonedDoc.createElementNS(svgNS, "svg");
+                        svg.setAttribute("width", el.offsetWidth);
+                        svg.setAttribute("height", el.offsetHeight);
+                        svg.style.cssText = `display: block;`;
+
+                        const defs = clonedDoc.createElementNS(svgNS, "defs");
+                        const grad = clonedDoc.createElementNS(svgNS, "linearGradient");
+                        grad.setAttribute("id", `grad-pdf-${idx}`);
+                        grad.setAttribute("x1", "0%"); grad.setAttribute("y1", "0%");
+                        grad.setAttribute("x2", "100%"); grad.setAttribute("y2", "100%");
+
+                        colors.forEach((c, i) => {
+                            const stop = clonedDoc.createElementNS(svgNS, "stop");
+                            stop.setAttribute("offset", `${(i / (colors.length - 1)) * 100}%`);
+                            stop.setAttribute("stop-color", c);
+                            grad.appendChild(stop);
+                        });
+                        defs.appendChild(grad);
+                        svg.appendChild(defs);
+
+                        const text = clonedDoc.createElementNS(svgNS, "text");
+                        text.textContent = el.innerText.toUpperCase();
+                        text.setAttribute("x", style.textAlign === 'center' ? '50%' : (style.textAlign === 'right' ? '100%' : '0'));
+                        text.setAttribute("y", "50%");
+                        text.setAttribute("dominant-baseline", "central");
+                        text.setAttribute("text-anchor", style.textAlign === 'center' ? 'middle' : (style.textAlign === 'right' ? 'end' : 'start'));
+                        text.setAttribute("fill", `url(#grad-pdf-${idx})`);
+                        text.style.font = style.font;
+                        text.style.fontWeight = "bold";
+                        text.style.letterSpacing = "2px";
+
+                        svg.appendChild(text);
+                        el.innerHTML = '';
+                        el.style.background = 'none';
+                        el.style.webkitBackgroundClip = 'initial';
+                        el.appendChild(svg);
+                    });
+
                     // 1. FIX DE VIDRIO (Glassmorphism Fallback)
-                    const glassElements = clonedContent.querySelectorAll('.feature-card, [data-layout="split"] .content-body ul, [data-layout="glass"] .content-body');
+                    const glassElements = clonedContent.querySelectorAll('.feature-card, .payment-card, [data-layout="split"] .content-body ul, [data-layout="glass"] .content-body');
                     glassElements.forEach(el => {
                         el.style.backdropFilter = 'none';
-                        el.style.webkitBackdropFilter = 'none';
                         el.style.backgroundColor = themeNum === 3 ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.98)';
                         el.style.border = themeNum === 3 ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.05)';
                     });
