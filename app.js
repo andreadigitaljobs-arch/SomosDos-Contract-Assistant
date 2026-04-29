@@ -145,16 +145,23 @@ const injectCatalogStyles = () => {
     style.innerHTML = `
         .catalog-grid { display: grid; gap: 15px; padding: 10px 0; }
         .catalog-item { 
-            background: rgba(255, 255, 255, 0.05); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
+            background: #f8fafc; 
+            border: 1px solid rgba(0, 0, 0, 0.05); 
             border-radius: 12px; padding: 15px; cursor: pointer; transition: all 0.3s ease; 
         }
-        .catalog-item:hover { background: rgba(255, 255, 255, 0.08); border-color: #c084fc; transform: translateY(-2px); }
+        .catalog-item:hover { background: #fff; border-color: #7B3FE4; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(123, 63, 228, 0.1); }
         .catalog-item .icon { font-size: 1.5rem; margin-bottom: 10px; display: block; }
-        .catalog-item h4 { margin: 0 0 5px 0; font-size: 1rem; color: #fff; }
-        .catalog-item p { margin: 0; font-size: 0.8rem; color: rgba(255, 255, 255, 0.6); line-height: 1.4; }
+        .catalog-item h4 { margin: 0 0 5px 0; font-size: 1rem; color: #1e293b; font-weight: 700; }
+        .catalog-item p { margin: 0; font-size: 0.8rem; color: #64748b; line-height: 1.4; }
         .catalog-item .points-preview { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 5px; }
-        .catalog-item .badge-point { font-size: 0.65rem; background: rgba(192, 132, 252, 0.2); color: #c084fc; padding: 2px 6px; border-radius: 4px; }
+        .catalog-item .badge-point { font-size: 0.65rem; background: rgba(123, 63, 228, 0.1); color: #7B3FE4; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+
+        /* MODO OSCURO (TEMA 3) */
+        .theme-3 .catalog-panel { background: #0a0a14; border-left: 1px solid rgba(255, 255, 255, 0.1); }
+        .theme-3 .catalog-item { background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.1); }
+        .theme-3 .catalog-item h4 { color: #fff; }
+        .theme-3 .catalog-item p { color: rgba(255, 255, 255, 0.6); }
+        .theme-3 .catalog-item:hover { background: rgba(255, 255, 255, 0.06); border-color: #c084fc; }
     `;
     document.head.appendChild(style);
 };
