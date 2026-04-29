@@ -2291,6 +2291,32 @@ async function initApp() {
             }, 150);
         });
 
+        // Inyectar botón de Biblioteca si no existe
+        const actions = document.querySelector('.header-actions');
+        if (actions && !document.getElementById('nav-to-dashboard')) {
+            const dashBtn = document.createElement('button');
+            dashBtn.id = 'nav-to-dashboard';
+            dashBtn.className = 'btn btn-secondary';
+            dashBtn.style.background = 'rgba(123, 63, 228, 0.1)';
+            dashBtn.style.color = '#7B3FE4';
+            dashBtn.innerHTML = '📂 Biblioteca';
+            dashBtn.onclick = () => {
+                saveDocument();
+                showDashboard();
+            };
+            actions.prepend(dashBtn);
+        }
+
+        // Hacer que el logo sea un link al Dashboard
+        const logo = document.querySelector('.main-header .logo');
+        if (logo) {
+            logo.style.cursor = 'pointer';
+            logo.onclick = () => {
+                saveDocument();
+                showDashboard();
+            };
+        }
+
         console.log("✅ Event Listeners fijados");
     } catch (e) { console.error("❌ Error en Listeners:", e); }
 
