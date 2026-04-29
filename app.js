@@ -2097,32 +2097,41 @@ function showDashboard() {
     renderDashboard();
 }
 
-function renderDashboard(filterQuery = '') {
+async function renderDashboard(filterQuery = '') {
     const dash = document.getElementById('dashboard-view');
-    let registry = JSON.parse(localStorage.getItem('somosdos_contracts_registry') || '[]');
+    const db = getSupabase();
+    let registry = [];
     
-    // --- RECUPERACIÓN DE CONTRATO LEGACY ---
-    const legacyState = JSON.parse(localStorage.getItem('somosdos_agreement_state') || 'null');
-    if (legacyState && registry.length === 0) {
-        // Importar contrato antiguo a la biblioteca
-        const recoveryId = 'SD-RECOVERED';
-        const recoveredContract = {
-            id: recoveryId,
-            client: legacyState.clientName || 'Astro Barber (Recuperado)',
-            timestamp: Date.now()
-        };
-        registry.push(recoveredContract);
-        localStorage.setItem('somosdos_contracts_registry', JSON.stringify(registry));
-        localStorage.setItem(`somosdos_contract_state_${recoveryId}`, JSON.stringify(legacyState));
-        console.log("♻️ Contrato legacy recuperado y añadido a la biblioteca");
+    // Si hay base de datos, traer datos de la nube
+    if (db) {
+        try {
+            const { data, error } = await db.from('agreements')
+                .select('id, client_name, created_at, price')
+                .order('created_at', { ascending: false });
+            
+            if (!error && data) {
+                registry = data.map(item => ({
+                    id: item.id,
+                    client: item.client_name,
+                    timestamp: new Date(item.created_at).getTime(),
+                    price: item.price || 0
+                }));
+            }
+        } catch (e) { console.error("Error cargando biblioteca de nube:", e); }
+    }
+
+    // Si no hay nube o falló, usar local como respaldo
+    if (registry.length === 0) {
+        registry = JSON.parse(localStorage.getItem('somosdos_contracts_registry') || '[]');
     }
     
-    let contracts = [...registry];
     const randomQuote = MOTIVATIONAL_PHRASES[Math.floor(Math.random() * MOTIVATIONAL_PHRASES.length)];
     
     // Cálculos de Métricas
-    const totalProjects = contracts.length;
-    const totalInvestment = contracts.reduce((acc, curr) => acc + (curr.price || 0), 0);
+    const totalProjects = registry.length;
+    const totalInvestment = registry.reduce((acc, curr) => acc + (curr.price || 0), 0);
+    
+    let contracts = [...registry];
     
     // Filtrado
     if (filterQuery) {
@@ -2149,7 +2158,7 @@ function renderDashboard(filterQuery = '') {
             <div class="dash-stats-row">
                 <div class="stat-pill"><label>PROYECTOS</label><span>${totalProjects}</span></div>
                 <div class="stat-pill"><label>INVERSIÓN TOTAL</label><span>$ ${totalInvestment.toLocaleString()}</span></div>
-                <div class="stat-pill"><label>ESTADO</label><span>🔥 Activo</span></div>
+                <div class="stat-pill"><label>BIBLIOTECA</label><span>☁️ Cloud Active</span></div>
             </div>
 
             <div class="search-wrapper">
@@ -2170,14 +2179,14 @@ function renderDashboard(filterQuery = '') {
                     <p>Acuerdo en blanco</p>
                 </div>
                 
-                ${contracts.reverse().map(c => `
+                ${contracts.map(c => `
                     <div class="dash-card contract-card" onclick="loadContract('${c.id}')">
                         <div class="card-top">
                             <h3>${c.client || 'Cliente sin nombre'}</h3>
-                            <p class="date">Modificado el ${new Date(c.timestamp).toLocaleDateString()}</p>
+                            <p class="date">Creado el ${new Date(c.timestamp).toLocaleDateString()}</p>
                         </div>
                         <div>
-                            <span class="badge-active">${c.price ? '$ ' + c.price.toLocaleString() : 'ACTIVO'}</span>
+                            <span class="badge-active">${c.price ? '$ ' + c.price.toLocaleString() : 'EN NUBE'}</span>
                         </div>
                     </div>
                 `).join('')}
@@ -2185,11 +2194,12 @@ function renderDashboard(filterQuery = '') {
         </div>
     `;
     
-    // Mantener foco si estamos buscando
     if (filterQuery) {
         const input = document.querySelector('.search-input');
-        input.focus();
-        input.setSelectionRange(filterQuery.length, filterQuery.length);
+        if (input) {
+            input.focus();
+            input.setSelectionRange(filterQuery.length, filterQuery.length);
+        }
     }
 }
 
