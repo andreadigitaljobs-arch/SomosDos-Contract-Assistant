@@ -1926,13 +1926,18 @@ function injectDashboardStyles() {
     style.id = styleId;
     style.innerHTML = `
         .dashboard-container {
-            min-height: 100vh;
+            height: 100vh;
             overflow-y: auto !important;
             background: #050505; /* Fondo oscuro profundo para que resalten los colores */
             position: relative;
             overflow-x: hidden;
             font-family: 'Outfit', sans-serif;
             color: white;
+        }
+        
+        /* Evitar doble scroll cuando el dashboard está activo */
+        body.dashboard-open {
+            overflow: hidden !important;
         }
         
         /* Orbes Vibrantes con Animación */
@@ -2122,6 +2127,7 @@ function showMainDashboard() {
     document.getElementById('dashboard-view').classList.remove('hidden');
     document.getElementById('editor-view').classList.add('hidden');
     document.getElementById('design-panel').classList.add('hidden');
+    document.body.classList.add('dashboard-open');
     renderMainDashboard();
 }
 
@@ -2201,7 +2207,7 @@ async function renderMainDashboard(filterQuery = '') {
 
             <div class="dash-section-header" style="max-width: 1050px; margin: 0 auto 20px; display: flex; align-items: center; gap: 10px;">
                 <span style="font-size: 1.2rem;">📂</span>
-                <h2 style="font-size: 1.1rem; font-weight: 700; color: #1d1d1f; text-transform: uppercase; letter-spacing: 1px;">${filterQuery ? 'Resultados de búsqueda' : 'Todos los Proyectos'}</h2>
+                <h2 style="font-size: 1.1rem; font-weight: 700; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1px;">${filterQuery ? 'Resultados de búsqueda' : 'Todos los Proyectos'}</h2>
             </div>
 
             <div class="dash-grid">
@@ -2292,6 +2298,7 @@ function startEditor() {
     document.getElementById('dashboard-view').classList.add('hidden');
     document.getElementById('editor-view').classList.remove('hidden');
     document.getElementById('design-panel').classList.remove('hidden');
+    document.body.classList.remove('dashboard-open');
     
     // Reinicializar la app con el nuevo estado
     initApp();
