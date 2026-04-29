@@ -1898,7 +1898,7 @@ function closeDashboard() {
     if (d) d.remove();
 }
 
-// --- SISTEMA DE DASHBOARD (APPLE UX PREMIUM) ---
+// --- SISTEMA DE DASHBOARD (APPLE UX PREMIUM V2) ---
 function injectDashboardStyles() {
     const styleId = 'dashboard-premium-styles';
     if (document.getElementById(styleId)) return;
@@ -1914,7 +1914,6 @@ function injectDashboardStyles() {
             transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
         
-        /* Background Orbs para efecto Glassmorphism */
         .dash-bg-orb-1 {
             position: absolute; top: -10%; left: -10%;
             width: 50vw; height: 50vw;
@@ -1940,19 +1939,70 @@ function injectDashboardStyles() {
         .dash-content-wrapper {
             position: relative; z-index: 1;
             max-width: 1050px; margin: 0 auto;
-            padding: 40px 40px 100px;
+            padding: 20px 40px 100px;
         }
         
-        .dash-hero { text-align: center; margin-bottom: 70px; }
+        .dash-hero { text-align: center; margin-bottom: 40px; }
         .dash-hero h1 {
-            font-size: 3.8rem; font-weight: 700;
+            font-size: 3.2rem; font-weight: 700;
             color: #1d1d1f; letter-spacing: -0.04em;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
         .dash-hero p {
-            font-size: 1.25rem; color: #86868b;
+            font-size: 1.15rem; color: #86868b;
             font-weight: 400; max-width: 600px;
-            margin: 0 auto; line-height: 1.5;
+            margin: 0 auto; line-height: 1.4;
+        }
+
+        /* Stats Section */
+        .dash-stats-row {
+            display: flex; justify-content: center; gap: 20px;
+            margin-bottom: 50px;
+        }
+        .stat-pill {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            padding: 12px 24px; border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.8);
+            display: flex; flex-direction: column; align-items: center;
+            min-width: 160px;
+        }
+        .stat-pill label { font-size: 0.75rem; font-weight: 700; color: #86868b; text-transform: uppercase; margin-bottom: 4px; }
+        .stat-pill span { font-size: 1.4rem; font-weight: 700; color: #1d1d1f; }
+
+        /* Spotlight Search */
+        .search-wrapper {
+            max-width: 600px; margin: 0 auto 50px;
+            position: relative;
+        }
+        .search-input {
+            width: 100%; padding: 18px 24px 18px 54px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 1);
+            border-radius: 22px; font-size: 1.1rem; outline: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            font-family: inherit; transition: all 0.3s;
+        }
+        .search-input:focus {
+            background: white; border-color: #7B3FE4;
+            box-shadow: 0 15px 35px rgba(123, 63, 228, 0.12);
+        }
+        .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; opacity: 0.4; }
+
+        /* Quick Templates */
+        .templates-row {
+            display: flex; justify-content: center; gap: 15px; margin-bottom: 60px;
+        }
+        .btn-template {
+            padding: 10px 20px; border-radius: 14px;
+            background: white; border: 1px solid #e2e8f0;
+            font-size: 0.9rem; font-weight: 600; cursor: pointer;
+            transition: all 0.2s; display: flex; align-items: center; gap: 8px;
+        }
+        .btn-template:hover {
+            border-color: #7B3FE4; color: #7B3FE4;
+            transform: translateY(-2px); box-shadow: 0 5px 15px rgba(123,63,228,0.1);
         }
         
         .dash-grid {
@@ -1961,7 +2011,6 @@ function injectDashboardStyles() {
             gap: 24px;
         }
         
-        /* Glass Cards */
         .dash-card {
             background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
@@ -1979,16 +2028,11 @@ function injectDashboardStyles() {
             background: rgba(255, 255, 255, 0.85);
         }
         
-        /* Botón Nuevo Proyecto Premium */
         .card-new {
             background: rgba(255, 255, 255, 0.3);
             border: 2px dashed rgba(123, 63, 228, 0.25);
             align-items: center; justify-content: center; text-align: center;
             box-shadow: none;
-        }
-        .card-new:hover {
-            border: 2px solid rgba(123, 63, 228, 0.6);
-            background: rgba(255, 255, 255, 0.6);
         }
         .card-new .icon-wrapper {
             width: 64px; height: 64px; border-radius: 50%;
@@ -1996,13 +2040,10 @@ function injectDashboardStyles() {
             color: white; display: flex; align-items: center; justify-content: center;
             font-size: 2rem; margin-bottom: 20px; font-weight: 300;
             box-shadow: 0 12px 24px rgba(123, 63, 228, 0.25);
-            transition: transform 0.3s ease;
         }
-        .card-new:hover .icon-wrapper { transform: scale(1.05); }
         .card-new h3 { color: #1d1d1f; font-weight: 600; font-size: 1.3rem; margin-bottom: 6px; }
         .card-new p { color: #86868b; font-size: 0.95rem; margin: 0; }
         
-        /* Textos de Tarjeta */
         .contract-card .card-top h3 { font-size: 1.4rem; font-weight: 700; color: #1d1d1f; margin-bottom: 8px; line-height: 1.2; }
         .contract-card .card-top .date { font-size: 0.9rem; color: #86868b; font-weight: 500; }
         
@@ -2044,12 +2085,20 @@ function showDashboard() {
     renderDashboard();
 }
 
-function renderDashboard() {
+function renderDashboard(filterQuery = '') {
     const dash = document.getElementById('dashboard-view');
-    const contracts = JSON.parse(localStorage.getItem('somosdos_contracts_registry') || '[]');
+    let contracts = JSON.parse(localStorage.getItem('somosdos_contracts_registry') || '[]');
     const randomQuote = MOTIVATIONAL_PHRASES[Math.floor(Math.random() * MOTIVATIONAL_PHRASES.length)];
     
-    // Saludo según la hora
+    // Cálculos de Métricas
+    const totalProjects = contracts.length;
+    const totalInvestment = contracts.reduce((acc, curr) => acc + (curr.price || 0), 0);
+    
+    // Filtrado
+    if (filterQuery) {
+        contracts = contracts.filter(c => (c.client || '').toLowerCase().includes(filterQuery.toLowerCase()));
+    }
+    
     const hour = new Date().getHours();
     const greeting = hour < 12 ? 'Buenos días' : (hour < 20 ? 'Buenas tardes' : 'Buenas noches');
     
@@ -2066,14 +2115,29 @@ function renderDashboard() {
                 <h1>${greeting}, Creador.</h1>
                 <p>"${randomQuote}"</p>
             </div>
+
+            <div class="dash-stats-row">
+                <div class="stat-pill"><label>PROYECTOS</label><span>${totalProjects}</span></div>
+                <div class="stat-pill"><label>INVERSIÓN TOTAL</label><span>$ ${totalInvestment.toLocaleString()}</span></div>
+                <div class="stat-pill"><label>ESTADO</label><span>🔥 Activo</span></div>
+            </div>
+
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="Buscar cliente o proyecto..." value="${filterQuery}" oninput="renderDashboard(this.value)">
+            </div>
+
+            <div class="templates-row">
+                <button class="btn-template" onclick="createFromTemplate('collaboration')">🤝 Colaboración</button>
+                <button class="btn-template" onclick="createFromTemplate('paid')">💰 Servicios Pagos</button>
+                <button class="btn-template" onclick="createFromTemplate('web')">🌐 Desarrollo Web</button>
+            </div>
             
             <div class="dash-grid">
                 <div class="dash-card card-new" onclick="createNewContract()">
-                    <div class="icon-wrapper">
-                        <span>+</span>
-                    </div>
+                    <div class="icon-wrapper"><span>+</span></div>
                     <h3>Nuevo Proyecto</h3>
-                    <p>Comenzar un acuerdo en blanco</p>
+                    <p>Acuerdo en blanco</p>
                 </div>
                 
                 ${contracts.reverse().map(c => `
@@ -2083,13 +2147,41 @@ function renderDashboard() {
                             <p class="date">Modificado el ${new Date(c.timestamp).toLocaleDateString()}</p>
                         </div>
                         <div>
-                            <span class="badge-active">ACTIVO</span>
+                            <span class="badge-active">${c.price ? '$ ' + c.price.toLocaleString() : 'ACTIVO'}</span>
                         </div>
                     </div>
                 `).join('')}
             </div>
         </div>
     `;
+    
+    // Mantener foco si estamos buscando
+    if (filterQuery) {
+        const input = document.querySelector('.search-input');
+        input.focus();
+        input.setSelectionRange(filterQuery.length, filterQuery.length);
+    }
+}
+
+function createFromTemplate(type) {
+    const newId = 'SD-' + Date.now();
+    localStorage.setItem('somosdos_current_contract_id', newId);
+    
+    // Definir estructura según plantilla
+    let pagesToAdd = ['cover', 'intro', 'content', 'signatures'];
+    if (type === 'paid') pagesToAdd = ['cover', 'intro', 'content', 'payment', 'signatures'];
+    if (type === 'collaboration') pagesToAdd = ['cover', 'intro', 'content', 'exchange_simple', 'signatures'];
+    
+    // Resetear y precargar
+    const container = document.createElement('div'); // Contenedor temporal para generar el estado
+    pages = []; // Limpiar páginas globales
+    
+    localStorage.removeItem('somosdos_agreement_state');
+    startEditor();
+    
+    // Inyectar páginas
+    pagesToAdd.forEach(p => addNewPage(p));
+    showModal('✨', 'Plantilla Aplicada', `He preparado la estructura de ${type} para ti.`);
 }
 
 function createNewContract() {
