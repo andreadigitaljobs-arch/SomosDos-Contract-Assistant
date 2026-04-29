@@ -1888,6 +1888,21 @@ function closeDashboard() {
 async function initApp() {
     injectHeaderStyles();
     injectCatalogStyles();
+    
+    // DETECTAR MODO CLIENTE
+    const urlParams = new URLSearchParams(window.location.search);
+    const isClient = urlParams.get('mode') === 'client';
+    if (isClient) {
+        document.body.classList.add('is-client-mode');
+        // Ocultar elementos de edición inmediatamente
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .main-header, .design-panel, .zoom-controls, .floating-add-btn { display: none !important; }
+            #zoom-wrapper { margin-top: 20px !important; }
+            .page { box-shadow: 0 10px 40px rgba(0,0,0,0.1) !important; }
+        `;
+        document.head.appendChild(style);
+    }
     console.log("🏁 Inicializando Aplicación v18.5...");
 
     // REGISTRO DE EVENTOS (Hacerlo PRIMERO para que los botones funcionen pase lo que pase)
