@@ -2284,6 +2284,10 @@ async function loadContract(id) {
 }
 
 function startEditor() {
+    // Liberar scroll para el editor
+    document.body.style.overflow = 'auto';
+    document.documentElement.style.overflow = 'auto';
+    
     document.getElementById('dashboard-view').classList.add('hidden');
     document.getElementById('editor-view').classList.remove('hidden');
     document.getElementById('design-panel').classList.remove('hidden');
