@@ -1388,58 +1388,59 @@ async function captureZeroLoss(pageEl) {
                         clonedContent.style.background = `url(${buffer}) center / 100% 100% no-repeat`;
                     }
 
-                    // --- FIX DE GRADIENTES (SVG VECTOR MAPPING) ---
+                    // --- MOTOR DE ALTA FIDELIDAD (CANVAS TEXT RASTER) ---
                     const gradientTargets = clonedContent.querySelectorAll('h2, h3, .gradient-text');
-                    gradientTargets.forEach((el, idx) => {
+                    gradientTargets.forEach((el) => {
+                        const text = el.innerText;
                         const style = window.getComputedStyle(el);
-                        const colors = SOMOSDOS_DNA[`theme${themeNum}`].primary;
+                        const rect = { width: el.offsetWidth, height: el.offsetHeight };
                         
-                        // Creamos un SVG que reemplace el texto degradado (que html2canvas no ve)
-                        const svgNS = "http://www.w3.org/2000/svg";
-                        const svg = clonedDoc.createElementNS(svgNS, "svg");
-                        svg.setAttribute("width", el.offsetWidth);
-                        svg.setAttribute("height", el.offsetHeight);
-                        svg.style.cssText = `display: block;`;
+                        if (rect.width === 0 || rect.height === 0) return;
 
-                        const defs = clonedDoc.createElementNS(svgNS, "defs");
-                        const grad = clonedDoc.createElementNS(svgNS, "linearGradient");
-                        grad.setAttribute("id", `grad-pdf-${idx}`);
-                        grad.setAttribute("x1", "0%"); grad.setAttribute("y1", "0%");
-                        grad.setAttribute("x2", "100%"); grad.setAttribute("y2", "100%");
-
-                        colors.forEach((c, i) => {
-                            const stop = clonedDoc.createElementNS(svgNS, "stop");
-                            stop.setAttribute("offset", `${(i / (colors.length - 1)) * 100}%`);
-                            stop.setAttribute("stop-color", c);
-                            grad.appendChild(stop);
-                        });
-                        defs.appendChild(grad);
-                        svg.appendChild(defs);
-
-                        const text = clonedDoc.createElementNS(svgNS, "text");
-                        text.textContent = el.innerText.toUpperCase();
-                        text.setAttribute("x", style.textAlign === 'center' ? '50%' : (style.textAlign === 'right' ? '100%' : '0'));
-                        text.setAttribute("y", "50%");
-                        text.setAttribute("dominant-baseline", "central");
-                        text.setAttribute("text-anchor", style.textAlign === 'center' ? 'middle' : (style.textAlign === 'right' ? 'end' : 'start'));
-                        text.setAttribute("fill", `url(#grad-pdf-${idx})`);
-                        text.style.font = style.font;
-                        text.style.fontWeight = "bold";
-                        text.style.letterSpacing = "2px";
-
-                        svg.appendChild(text);
-                        el.innerHTML = '';
+                        const canvas = clonedDoc.createElement('canvas');
+                        canvas.width = rect.width * 2;
+                        canvas.height = rect.height * 2;
+                        const ctx = canvas.getContext('2d');
+                        
+                        ctx.scale(2, 2);
+                        ctx.font = style.font;
+                        ctx.textAlign = style.textAlign === 'center' ? 'center' : (style.textAlign === 'right' ? 'right' : 'left');
+                        ctx.textBaseline = 'middle';
+                        
+                        const grad = ctx.createLinearGradient(0, 0, rect.width, 0);
+                        const colors = SOMOSDOS_DNA[`theme${themeNum}`].primary;
+                        colors.forEach((c, i) => grad.addColorStop(i / (colors.length - 1), c));
+                        
+                        ctx.fillStyle = grad;
+                        const x = style.textAlign === 'center' ? rect.width / 2 : (style.textAlign === 'right' ? rect.width : 0);
+                        ctx.fillText(text, x, rect.height / 2);
+                        
+                        el.innerHTML = `<img src="${canvas.toDataURL()}" style="width:${rect.width}px; height:${rect.height}px; display: block; margin: ${style.textAlign === 'center' ? '0 auto' : '0'}">`;
                         el.style.background = 'none';
-                        el.style.webkitBackgroundClip = 'initial';
-                        el.appendChild(svg);
                     });
 
-                    // 1. FIX DE VIDRIO (Glassmorphism Fallback)
-                    const glassElements = clonedContent.querySelectorAll('.feature-card, .payment-card, [data-layout="split"] .content-body ul, [data-layout="glass"] .content-body');
+                    // --- FIX DE TARJETAS ASTRO PARA PDF ---
+                    const astroCards = clonedContent.querySelectorAll('.astro-service-card');
+                    astroCards.forEach(card => {
+                        card.style.background = '#ffffff';
+                        card.style.backdropFilter = 'none';
+                        card.style.border = '1px solid #e2e8f0';
+                        card.style.boxShadow = 'none';
+                    });
+
+                    // --- FIX DE VIDRIO (General) ---
+                    const glassElements = clonedContent.querySelectorAll('.feature-card, .payment-card');
                     glassElements.forEach(el => {
                         el.style.backdropFilter = 'none';
-                        el.style.backgroundColor = themeNum === 3 ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.98)';
-                        el.style.border = themeNum === 3 ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.05)';
+                        el.style.backgroundColor = '#ffffff';
+                        el.style.border = '1px solid #e2e8f0';
+                    });
+
+                    // --- FIX DE FIRMAS ---
+                    const sigBoxes = clonedContent.querySelectorAll('.signature-box');
+                    sigBoxes.forEach(box => {
+                        box.style.background = '#ffffff';
+                        box.style.border = '2px dashed #cbd5e1';
                     });
 
                     // 2. FIX DE DIAGONAL & LOGO RESCUE (SVG Aurora)
