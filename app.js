@@ -2260,16 +2260,34 @@ async function loadContract(id) {
             try {
                 const { data, error } = await db.from('agreements').select('*').eq('id', id).single();
                 if (!error && data) {
-                    // Si el contrato es antiguo (solo tiene html_content)
-                    if (data.html_content && !data.state) {
+                    // --- REPARACIÓN DE EMERGENCIA ---
+                    let contentToLoad = data.html_content;
+                    
+                    // Si el contenido viene como un objeto stringified (el error del screenshot)
+                    if (contentToLoad && contentToLoad.startsWith('{')) {
+                        try {
+                            const parsed = JSON.parse(contentToLoad);
+                            if (parsed.html) contentToLoad = parsed.html;
+                        } catch(e) { console.warn("No es JSON puro, intentando como texto"); }
+                    }
+
+                    if (contentToLoad) {
                         const container = getContainer();
-                        if (container) container.innerHTML = data.html_content;
-                        // Convertir a formato nuevo para el futuro
+                        if (container) {
+                            container.innerHTML = contentToLoad;
+                            // Forzar limpieza de residuos de JSON arriba
+                            container.innerHTML = container.innerHTML.replace(/\{"id".*?"html":"/g, '').replace(/"\}$/g, '');
+                        }
+                        
+                        // Recuperar nombre del cliente
+                        const clientName = data.client_name || 'Astro Barber';
+                        const nameInput = document.getElementById('client-name-input');
+                        if (nameInput) nameInput.value = clientName;
+                        
                         saveDocument();
                         startEditor();
                         return;
                     }
-                    // Si tiene estado guardado en nube
                     if (data.state) savedState = data.state;
                 }
             } catch (e) { console.error("Error cargando de nube:", e); }
