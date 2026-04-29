@@ -1760,6 +1760,7 @@ function showConfirmModal(icon, title, message, confirmText = 'Confirmar', cance
 function dismissModal() {
     const m = document.getElementById('s2-modal');
     if (m) m.remove();
+    document.body.style.overflow = 'auto';
 }
 
 // --- DASHBOARD DE CLIENTES (BIBLIOTECA) ---
@@ -2285,6 +2286,9 @@ function startEditor() {
 async function initApp() {
     injectHeaderStyles();
     injectCatalogStyles();
+    
+    // Asegurar que el scroll esté habilitado al iniciar el editor
+    document.body.style.overflow = 'auto';
     
     const urlParams = new URLSearchParams(window.location.search);
     const hasId = urlParams.has('id');
