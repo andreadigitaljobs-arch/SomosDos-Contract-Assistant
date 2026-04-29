@@ -145,6 +145,7 @@
                     </div>
                 </div>
 
+                <button class="btn btn-secondary" onclick="toggleCatalogPanel()" style="border: 1px solid #7B3FE4; color: #7B3FE4; background: transparent; font-weight: 700; margin-right: 8px; padding: 10px 20px; border-radius: 50px; cursor: pointer;">📚 Catálogo</button>
                 <button class="btn btn-ai" onclick="toggleIAPanel()" style="background: linear-gradient(135deg, #2D3EAF, #7B3FE4) !important; color: white !important; border: none; font-weight: 700; margin-right: 8px; padding: 10px 20px; border-radius: 50px; cursor: pointer;">🤖 Asistente SomosDos</button>
                 <div class="divider-v"></div>
                 <input type="file" id="file-input" style="display: none;" onchange="importJSON(event)">
@@ -211,6 +212,24 @@
             </div>
         </div>
     </div>
+
+    <!-- CATALOG PANEL -->
+    <aside id="catalog-panel" class="ia-side-panel">
+        <div class="ia-panel-header">
+            <div class="ia-title-group">
+                <span class="ia-badge" style="background: var(--brand-purple);">CATÁLOGO</span>
+                <h3>Servicios SomosDos</h3>
+                <p>Añade bloques pre-diseñados</p>
+            </div>
+            <button class="btn-icon" onclick="toggleCatalogPanel()">✕</button>
+        </div>
+
+        <div class="ia-panel-content">
+            <div id="catalog-list" class="catalog-grid">
+                <!-- Se llena dinámicamente desde app.js -->
+            </div>
+        </div>
+    </aside>
 
     <!-- IA COPILOT PANEL -->
     <aside id="ia-panel" class="ia-side-panel">

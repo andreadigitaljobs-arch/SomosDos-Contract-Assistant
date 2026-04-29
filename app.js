@@ -90,8 +90,124 @@ const SOMOSDOS_DNA = {
     }
 };
 
-// --- SELECTORES ROBUSTOS ---
-function getContainer() { return document.getElementById('zoom-wrapper'); }
+// --- CATALOG DATA ---
+const SERVICE_CATALOG = [
+    {
+        id: 'web-dev',
+        title: 'Desarrollo Web Premium',
+        icon: '🌐',
+        description: 'Landing pages, E-commerce y sitios corporativos de alto impacto con diseño SomosDos.',
+        points: ['Diseño 100% Personalizado', 'Optimización SEO & Velocidad', 'Panel de Control (CMS)', 'Integración con WhatsApp/CRM']
+    },
+    {
+        id: 'systems-apps',
+        title: 'Sistemas & Aplicaciones',
+        icon: '⚙️',
+        description: 'Desarrollo de software a medida, aplicaciones web y sistemas internos escalables.',
+        points: ['Arquitectura de Software', 'Bases de Datos Robustas', 'Apps Web Progresivas (PWA)', 'Seguridad Avanzada']
+    },
+    {
+        id: 'crm-auto',
+        title: 'CRM & Automatización',
+        icon: '🤖',
+        description: 'Implementación de GoHighLevel/HubSpot y automatización de flujos de trabajo.',
+        points: ['Configuración de CRM', 'Automatización de Pipelines', 'Email & SMS Marketing Auto', 'Zapier / Make Integrations']
+    },
+    {
+        id: 'digital-strategy',
+        title: 'Estrategias Digitales',
+        icon: '📈',
+        description: 'Plan integral para dominar el ecosistema de redes sociales y pauta digital.',
+        points: ['Plan de Contenidos 360°', 'Gestión de Pauta (Ads)', 'Análisis de Métricas', 'Embudos de Venta']
+    },
+    {
+        id: 'photo-video',
+        title: 'Producción Audiovisual',
+        icon: '📸',
+        description: 'Fotografía profesional, edición de video y grabación presencial de contenido.',
+        points: ['Sesión de Fotos in-situ', 'Edición de Video High-End', 'Producción de Reels/TikToks', 'Equipo de Grabación Pro']
+    },
+    {
+        id: 'consulting',
+        title: 'Asesoría Estratégica',
+        icon: '🧠',
+        description: 'Consultoría 1:1 para optimizar procesos de negocio y escalabilidad digital.',
+        points: ['Diagnóstico de Negocio', 'Hoja de Ruta Tecnológica', 'Mentoría en Automatización', 'Optimización de Ventas']
+    }
+];
+
+// --- INYECCIÓN DE ESTILOS DINÁMICOS (Fallback por bloqueo de archivo) ---
+const injectCatalogStyles = () => {
+    const styleId = 'catalog-dynamic-styles';
+    if (document.getElementById(styleId)) return;
+    const style = document.createElement('style');
+    style.id = styleId;
+    style.innerHTML = `
+        .catalog-grid { display: grid; gap: 15px; padding: 10px 0; }
+        .catalog-item { 
+            background: rgba(255, 255, 255, 0.05); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 12px; padding: 15px; cursor: pointer; transition: all 0.3s ease; 
+        }
+        .catalog-item:hover { background: rgba(255, 255, 255, 0.08); border-color: #c084fc; transform: translateY(-2px); }
+        .catalog-item .icon { font-size: 1.5rem; margin-bottom: 10px; display: block; }
+        .catalog-item h4 { margin: 0 0 5px 0; font-size: 1rem; color: #fff; }
+        .catalog-item p { margin: 0; font-size: 0.8rem; color: rgba(255, 255, 255, 0.6); line-height: 1.4; }
+        .catalog-item .points-preview { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 5px; }
+        .catalog-item .badge-point { font-size: 0.65rem; background: rgba(192, 132, 252, 0.2); color: #c084fc; padding: 2px 6px; border-radius: 4px; }
+    `;
+    document.head.appendChild(style);
+};
+
+function toggleCatalogPanel() {
+    injectCatalogStyles();
+    const panel = document.getElementById('catalog-panel');
+    panel.classList.toggle('active');
+    if (panel.classList.contains('active')) renderCatalog();
+}
+
+function renderCatalog() {
+    const list = document.getElementById('catalog-list');
+    list.innerHTML = SERVICE_CATALOG.map(s => `
+        <div class="catalog-item" onclick="insertServiceToDoc('${s.id}')">
+            <span class="icon">${s.icon}</span>
+            <h4>${s.title}</h4>
+            <p>${s.description}</p>
+            <div class="points-preview">
+                ${s.points.slice(0, 2).map(p => `<span class="badge-point">${p}</span>`).join('')}
+                ${s.points.length > 2 ? `<span class="badge-point">+${s.points.length - 2}</span>` : ''}
+            </div>
+        </div>
+    `).join('');
+}
+
+function insertServiceToDoc(id) {
+    const service = SERVICE_CATALOG.find(s => s.id === id);
+    if (!service) return;
+
+    // Buscamos el contenedor de servicios en la página actual
+    const currentPage = document.querySelector('.page:not(.hidden)');
+    if (!currentPage) return;
+
+    const list = currentPage.querySelector('.content-body ul');
+    if (!list) {
+        showModal('⚠️', 'Oops', 'No encontré una lista de servicios en esta página para insertar el bloque.');
+        return;
+    }
+
+    const li = document.createElement('li');
+    li.innerHTML = `
+        <strong>${service.title}</strong><br>
+        <span style="font-size: 0.9rem; opacity: 0.85;">${service.description}</span>
+        <ul style="margin-top: 5px; font-size: 0.85rem; opacity: 0.75; border-left: 2px solid var(--brand-purple); padding-left: 10px;">
+            ${service.points.map(p => `<li>${p}</li>`).join('')}
+        </ul>
+    `;
+    
+    list.appendChild(li);
+    saveState();
+    showModal('✅', 'Servicio Añadido', `Se ha insertado "${service.title}" correctamente.`);
+}
 
 // --- MOTOR DE PLANTILLAS ---
 function getCurrentClientName() {
@@ -1019,11 +1135,12 @@ async function captureZeroLoss(pageEl) {
             try {
                 const rect = el.getBoundingClientRect();
                 const scale = 5;
-                const textCanvas = document.createElement('canvas');
-                textCanvas.width = rect.width * scale;
+                const pad = 10; // Padding de seguridad para evitar cortes
+                textCanvas.width = (rect.width + pad * 2) * scale;
                 textCanvas.height = rect.height * scale;
                 const tCtx = textCanvas.getContext('2d');
                 tCtx.scale(scale, scale);
+                tCtx.translate(pad, 0);
 
                 // ÁNGULO 135 GRADOS (Vector Diagonal)
                 const grad = tCtx.createLinearGradient(0, 0, rect.width, rect.height);
@@ -1042,10 +1159,22 @@ async function captureZeroLoss(pageEl) {
                 tCtx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
                 tCtx.textBaseline = 'top';
 
+                const textAlign = style.textAlign || 'left';
                 const lines = el.innerText.split('\n');
                 let y = 0;
+                
                 lines.forEach(line => {
-                    tCtx.fillText(line.trim(), 0, y);
+                    const text = line.trim();
+                    const metrics = tCtx.measureText(text);
+                    let x = 0;
+                    
+                    if (textAlign === 'center' || textAlign === 'center-aligned') {
+                        x = (rect.width - metrics.width) / 2;
+                    } else if (textAlign === 'right') {
+                        x = rect.width - metrics.width;
+                    }
+                    
+                    tCtx.fillText(text, x, y);
                     y += (parseInt(style.lineHeight) || parseInt(style.fontSize)) * 1.1;
                 });
 
@@ -1153,16 +1282,11 @@ async function captureZeroLoss(pageEl) {
                     }
 
                     // 3. FIX DE GRADIENTES EN TEXTO (Fallback para PDF en Theme 3)
-                    // html2canvas no soporta -webkit-background-clip: text y pinta un bloque sólido.
-                    // Aquí lo reemplazamos por un color sólido y limpio equivalente al degradado.
+                    // Eliminamos el fallback de color sólido para que use la rasterización de alta calidad
                     if (themeNum === 3) {
                         const headingTexts = clonedContent.querySelectorAll('h2, h3');
                         headingTexts.forEach(txt => {
-                            txt.style.background = 'none';
-                            txt.style.webkitBackgroundClip = 'initial';
-                            txt.style.webkitTextFillColor = 'initial';
-                            txt.style.color = '#818CF8'; // Color Índigo suave que representa el centro del degradado
-                            txt.style.textShadow = 'none'; // Evitar doble rendering extraño en el PDF
+                            // Dejamos que el rasterizador haga su magia arriba
                         });
                     }
 
