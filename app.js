@@ -349,22 +349,34 @@ function insertServiceToDoc(id) {
     if (!service) return;
 
     // Buscamos la página visible actualmente
-    const currentPage = document.querySelector('.page:not(.hidden)');
-    if (!currentPage) {
-        showModal('⚠️', 'Oops', 'Por favor, selecciona o crea una página primero.');
+    let currentPage = document.querySelector('.page:not(.hidden)');
+    
+    // Si no hay página, o es una Portada/Firmas, creamos una nueva automáticamente
+    const isSuitable = currentPage && currentPage.querySelector('.content-body');
+    
+    if (!isSuitable) {
+        // Creamos una nueva página de contenido
+        const newPageId = addPageWithTheme('content');
+        currentPage = document.getElementById(`page-${newPageId}`);
+        
+        // Pequeño delay para que el DOM se asiente
+        setTimeout(() => {
+            const body = currentPage.querySelector('.content-body');
+            insertServiceLogic(body, service);
+            // Hacer scroll a la nueva página si es necesario
+            currentPage.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
         return;
     }
 
     const contentBody = currentPage.querySelector('.content-body');
-    if (!contentBody) {
-        showModal('⚠️', 'Oops', 'Esta página no permite insertar bloques de servicios (ej: Portada).');
-        return;
-    }
+    insertServiceLogic(contentBody, service);
+}
 
+function insertServiceLogic(contentBody, service) {
     // Buscamos o creamos la lista
     let list = contentBody.querySelector('ul');
     if (!list) {
-        // Si no hay lista, creamos un contenedor bonito para los nuevos servicios
         const wrapper = document.createElement('div');
         wrapper.className = 'dynamic-services-list';
         wrapper.style.marginTop = '20px';
@@ -388,7 +400,7 @@ function insertServiceToDoc(id) {
     
     list.appendChild(li);
     saveState();
-    showModal('✅', 'Servicio Añadido', `Se ha insertado "${service.title}" correctamente.`);
+    showModal('✨', 'Servicio Integrado', `Se ha creado una nueva sección para "${service.title}".`);
 }
 
 // --- SELECTORES ROBUSTOS ---
