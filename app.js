@@ -356,7 +356,7 @@ function insertServiceToDoc(id) {
     
     if (!isSuitable) {
         // Creamos una nueva página de contenido
-        const newPageId = addPageWithTheme('content');
+        const newPageId = addNewPage('content');
         currentPage = document.getElementById(`page-${newPageId}`);
         
         // Pequeño delay para que el DOM se asiente
