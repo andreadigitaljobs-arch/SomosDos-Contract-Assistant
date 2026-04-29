@@ -2169,9 +2169,30 @@ async function renderDashboard(filterQuery = '') {
                 <input type="text" class="search-input" placeholder="Buscar cliente o proyecto..." value="${filterQuery}" oninput="renderDashboard(this.value)">
             </div>
 
+            ${!filterQuery && contracts.length > 0 ? `
+                <div class="dash-section-header" style="max-width: 1050px; margin: 0 auto 20px; display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 1.2rem;">⏱️</span>
+                    <h2 style="font-size: 1.1rem; font-weight: 700; color: #1d1d1f; text-transform: uppercase; letter-spacing: 1px;">Proyectos Recientes</h2>
+                </div>
+                <div class="dash-grid" style="margin-bottom: 60px;">
+                    ${contracts.slice(0, 3).map(c => `
+                        <div class="dash-card contract-card recent-access" onclick="loadContract('${c.id}')" style="border-color: rgba(123, 63, 228, 0.3); background: rgba(255,255,255,0.8);">
+                            <div class="card-top">
+                                <h3 style="color: #7B3FE4;">${c.client || 'Sin nombre'}</h3>
+                                <p class="date">Última edición: ${new Date(c.timestamp).toLocaleDateString()}</p>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span class="badge-active">ACCESO RÁPIDO</span>
+                                <span style="font-size: 1.2rem;">⚡</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : ''}
+
             <div class="dash-section-header" style="max-width: 1050px; margin: 0 auto 20px; display: flex; align-items: center; gap: 10px;">
                 <span style="font-size: 1.2rem;">📂</span>
-                <h2 style="font-size: 1.1rem; font-weight: 700; color: #1d1d1f; text-transform: uppercase; letter-spacing: 1px;">${filterQuery ? 'Resultados de búsqueda' : 'Tu Biblioteca de Proyectos'}</h2>
+                <h2 style="font-size: 1.1rem; font-weight: 700; color: #1d1d1f; text-transform: uppercase; letter-spacing: 1px;">${filterQuery ? 'Resultados de búsqueda' : 'Todos los Proyectos'}</h2>
             </div>
 
             <div class="dash-grid">
@@ -2190,7 +2211,7 @@ async function renderDashboard(filterQuery = '') {
                             <p class="date">Creado el ${new Date(c.timestamp).toLocaleDateString()}</p>
                         </div>
                         <div>
-                            <span class="badge-active">PROYECTO EN NUBE</span>
+                            <span class="badge-active">${c.price ? '$ ' + c.price.toLocaleString() : 'EN NUBE'}</span>
                         </div>
                     </div>
                 `).join('')}
@@ -2250,53 +2271,40 @@ function createNewContract() {
 async function loadContract(id) {
     localStorage.setItem('somosdos_current_contract_id', id);
     
-    // Limpiar rastro local para forzar carga limpia de nube
-    localStorage.removeItem(`somosdos_contract_state_${id}`);
+    // 1. Intentar cargar formato nuevo (Estado de Páginas)
+    let savedState = localStorage.getItem(`somosdos_contract_state_${id}`);
     
-    const db = getSupabase();
-    if (db) {
-        try {
-            const { data, error } = await db.from('agreements').select('*').eq('id', id).single();
-            if (!error && data) {
-                // PRIORIDAD: Si tiene el HTML antiguo, cargarlo directamente sin procesar
-                if (data.html_content) {
-                    const container = getContainer();
-                    if (container) {
-                        // Limpieza mínima para asegurar que no sea un objeto JSON
-                        let html = data.html_content;
-                        if (html.startsWith('{"')) {
-                            try {
-                                const parsed = JSON.parse(html);
-                                if (parsed.html) html = parsed.html;
-                            } catch(e) {}
-                        }
-                        container.innerHTML = html;
+    // 2. Si no está local, buscar en Supabase
+    if (!savedState) {
+        const db = getSupabase();
+        if (db) {
+            try {
+                const { data, error } = await db.from('agreements').select('*').eq('id', id).single();
+                if (!error && data) {
+                    // Si el contrato es antiguo (solo tiene html_content)
+                    if (data.html_content && !data.state) {
+                        const container = getContainer();
+                        if (container) container.innerHTML = data.html_content;
+                        // Convertir a formato nuevo para el futuro
+                        saveDocument();
+                        startEditor();
+                        return;
                     }
-                    
-                    const clientName = data.client_name || 'Astro Barber';
-                    const nameInput = document.getElementById('client-name-input');
-                    if (nameInput) nameInput.value = clientName;
-                    
-                    // IMPORTANTE: NO GUARDAMOS AQUÍ. Dejamos que el usuario vea su contrato primero.
-                    startEditor();
-                    return;
+                    // Si tiene estado guardado en nube
+                    if (data.state) savedState = data.state;
                 }
-                
-                if (data.state) {
-                    localStorage.setItem('somosdos_agreement_state', typeof data.state === 'string' ? data.state : JSON.stringify(data.state));
-                }
-            }
-        } catch (e) { console.error("Error en restauración de emergencia:", e); }
+            } catch (e) { console.error("Error cargando de nube:", e); }
+        }
+    }
+
+    if (savedState) {
+        localStorage.setItem('somosdos_agreement_state', typeof savedState === 'string' ? savedState : JSON.stringify(savedState));
     }
     
     startEditor();
 }
 
 function startEditor() {
-    // Liberar scroll para el editor
-    document.body.style.overflow = 'auto';
-    document.documentElement.style.overflow = 'auto';
-    
     document.getElementById('dashboard-view').classList.add('hidden');
     document.getElementById('editor-view').classList.remove('hidden');
     document.getElementById('design-panel').classList.remove('hidden');
