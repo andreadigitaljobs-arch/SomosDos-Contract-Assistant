@@ -2079,6 +2079,10 @@ const MOTIVATIONAL_PHRASES = [
 
 function showDashboard() {
     injectDashboardStyles();
+    // Resetear scroll al inicio
+    window.scrollTo(0, 0);
+    document.body.style.overflow = 'auto';
+    
     document.getElementById('dashboard-view').classList.remove('hidden');
     document.getElementById('editor-view').classList.add('hidden');
     document.getElementById('design-panel').classList.add('hidden');
