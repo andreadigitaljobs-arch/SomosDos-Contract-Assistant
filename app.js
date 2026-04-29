@@ -1097,9 +1097,10 @@ async function loadDocument() {
 
     // 3. Documento Nuevo (Último recurso):
     console.log("✨ Creando documento nuevo por defecto");
-    addNewPage('cover');
-    addNewPage('content');
-    addNewPage('signatures');
+    // Empezar en blanco como solicitó el usuario
+    const container = getContainer();
+    if (container) container.innerHTML = '';
+    pages = [];
 }
 
 function renderDocument(data) {
@@ -2257,6 +2258,11 @@ function createNewContract() {
     
     // Limpiar el estado actual para empezar de cero
     localStorage.removeItem('somosdos_agreement_state');
+    
+    // Limpiar el contenedor y el array global de páginas para empezar realmente en blanco
+    const container = getContainer();
+    if (container) container.innerHTML = '';
+    pages = [];
     
     // Abrir el editor
     startEditor();
