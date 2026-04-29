@@ -2250,52 +2250,43 @@ function createNewContract() {
 async function loadContract(id) {
     localStorage.setItem('somosdos_current_contract_id', id);
     
-    // 1. Intentar cargar formato nuevo (Estado de Páginas)
-    let savedState = localStorage.getItem(`somosdos_contract_state_${id}`);
+    // Limpiar rastro local para forzar carga limpia de nube
+    localStorage.removeItem(`somosdos_contract_state_${id}`);
     
-    // 2. Si no está local, buscar en Supabase
-    if (!savedState) {
-        const db = getSupabase();
-        if (db) {
-            try {
-                const { data, error } = await db.from('agreements').select('*').eq('id', id).single();
-                if (!error && data) {
-                    // --- REPARACIÓN DE EMERGENCIA ---
-                    let contentToLoad = data.html_content;
-                    
-                    // Si el contenido viene como un objeto stringified (el error del screenshot)
-                    if (contentToLoad && contentToLoad.startsWith('{')) {
-                        try {
-                            const parsed = JSON.parse(contentToLoad);
-                            if (parsed.html) contentToLoad = parsed.html;
-                        } catch(e) { console.warn("No es JSON puro, intentando como texto"); }
-                    }
-
-                    if (contentToLoad) {
-                        const container = getContainer();
-                        if (container) {
-                            container.innerHTML = contentToLoad;
-                            // Forzar limpieza de residuos de JSON arriba
-                            container.innerHTML = container.innerHTML.replace(/\{"id".*?"html":"/g, '').replace(/"\}$/g, '');
+    const db = getSupabase();
+    if (db) {
+        try {
+            const { data, error } = await db.from('agreements').select('*').eq('id', id).single();
+            if (!error && data) {
+                // PRIORIDAD: Si tiene el HTML antiguo, cargarlo directamente sin procesar
+                if (data.html_content) {
+                    const container = getContainer();
+                    if (container) {
+                        // Limpieza mínima para asegurar que no sea un objeto JSON
+                        let html = data.html_content;
+                        if (html.startsWith('{"')) {
+                            try {
+                                const parsed = JSON.parse(html);
+                                if (parsed.html) html = parsed.html;
+                            } catch(e) {}
                         }
-                        
-                        // Recuperar nombre del cliente
-                        const clientName = data.client_name || 'Astro Barber';
-                        const nameInput = document.getElementById('client-name-input');
-                        if (nameInput) nameInput.value = clientName;
-                        
-                        saveDocument();
-                        startEditor();
-                        return;
+                        container.innerHTML = html;
                     }
-                    if (data.state) savedState = data.state;
+                    
+                    const clientName = data.client_name || 'Astro Barber';
+                    const nameInput = document.getElementById('client-name-input');
+                    if (nameInput) nameInput.value = clientName;
+                    
+                    // IMPORTANTE: NO GUARDAMOS AQUÍ. Dejamos que el usuario vea su contrato primero.
+                    startEditor();
+                    return;
                 }
-            } catch (e) { console.error("Error cargando de nube:", e); }
-        }
-    }
-
-    if (savedState) {
-        localStorage.setItem('somosdos_agreement_state', typeof savedState === 'string' ? savedState : JSON.stringify(savedState));
+                
+                if (data.state) {
+                    localStorage.setItem('somosdos_agreement_state', typeof data.state === 'string' ? data.state : JSON.stringify(data.state));
+                }
+            }
+        } catch (e) { console.error("Error en restauración de emergencia:", e); }
     }
     
     startEditor();
