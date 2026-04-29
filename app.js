@@ -1890,6 +1890,9 @@ function copyDashboardLink(btn, url) {
         }, 2000);
     }).catch(() => {
         showToast('Error al copiar link');
+    });
+}
+
 function closeDashboard() {
     const d = document.getElementById('s2-dashboard');
     if (d) d.remove();
