@@ -2268,39 +2268,9 @@ function createNewContract() {
 }
 
 async function loadContract(id) {
-    localStorage.setItem('somosdos_current_contract_id', id);
-    
-    // 1. Intentar cargar formato nuevo (Estado de Páginas)
-    let savedState = localStorage.getItem(`somosdos_contract_state_${id}`);
-    
-    // 2. Si no está local, buscar en Supabase
-    if (!savedState) {
-        const db = getSupabase();
-        if (db) {
-            try {
-                const { data, error } = await db.from('agreements').select('*').eq('id', id).single();
-                if (!error && data) {
-                    // Si el contrato es antiguo (solo tiene html_content)
-                    if (data.html_content && !data.state) {
-                        const container = getContainer();
-                        if (container) container.innerHTML = data.html_content;
-                        // Convertir a formato nuevo para el futuro
-                        saveDocument();
-                        startEditor();
-                        return;
-                    }
-                    // Si tiene estado guardado en nube
-                    if (data.state) savedState = data.state;
-                }
-            } catch (e) { console.error("Error cargando de nube:", e); }
-        }
-    }
-
-    if (savedState) {
-        localStorage.setItem('somosdos_agreement_state', typeof savedState === 'string' ? savedState : JSON.stringify(savedState));
-    }
-    
-    startEditor();
+    // Redirigir a la URL del contrato para que loadDocument se encargue de todo
+    // Esto asegura que el ID esté en la URL para futuros guardados y aplica el fix anti-JSON.
+    window.location.href = `${window.location.origin}${window.location.pathname}?id=${id}`;
 }
 
 function startEditor() {
