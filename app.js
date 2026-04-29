@@ -1052,7 +1052,25 @@ async function loadDocument() {
                 if (error) throw error;
                 if (data && data.html_content) {
                     console.log("✅ Datos cargados desde la Nube");
-                    const parsedData = JSON.parse(data.html_content);
+                    let parsedData = data.html_content;
+                    if (typeof parsedData === 'string') {
+                        try { parsedData = JSON.parse(parsedData); } catch(e) {}
+                    }
+                    
+                    // FIX: Desempaquetar JSON recursivamente si la base de datos se corrompió con stringify doble
+                    while (parsedData && parsedData.html && typeof parsedData.html === 'string' && parsedData.html.trim().startsWith('{')) {
+                        try {
+                            const inner = JSON.parse(parsedData.html);
+                            if (inner.html) {
+                                parsedData = inner;
+                            } else {
+                                break;
+                            }
+                        } catch(e) {
+                            break;
+                        }
+                    }
+
                     renderDocument(parsedData);
                     return;
                 }
