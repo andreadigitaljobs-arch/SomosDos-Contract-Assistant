@@ -1890,17 +1890,205 @@ function copyDashboardLink(btn, url) {
         }, 2000);
     }).catch(() => {
         showToast('Error al copiar link');
-    });
-}
-
 function closeDashboard() {
     const d = document.getElementById('s2-dashboard');
     if (d) d.remove();
 }
 
+// --- SISTEMA DE DASHBOARD (APPLE UX) ---
+function injectDashboardStyles() {
+    const styleId = 'dashboard-premium-styles';
+    if (document.getElementById(styleId)) return;
+    const style = document.createElement('style');
+    style.id = styleId;
+    style.innerHTML = `
+        .dashboard-container {
+            min-height: 100vh;
+            background: #fbfbfd;
+            padding: 80px 40px;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .dash-header {
+            max-width: 1200px;
+            margin: 0 auto 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        
+        .dash-welcome h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #1d1d1f;
+            letter-spacing: -0.03em;
+            margin-bottom: 10px;
+        }
+        
+        .dash-quote {
+            font-size: 1.2rem;
+            color: #86868b;
+            font-weight: 500;
+            max-width: 600px;
+            line-height: 1.4;
+        }
+        
+        .dash-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        
+        .dash-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 28px;
+            padding: 30px;
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 200px;
+        }
+        
+        .dash-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.08);
+            background: white;
+        }
+        
+        .card-new {
+            background: linear-gradient(135deg, #2D3EAF, #7B3FE4);
+            color: white;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .card-new .icon { font-size: 3rem; margin-bottom: 15px; }
+        .card-new h3 { font-size: 1.5rem; font-weight: 700; }
+        
+        .contract-card h3 { font-size: 1.4rem; color: #1d1d1f; margin-bottom: 5px; }
+        .contract-card .date { font-size: 0.85rem; color: #86868b; margin-bottom: 20px; }
+        .contract-card .badge {
+            align-self: flex-start;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: rgba(123, 63, 228, 0.1);
+            color: #7B3FE4;
+        }
+        
+        .hidden { display: none !important; opacity: 0; pointer-events: none; }
+        .editor-layout { animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+const MOTIVATIONAL_PHRASES = [
+    "La creatividad es la inteligencia divirtiéndose.",
+    "El diseño es el embajador silencioso de tu marca.",
+    "Hazlo simple, pero significativo.",
+    "SomosDos Studio: Donde la visión se convierte en realidad.",
+    "La excelencia no es un acto, es un hábito.",
+    "Tu próximo gran proyecto comienza con un sí."
+];
+
+function showDashboard() {
+    injectDashboardStyles();
+    document.getElementById('dashboard-view').classList.remove('hidden');
+    document.getElementById('editor-view').classList.add('hidden');
+    document.getElementById('design-panel').classList.add('hidden');
+    renderDashboard();
+}
+
+function renderDashboard() {
+    const dash = document.getElementById('dashboard-view');
+    const contracts = JSON.parse(localStorage.getItem('somosdos_contracts_registry') || '[]');
+    const randomQuote = MOTIVATIONAL_PHRASES[Math.floor(Math.random() * MOTIVATIONAL_PHRASES.length)];
+    
+    dash.innerHTML = `
+        <div class="dash-header">
+            <div class="dash-welcome">
+                <h1>Hola, SomosDos</h1>
+                <p class="dash-quote">"${randomQuote}"</p>
+            </div>
+            <img src="assets/logo.png" style="height: 40px; opacity: 0.8;">
+        </div>
+        
+        <div class="dash-grid">
+            <div class="dash-card card-new" onclick="createNewContract()">
+                <div class="icon">✨</div>
+                <h3>Nuevo Proyecto</h3>
+                <p style="opacity: 0.8; font-size: 0.9rem;">Empieza a crear un contrato desde cero</p>
+            </div>
+            
+            ${contracts.reverse().map(c => `
+                <div class="dash-card contract-card" onclick="loadContract('${c.id}')">
+                    <div>
+                        <h3>${c.client || 'Cliente sin nombre'}</h3>
+                        <p class="date">Creado el ${new Date(c.timestamp).toLocaleDateString()}</p>
+                    </div>
+                    <div class="badge">PROYECTO ACTIVO</div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+function createNewContract() {
+    // Generar un ID único para el nuevo contrato
+    const newId = 'SD-' + Date.now();
+    localStorage.setItem('somosdos_current_contract_id', newId);
+    
+    // Limpiar el estado actual para empezar de cero
+    localStorage.removeItem('somosdos_agreement_state');
+    
+    // Abrir el editor
+    startEditor();
+}
+
+function loadContract(id) {
+    localStorage.setItem('somosdos_current_contract_id', id);
+    const savedState = localStorage.getItem(`somosdos_contract_state_${id}`);
+    if (savedState) {
+        localStorage.setItem('somosdos_agreement_state', savedState);
+    }
+    startEditor();
+}
+
+function startEditor() {
+    document.getElementById('dashboard-view').classList.add('hidden');
+    document.getElementById('editor-view').classList.remove('hidden');
+    document.getElementById('design-panel').classList.remove('hidden');
+    
+    // Reinicializar la app con el nuevo estado
+    initApp();
+}
+
 async function initApp() {
     injectHeaderStyles();
     injectCatalogStyles();
+    
+    // Si no estamos en el editor explícitamente, mostrar Dashboard
+    const isEditing = document.getElementById('editor-view').classList.contains('hidden') === false;
+    if (!isEditing && !window.location.search.includes('mode=client')) {
+        showDashboard();
+        return;
+    }
     
     // DETECTAR MODO CLIENTE
     const urlParams = new URLSearchParams(window.location.search);
