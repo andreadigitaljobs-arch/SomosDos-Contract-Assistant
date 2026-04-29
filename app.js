@@ -228,7 +228,25 @@ const injectHeaderStyles = () => {
         .btn-save-pro { background: #0f172a !important; color: white !important; }
         .btn-publish-pro { background: var(--brand-purple) !important; color: white !important; }
         .btn-ghost-pro { background: transparent !important; color: #475569 !important; }
-        .btn-ghost-pro:hover { background: rgba(0,0,0,0.05) !important; }
+        .btn-circle-pro:hover { transform: scale(1.05); border-color: rgba(0,0,0,0.2); }
+
+        /* FIX DE MENÚS DESPLEGABLES */
+        .dropdown { position: relative; }
+        .dropdown-content {
+            z-index: 2000 !important;
+            left: 0 !important;
+            right: auto !important;
+            min-width: 220px !important;
+            border-radius: 16px !important;
+            padding: 10px !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+            border: 1px solid rgba(0,0,0,0.05) !important;
+        }
+        
+        .header-right-actions .dropdown-content {
+            left: auto !important;
+            right: 0 !important;
+        }
 
         .header-right-actions { 
             display: flex; 
