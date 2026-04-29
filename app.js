@@ -2172,16 +2172,23 @@ function createFromTemplate(type) {
     if (type === 'paid') pagesToAdd = ['cover', 'intro', 'content', 'payment', 'signatures'];
     if (type === 'collaboration') pagesToAdd = ['cover', 'intro', 'content', 'exchange_simple', 'signatures'];
     
-    // Resetear y precargar
-    const container = document.createElement('div'); // Contenedor temporal para generar el estado
-    pages = []; // Limpiar páginas globales
-    
+    // Limpieza profunda preventiva
     localStorage.removeItem('somosdos_agreement_state');
+    pages = []; // Resetear array global
+    const container = getContainer();
+    if (container) container.innerHTML = ''; // Limpiar DOM
+    
     startEditor();
     
-    // Inyectar páginas
-    pagesToAdd.forEach(p => addNewPage(p));
-    showModal('✨', 'Plantilla Aplicada', `He preparado la estructura de ${type} para ti.`);
+    // Inyectar páginas de la plantilla (con un pequeño delay para asegurar que el editor cargó)
+    setTimeout(() => {
+        const containerReady = getContainer();
+        if (containerReady) containerReady.innerHTML = ''; // Segunda limpieza de seguridad
+        pages = [];
+        pagesToAdd.forEach(p => addNewPage(p));
+        showModal('✨', 'Plantilla Aplicada', `He preparado la estructura de ${type} para ti.`);
+        saveDocument();
+    }, 100);
 }
 
 function createNewContract() {
