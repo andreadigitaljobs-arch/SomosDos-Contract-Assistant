@@ -374,33 +374,84 @@ function insertServiceToDoc(id) {
 }
 
 function insertServiceLogic(contentBody, service) {
-    // Buscamos o creamos la lista
-    let list = contentBody.querySelector('ul');
-    if (!list) {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'dynamic-services-list';
-        wrapper.style.marginTop = '20px';
-        wrapper.innerHTML = '<p style="font-weight: 700; color: var(--brand-purple); margin-bottom: 10px;">SERVICIOS ADICIONALES:</p><ul></ul>';
-        contentBody.appendChild(wrapper);
-        list = wrapper.querySelector('ul');
+    // Buscamos o creamos el contenedor principal de servicios
+    let container = contentBody.querySelector('.astro-services-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'astro-services-container';
+        container.style.display = 'grid';
+        container.style.gap = '20px';
+        container.style.marginTop = '25px';
+        contentBody.appendChild(container);
     }
 
-    const li = document.createElement('li');
-    li.style.marginBottom = '20px';
-    li.style.listStyle = 'none';
-    li.innerHTML = `
-        <div class="service-inserted-item" style="border-left: 3px solid var(--brand-purple); padding-left: 15px;">
-            <strong style="font-size: 1.1rem; color: #1e293b;">${service.icon} ${service.title}</strong><br>
-            <p style="font-size: 0.9rem; opacity: 0.8; margin: 5px 0 10px 0;">${service.description}</p>
-            <ul style="font-size: 0.85rem; opacity: 0.7; padding-left: 20px;">
-                ${service.points.map(p => `<li>${p}</li>`).join('')}
-            </ul>
+    const serviceCard = document.createElement('div');
+    serviceCard.className = 'astro-service-card';
+    serviceCard.style.cssText = `
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid rgba(123, 63, 228, 0.15);
+        border-radius: 20px;
+        padding: 24px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        transition: all 0.3s ease;
+    `;
+
+    serviceCard.innerHTML = `
+        <div style="display: flex; gap: 20px; align-items: flex-start;">
+            <div style="
+                width: 54px; 
+                height: 54px; 
+                background: linear-gradient(135deg, #7B3FE4, #2D3EAF); 
+                border-radius: 16px; 
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+                font-size: 1.6rem;
+                box-shadow: 0 8px 20px rgba(123, 63, 228, 0.2);
+                flex-shrink: 0;
+            ">
+                ${service.icon}
+            </div>
+            <div style="flex: 1;">
+                <h3 style="margin: 0; font-size: 1.25rem; color: #0f172a; font-weight: 800; letter-spacing: -0.02em;">
+                    ${service.title}
+                </h3>
+                <p style="margin: 8px 0 18px 0; font-size: 0.95rem; color: #475569; line-height: 1.6;">
+                    ${service.description}
+                </p>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    ${service.points.map(p => `
+                        <span style="
+                            background: rgba(123, 63, 228, 0.08); 
+                            color: #7B3FE4; 
+                            padding: 6px 14px; 
+                            border-radius: 50px; 
+                            font-size: 0.78rem; 
+                            font-weight: 700;
+                            border: 1px solid rgba(123, 63, 228, 0.1);
+                        ">
+                            ${p}
+                        </span>
+                    `).join('')}
+                </div>
+            </div>
         </div>
+        <div style="
+            position: absolute; 
+            top: 0; 
+            right: 0; 
+            width: 100px; 
+            height: 100px; 
+            background: radial-gradient(circle at top right, rgba(123, 63, 228, 0.05), transparent); 
+            pointer-events: none;
+        "></div>
     `;
     
-    list.appendChild(li);
+    container.appendChild(serviceCard);
     saveState();
-    showModal('✨', 'Servicio Integrado', `Se ha creado una nueva sección para "${service.title}".`);
+    showModal('🚀', 'Estilo Astro Activado', `Se ha integrado "${service.title}" con diseño premium.`);
 }
 
 // --- SELECTORES ROBUSTOS ---
