@@ -2087,7 +2087,25 @@ function showDashboard() {
 
 function renderDashboard(filterQuery = '') {
     const dash = document.getElementById('dashboard-view');
-    let contracts = JSON.parse(localStorage.getItem('somosdos_contracts_registry') || '[]');
+    let registry = JSON.parse(localStorage.getItem('somosdos_contracts_registry') || '[]');
+    
+    // --- RECUPERACIÓN DE CONTRATO LEGACY ---
+    const legacyState = JSON.parse(localStorage.getItem('somosdos_agreement_state') || 'null');
+    if (legacyState && registry.length === 0) {
+        // Importar contrato antiguo a la biblioteca
+        const recoveryId = 'SD-RECOVERED';
+        const recoveredContract = {
+            id: recoveryId,
+            client: legacyState.clientName || 'Astro Barber (Recuperado)',
+            timestamp: Date.now()
+        };
+        registry.push(recoveredContract);
+        localStorage.setItem('somosdos_contracts_registry', JSON.stringify(registry));
+        localStorage.setItem(`somosdos_contract_state_${recoveryId}`, JSON.stringify(legacyState));
+        console.log("♻️ Contrato legacy recuperado y añadido a la biblioteca");
+    }
+    
+    let contracts = [...registry];
     const randomQuote = MOTIVATIONAL_PHRASES[Math.floor(Math.random() * MOTIVATIONAL_PHRASES.length)];
     
     // Cálculos de Métricas
