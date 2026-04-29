@@ -2286,16 +2286,27 @@ async function initApp() {
     injectHeaderStyles();
     injectCatalogStyles();
     
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasId = urlParams.has('id');
+    const isClient = urlParams.get('mode') === 'client';
+
     // Si no estamos en el editor explícitamente, mostrar Dashboard
     const isEditing = document.getElementById('editor-view').classList.contains('hidden') === false;
-    if (!isEditing && !window.location.search.includes('mode=client')) {
+    
+    // Mostrar dashboard si NO hay ID y no estamos en cliente
+    if (!isEditing && !isClient && !hasId) {
         showDashboard();
         return;
     }
+
+    // Si hay ID pero el editor está oculto (carga inicial desde URL), lo mostramos
+    if (hasId && !isEditing) {
+        document.getElementById('dashboard-view').classList.add('hidden');
+        document.getElementById('editor-view').classList.remove('hidden');
+        document.getElementById('design-panel').classList.remove('hidden');
+    }
     
     // DETECTAR MODO CLIENTE
-    const urlParams = new URLSearchParams(window.location.search);
-    const isClient = urlParams.get('mode') === 'client';
     if (isClient) {
         document.body.classList.add('is-client-mode');
         // Ocultar elementos de edición inmediatamente y limpiar espacio
@@ -2367,7 +2378,6 @@ async function initApp() {
     try {
         await loadDocument();
 
-        const urlParams = new URLSearchParams(window.location.search);
         const clientName = urlParams.get('client');
 
         if (clientName) {
