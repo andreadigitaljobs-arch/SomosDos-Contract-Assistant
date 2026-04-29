@@ -2367,7 +2367,7 @@ async function initApp() {
             logo.style.cursor = 'pointer';
             logo.onclick = () => {
                 saveDocument();
-                showDashboard();
+                showMainDashboard();
             };
         }
 
