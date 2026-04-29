@@ -72,85 +72,68 @@
     </aside>
 
     <header class="main-header">
-        <div class="logo-area">
-            <button id="mobile-toggle-design" class="btn-icon" style="display: none; margin-right: 10px;"
-                onclick="toggleDesignPanel()">☰</button>
-            <img src="assets/logo.png" alt="SomosDos Studio" class="brand-logo-nav">
-        </div>
-        <div class="actions">
-            <div class="zoom-controls">
-                <button id="zoom-fit" class="btn-icon" title="Ajustar">⛶</button>
-                <input type="range" id="zoom-range" min="10" max="200" value="100">
-                <span id="zoom-label">100%</span>
+        <div class="header-container">
+            <div class="logo-area">
+                <button id="mobile-toggle-design" class="btn-circle-pro" style="display: none;" onclick="toggleDesignPanel()">☰</button>
+                <img src="assets/logo.png" alt="SomosDos Studio" class="brand-logo-nav">
             </div>
-            <div class="header-actions">
-                <!-- Acciones Principales -->
-                <div class="template-selector dropdown">
-                    <button class="btn btn-secondary"
-                        style="font-weight: 700; border: 1px solid #e2e8f0; color: #475569;">➕ Añadir Bloque</button>
-                    <div class="dropdown-content">
-                        <div class="menu-header">ESTRUCTURA</div>
-                        <a href="#" onclick="addNewPage('cover')">📄 Portada</a>
-                        <a href="#" onclick="addNewPage('content')">📝 Cuerpo de Texto</a>
-                        <a href="#" onclick="addNewPage('signatures')">✍🏻 Firmas</a>
-                        
-                        <div class="menu-sep"></div>
-                        <div class="menu-header">SERVICIOS</div>
-                        <a href="#" onclick="addNewPage('strategy')">🎯 Estrategia Digital</a>
-                        <a href="#" onclick="addNewPage('landing')">💻 Landing Page</a>
-                        
-                        <div class="menu-sep"></div>
-                        <div class="menu-header">ACUERDOS</div>
-                        <a href="#" onclick="addNewPage('exchange_simple')">🤝🏻 Intercambio Simple</a>
-                        <a href="#" onclick="addNewPage('exchange')">🤝🏻 Intercambio Full</a>
-                        <a href="#" onclick="addNewPage('note_alcance')">📝 Nota de Alcance</a>
-                        
-                        <div class="menu-header">FINANZAS</div>
-                        <a href="#" onclick="addNewPage('payment')">💰 Propuesta Económica</a>
+
+            <div class="header-center-actions">
+                <div class="header-section-pill">
+                    <div class="dropdown">
+                        <button class="btn-premium btn-ghost-pro" style="border: none !important;">➕ Añadir</button>
+                        <div class="dropdown-content">
+                            <div class="menu-header">ESTRUCTURA</div>
+                            <a href="#" onclick="addNewPage('cover')">📄 Portada</a>
+                            <a href="#" onclick="addNewPage('content')">📝 Cuerpo de Texto</a>
+                            <a href="#" onclick="addNewPage('signatures')">✍🏻 Firmas</a>
+                            <div class="menu-sep"></div>
+                            <div class="menu-header">ACUERDOS</div>
+                            <a href="#" onclick="addNewPage('exchange')">🤝🏻 Intercambio</a>
+                            <a href="#" onclick="addNewPage('payment')">💰 Propuesta Económica</a>
+                        </div>
                     </div>
                 </div>
 
-                <div class="history-controls">
-                    <button class="btn btn-history" onclick="undo()" title="Deshacer (Ctrl+Z)">↺</button>
-                    <button class="btn btn-history" onclick="redo()" title="Rehacer (Ctrl+Y)">↻</button>
+                <div class="header-section-pill">
+                    <button class="btn-premium btn-save-pro" onclick="saveDocument(true)">💾 Guardar</button>
+                    <button class="btn-premium btn-publish-pro" onclick="showModal('🚀', 'Próximamente', 'La publicación de links estará disponible muy pronto.')">🔗 Publicar</button>
+                    <button class="btn-premium btn-ghost-pro" onclick="showDashboard()">📂 Biblioteca</button>
                 </div>
 
-                <div class="client-name-input-wrapper" title="Nombre del Cliente (Se guardará en la biblioteca)">
-                    <span class="client-icon">👤</span>
-                    <input type="text" id="global-client-name" class="global-client-name"
-                        placeholder="Nombre del Cliente..." oninput="syncClientName(this.value)">
+                <div class="input-group-pro">
+                    <span style="opacity: 0.5;">👤</span>
+                    <input type="text" id="global-client-name" placeholder="Nombre del Cliente..." oninput="updateClientName(this.value)">
                 </div>
 
-                <button class="btn btn-save" onclick="saveDocument(false)">💾 Guardar</button>
-                <button class="btn btn-publish" onclick="publishAgreement()">🚀 Publicar Link</button>
-                <button class="btn" id="btn-client-save" onclick="saveClientSignature()">✅ Guardar Firma y
-                    Enviar</button>
+                <div class="header-section-pill">
+                    <button class="btn-premium btn-ghost-pro" onclick="undo()" title="Deshacer">↺</button>
+                    <button class="btn-premium btn-ghost-pro" onclick="redo()" title="Rehacer">↻</button>
+                </div>
+            </div>
+
+            <div class="header-right-actions">
+                <div class="magic-group">
+                    <button class="btn-premium btn-catalog-pro" onclick="toggleCatalogPanel()">📚 Catálogo</button>
+                    <button class="btn-premium btn-ai-pro" onclick="toggleIAPanel()">🤖 Asistente IA</button>
+                </div>
 
                 <div class="divider-v"></div>
 
-                <!-- Acciones de Visualización -->
-                <button id="toggle-client-mode" class="btn btn-client" onclick="toggleClientMode()">👤 Modo
-                    Cliente</button>
-
-                <button class="btn btn-library" onclick="showDashboard()"
-                    style="background: #f1f5f9; color: #1A1A2E; margin-right: 8px;">📂 Biblioteca</button>
-                <!-- Menú de Ajustes -->
-                <div class="dropdown">
-                    <button class="btn btn-settings">⚙️ Ajustes</button>
-                    <div class="dropdown-content">
-                        <a href="#" onclick="downloadAsImages('zip')">📦 Descargar Fotos 4K (ZIP)</a>
-                        <a href="#" onclick="downloadAsImages('single')">📸 Descargar Fotos 1 a 1</a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" onclick="resetTool()" style="color: #ef4444;">🗑️ Reiniciar Herramienta</a>
+                <div style="display: flex; gap: 10px;">
+                    <button id="toggle-client-mode" class="btn-circle-pro" title="Vista Previa Cliente" onclick="toggleClientMode()">👤</button>
+                    <div class="dropdown">
+                        <button class="btn-circle-pro">⚙️</button>
+                        <div class="dropdown-content">
+                            <a href="#" onclick="downloadAsImages('zip')">📦 Descargar Fotos (ZIP)</a>
+                            <a href="#" onclick="downloadAsImages('single')">📸 Fotos 1 a 1</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" onclick="resetTool()" style="color: #ef4444;">🗑️ Reiniciar</a>
+                        </div>
                     </div>
                 </div>
-
-                <button class="btn btn-secondary" onclick="toggleCatalogPanel()" style="border: 1px solid #7B3FE4; color: #7B3FE4; background: transparent; font-weight: 700; margin-right: 8px; padding: 10px 20px; border-radius: 50px; cursor: pointer;">📚 Catálogo</button>
-                <button class="btn btn-ai" onclick="toggleIAPanel()" style="background: linear-gradient(135deg, #2D3EAF, #7B3FE4) !important; color: white !important; border: none; font-weight: 700; margin-right: 8px; padding: 10px 20px; border-radius: 50px; cursor: pointer;">🤖 Asistente SomosDos</button>
-                <div class="divider-v"></div>
-                <input type="file" id="file-input" style="display: none;" onchange="importJSON(event)">
-            </div> <!-- Final de header-actions -->
-        </div> <!-- Final de actions -->
+            </div>
+        </div>
     </header>
 
     <main id="document-container">
