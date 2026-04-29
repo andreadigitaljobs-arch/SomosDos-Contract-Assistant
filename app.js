@@ -1924,13 +1924,7 @@ function injectDashboardStyles() {
     const style = document.createElement('style');
     style.id = styleId;
     style.innerHTML = `
-        /* Reset Agresivo para evitar doble scroll */
-        html, body {
-            margin: 0; padding: 0;
-            height: 100%;
-            overflow: hidden !important; /* Desactivar scroll global */
-        }
-
+        /* Reset Agresivo para evitar doble scroll - Solo aplicado al contenedor */
         .dashboard-container {
             height: 100vh;
             overflow-y: auto !important; /* El scroll ahora vive AQUÍ */
