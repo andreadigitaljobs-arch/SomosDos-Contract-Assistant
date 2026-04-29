@@ -209,6 +209,9 @@ function insertServiceToDoc(id) {
     showModal('✅', 'Servicio Añadido', `Se ha insertado "${service.title}" correctamente.`);
 }
 
+// --- SELECTORES ROBUSTOS ---
+function getContainer() { return document.getElementById('zoom-wrapper'); }
+
 // --- MOTOR DE PLANTILLAS ---
 function getCurrentClientName() {
     const input = document.getElementById('global-client-name');
