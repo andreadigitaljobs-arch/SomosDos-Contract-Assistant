@@ -1898,7 +1898,7 @@ function closeDashboard() {
     if (d) d.remove();
 }
 
-// --- SISTEMA DE DASHBOARD (APPLE UX) ---
+// --- SISTEMA DE DASHBOARD (APPLE UX PREMIUM) ---
 function injectDashboardStyles() {
     const styleId = 'dashboard-premium-styles';
     if (document.getElementById(styleId)) return;
@@ -1907,95 +1907,121 @@ function injectDashboardStyles() {
     style.innerHTML = `
         .dashboard-container {
             min-height: 100vh;
-            background: #fbfbfd;
-            padding: 80px 40px;
-            font-family: 'Outfit', sans-serif;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: #f5f5f7;
+            position: relative;
+            overflow-x: hidden;
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
         
-        .dash-header {
-            max-width: 1200px;
-            margin: 0 auto 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
+        /* Background Orbs para efecto Glassmorphism */
+        .dash-bg-orb-1 {
+            position: absolute; top: -10%; left: -10%;
+            width: 50vw; height: 50vw;
+            background: rgba(123, 63, 228, 0.12);
+            filter: blur(120px); border-radius: 50%; z-index: 0;
+            pointer-events: none;
+        }
+        .dash-bg-orb-2 {
+            position: absolute; bottom: -20%; right: -10%;
+            width: 60vw; height: 60vw;
+            background: rgba(45, 62, 175, 0.08);
+            filter: blur(150px); border-radius: 50%; z-index: 0;
+            pointer-events: none;
+        }
+
+        .dash-nav {
+            display: flex; justify-content: center;
+            padding: 40px 40px 0;
+            position: relative; z-index: 10;
+        }
+        .dash-nav img { height: 35px; opacity: 0.9; }
+
+        .dash-content-wrapper {
+            position: relative; z-index: 1;
+            max-width: 1050px; margin: 0 auto;
+            padding: 40px 40px 100px;
         }
         
-        .dash-welcome h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            color: #1d1d1f;
-            letter-spacing: -0.03em;
-            margin-bottom: 10px;
+        .dash-hero { text-align: center; margin-bottom: 70px; }
+        .dash-hero h1 {
+            font-size: 3.8rem; font-weight: 700;
+            color: #1d1d1f; letter-spacing: -0.04em;
+            margin-bottom: 12px;
         }
-        
-        .dash-quote {
-            font-size: 1.2rem;
-            color: #86868b;
-            font-weight: 500;
-            max-width: 600px;
-            line-height: 1.4;
+        .dash-hero p {
+            font-size: 1.25rem; color: #86868b;
+            font-weight: 400; max-width: 600px;
+            margin: 0 auto; line-height: 1.5;
         }
         
         .dash-grid {
-            max-width: 1200px;
-            margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
         }
         
+        /* Glass Cards */
         .dash-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 28px;
-            padding: 30px;
-            border: 1px solid rgba(0,0,0,0.05);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            min-height: 200px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 28px; padding: 32px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.03), inset 0 0 0 1px rgba(255,255,255,0.5);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer; min-height: 220px;
+            display: flex; flex-direction: column; justify-content: space-between;
         }
         
         .dash-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.08);
-            background: white;
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06), inset 0 0 0 1px rgba(255,255,255,1);
+            background: rgba(255, 255, 255, 0.85);
         }
         
+        /* Botón Nuevo Proyecto Premium */
         .card-new {
-            background: linear-gradient(135deg, #2D3EAF, #7B3FE4);
-            color: white;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
+            background: rgba(255, 255, 255, 0.3);
+            border: 2px dashed rgba(123, 63, 228, 0.25);
+            align-items: center; justify-content: center; text-align: center;
+            box-shadow: none;
         }
+        .card-new:hover {
+            border: 2px solid rgba(123, 63, 228, 0.6);
+            background: rgba(255, 255, 255, 0.6);
+        }
+        .card-new .icon-wrapper {
+            width: 64px; height: 64px; border-radius: 50%;
+            background: linear-gradient(135deg, #2D3EAF, #7B3FE4);
+            color: white; display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; margin-bottom: 20px; font-weight: 300;
+            box-shadow: 0 12px 24px rgba(123, 63, 228, 0.25);
+            transition: transform 0.3s ease;
+        }
+        .card-new:hover .icon-wrapper { transform: scale(1.05); }
+        .card-new h3 { color: #1d1d1f; font-weight: 600; font-size: 1.3rem; margin-bottom: 6px; }
+        .card-new p { color: #86868b; font-size: 0.95rem; margin: 0; }
         
-        .card-new .icon { font-size: 3rem; margin-bottom: 15px; }
-        .card-new h3 { font-size: 1.5rem; font-weight: 700; }
+        /* Textos de Tarjeta */
+        .contract-card .card-top h3 { font-size: 1.4rem; font-weight: 700; color: #1d1d1f; margin-bottom: 8px; line-height: 1.2; }
+        .contract-card .card-top .date { font-size: 0.9rem; color: #86868b; font-weight: 500; }
         
-        .contract-card h3 { font-size: 1.4rem; color: #1d1d1f; margin-bottom: 5px; }
-        .contract-card .date { font-size: 0.85rem; color: #86868b; margin-bottom: 20px; }
-        .contract-card .badge {
-            align-self: flex-start;
-            padding: 6px 14px;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            background: rgba(123, 63, 228, 0.1);
-            color: #7B3FE4;
+        .badge-active {
+            display: inline-flex; align-items: center; padding: 6px 14px;
+            background: rgba(123, 63, 228, 0.08); color: #7B3FE4;
+            border-radius: 20px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;
+        }
+        .badge-active::before {
+            content: ''; display: inline-block; width: 6px; height: 6px;
+            background: #7B3FE4; border-radius: 50%; margin-right: 6px;
         }
         
         .hidden { display: none !important; opacity: 0; pointer-events: none; }
-        .editor-layout { animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .editor-layout { animation: fadeScaleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
         
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes fadeScaleIn {
+            from { opacity: 0; transform: scale(0.98) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
     `;
     document.head.appendChild(style);
@@ -2023,31 +2049,45 @@ function renderDashboard() {
     const contracts = JSON.parse(localStorage.getItem('somosdos_contracts_registry') || '[]');
     const randomQuote = MOTIVATIONAL_PHRASES[Math.floor(Math.random() * MOTIVATIONAL_PHRASES.length)];
     
+    // Saludo según la hora
+    const hour = new Date().getHours();
+    const greeting = hour < 12 ? 'Buenos días' : (hour < 20 ? 'Buenas tardes' : 'Buenas noches');
+    
     dash.innerHTML = `
-        <div class="dash-header">
-            <div class="dash-welcome">
-                <h1>Hola, SomosDos</h1>
-                <p class="dash-quote">"${randomQuote}"</p>
-            </div>
-            <img src="assets/logo.png" style="height: 40px; opacity: 0.8;">
-        </div>
+        <div class="dash-bg-orb-1"></div>
+        <div class="dash-bg-orb-2"></div>
         
-        <div class="dash-grid">
-            <div class="dash-card card-new" onclick="createNewContract()">
-                <div class="icon">✨</div>
-                <h3>Nuevo Proyecto</h3>
-                <p style="opacity: 0.8; font-size: 0.9rem;">Empieza a crear un contrato desde cero</p>
+        <nav class="dash-nav">
+            <img src="assets/logo.png" alt="SomosDos Studio">
+        </nav>
+        
+        <div class="dash-content-wrapper">
+            <div class="dash-hero">
+                <h1>${greeting}, Creador.</h1>
+                <p>"${randomQuote}"</p>
             </div>
             
-            ${contracts.reverse().map(c => `
-                <div class="dash-card contract-card" onclick="loadContract('${c.id}')">
-                    <div>
-                        <h3>${c.client || 'Cliente sin nombre'}</h3>
-                        <p class="date">Creado el ${new Date(c.timestamp).toLocaleDateString()}</p>
+            <div class="dash-grid">
+                <div class="dash-card card-new" onclick="createNewContract()">
+                    <div class="icon-wrapper">
+                        <span>+</span>
                     </div>
-                    <div class="badge">PROYECTO ACTIVO</div>
+                    <h3>Nuevo Proyecto</h3>
+                    <p>Comenzar un acuerdo en blanco</p>
                 </div>
-            `).join('')}
+                
+                ${contracts.reverse().map(c => `
+                    <div class="dash-card contract-card" onclick="loadContract('${c.id}')">
+                        <div class="card-top">
+                            <h3>${c.client || 'Cliente sin nombre'}</h3>
+                            <p class="date">Modificado el ${new Date(c.timestamp).toLocaleDateString()}</p>
+                        </div>
+                        <div>
+                            <span class="badge-active">ACTIVO</span>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
         </div>
     `;
 }
