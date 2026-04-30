@@ -16,19 +16,36 @@
     --logo-small-size: 60px;
 }
 
-/* Animaciones Globales de Transición */
+/* Animaciones Globales de Transición Premium */
 @keyframes viewFadeIn {
-    from { opacity: 0; transform: translateY(10px) scale(0.99); filter: blur(5px); }
-    to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    from { 
+        opacity: 0; 
+        transform: scale(0.985); 
+        filter: blur(10px);
+    }
+    to { 
+        opacity: 1; 
+        transform: scale(1); 
+        filter: blur(0);
+    }
 }
 
 #dashboard-view, #editor-view, .view-transition {
-    animation: viewFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: viewFadeIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Efectos de Hover Fluidos */
-.btn-premium, .contract-card, .stat-pill, .catalog-item, .main-header, .design-side-panel {
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+html {
+    scroll-behavior: smooth;
+}
+
+/* Efectos de Hover Premium - Fluidez Total */
+.btn-premium, .contract-card, .stat-pill, .catalog-item, .main-header, .design-side-panel, .s2-client-card {
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.btn-premium:hover, .btn-modal-primary:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(123, 63, 228, 0.25);
 }
 
 .btn-premium:active {
@@ -129,21 +146,22 @@ body {
     border: 1px solid #f8fafc;
 }
 
-/* Header */
+/* Header Premium - Glassmorphism */
 .main-header {
-    background: #FFFFFF;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     height: 80px;
-    border-bottom: 1px solid #E5E7EB;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 15px;
-    /* Reducido para laptops */
     position: fixed;
     top: 0;
     width: 100%;
     z-index: 1000;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
 }
 
 .brand-area {
@@ -610,23 +628,24 @@ html, body {
     width: auto;
 }
 
-/* PANEL DE DISEÑO GLOBAL */
+/* PANEL DE DISEÑO GLOBAL - GLASSMORPHISM */
 .design-side-panel {
     position: fixed;
     left: 20px;
     top: 95px;
-    /* Bajamos un poco para que no choque con la barra superior */
     width: 260px;
-    background: white;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(25px) saturate(180%);
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
     padding: 30px;
-    border-radius: 24px;
-    border: 1px solid #E2E8F0;
+    border-radius: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
     z-index: 9000;
-    /* Justo debajo del header */
     display: flex;
     flex-direction: column;
     gap: 25px;
-    transition: all 0.3s ease;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
 }
 
 body.client-mode .design-side-panel {
@@ -2186,12 +2205,13 @@ body.client-mode #toggle-client-mode {
 }
 
 .s2-client-card {
-    background: white;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
     border-radius: 16px;
     padding: 24px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
-    transition: all 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
     flex-direction: column;
     position: relative;
@@ -2199,9 +2219,10 @@ body.client-mode #toggle-client-mode {
 }
 
 .s2-client-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    background: rgba(255, 255, 255, 0.95);
     border-color: var(--accent-color);
-    box-shadow: 0 8px 25px rgba(123, 63, 228, 0.08);
-    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(123, 63, 228, 0.1);
 }
 
 .s2-client-card::before {
