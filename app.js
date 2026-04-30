@@ -1240,7 +1240,10 @@ function restoreSig(id, url) {
     const ctx = canvas?.getContext('2d');
     if (!ctx) return;
     const img = new Image();
-    img.onload = () => ctx.drawImage(img, 0, 0);
+    img.onload = () => {
+        ctx.drawImage(img, 0, 0);
+        canvas.dataset.hasDrawing = 'true';
+    };
     img.src = url;
 }
 
@@ -1264,7 +1267,13 @@ function initSignaturePad(id) {
         const ey = e.touches ? e.touches[0].clientY : e.clientY;
         return { x: (ex - rect.left) * (canvas.width / rect.width), y: (ey - rect.top) * (canvas.height / rect.height) };
     };
-    const start = (e) => { drawing = true; ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); };
+    const start = (e) => { 
+        drawing = true; 
+        ctx.beginPath(); 
+        const p = getPos(e); 
+        ctx.moveTo(p.x, p.y); 
+        canvas.dataset.hasDrawing = 'true'; // Registrar que ya se interactuó
+    };
     const move = (e) => { if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); e.preventDefault(); };
     const stop = () => { drawing = false; saveDocument(true); saveHistory(); };
     ctx.strokeStyle = '#1A1A2E'; ctx.lineWidth = 2; ctx.lineCap = 'round';
@@ -1280,6 +1289,7 @@ function clearSignature(id) {
     const canvas = document.getElementById(`sig-canvas-${id}`);
     if (canvas) {
         canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+        canvas.dataset.hasDrawing = 'false';
         saveDocument(true);
         saveHistory();
     }
@@ -1728,6 +1738,14 @@ function toggleClientFab(show) {
 }
 
 async function saveClientSignature() {
+    // 0. Validación de Firma Obligatoria
+    const canvas = document.getElementById('sig-canvas-client');
+    if (!canvas || canvas.dataset.hasDrawing !== 'true') {
+        showModal('✍️', 'Firma Requerida', 'Por favor, firma el documento en el espacio correspondiente antes de enviar el acuerdo.');
+        return;
+    }
+
+    // 1. Confirmación de Seguridad (Evitar accidentes)
     const confirmed = await showConfirmModal(
         '✍️',
         '¿Finalizar y Enviar?',
