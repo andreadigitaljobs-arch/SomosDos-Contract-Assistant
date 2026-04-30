@@ -1196,16 +1196,26 @@ function renderDocument(data) {
     // MIGRACIÓN Y ACTUALIZACIÓN DINÁMICA: Detectar desajustes en el número de firmantes
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = data.html;
-    const oldSigPage = tempDiv.querySelector('.page[data-page-type="signatures"]');
-    if (oldSigPage) {
-        const hasOldId = oldSigPage.innerHTML.includes('id="sig-canvas-owner"');
-        const currentClientSigners = oldSigPage.querySelectorAll('[id^="sig-canvas-client-"]').length;
+    const allPages = tempDiv.querySelectorAll('.page');
+    let sigPageInTemp = null;
+    
+    allPages.forEach(p => {
+        const type = p.getAttribute('data-page-type') || p.getAttribute('data-type');
+        if (type === 'signatures' || type === 'sigs' || p.innerHTML.includes('signature-layout') || p.innerHTML.includes('sig-canvas')) {
+            sigPageInTemp = p;
+        }
+    });
+
+    if (sigPageInTemp) {
+        const hasOldId = sigPageInTemp.innerHTML.includes('id="sig-canvas-owner"');
+        const currentClientSigners = sigPageInTemp.querySelectorAll('[id^="sig-canvas-client-"]').length;
         const needsUpdate = hasOldId || (currentClientSigners !== window.clientSignersCount);
 
         if (needsUpdate) {
-            console.log("♻️ Regenerando página de firmas para coincidir con la configuración...");
-            const id = oldSigPage.id.replace('page-', '');
-            oldSigPage.innerHTML = createPageHTML(id, 'signatures');
+            console.log("♻️ [Auto-Migración] Regenerando página de firmas...");
+            const id = sigPageInTemp.id.replace('page-', '');
+            sigPageInTemp.innerHTML = createPageHTML(id, 'signatures');
+            sigPageInTemp.setAttribute('data-page-type', 'signatures'); // Estandarizar
             data.html = tempDiv.innerHTML;
         }
     }
@@ -1291,17 +1301,24 @@ function syncClientName(val) {
 window.clientSignersCount = 1;
 
 function updateClientSignersCount(count) {
+    console.log("🛠️ Cambiando número de firmantes a:", count);
     window.clientSignersCount = count;
     
     // Actualizar UI del panel
     document.getElementById('client-count-1')?.classList.toggle('active', count === 1);
     document.getElementById('client-count-2')?.classList.toggle('active', count === 2);
     
-    const sigPage = document.querySelector('.page[data-page-type="signatures"]');
+    // Buscar la página de firmas (Robustamente)
+    let sigPage = document.querySelector('.page[data-page-type="signatures"]') || 
+                  document.querySelector('.page[data-type="signatures"]') ||
+                  document.querySelector('.page[data-page-type="sigs"]') ||
+                  Array.from(document.querySelectorAll('.page')).find(p => p.innerHTML.includes('signature-layout') || p.innerHTML.includes('sig-canvas'));
+
     if (sigPage) {
+        console.log("✅ Página de firmas detectada para actualización:", sigPage.id);
         const id = sigPage.id.replace('page-', '');
         
-        // Guardar firmas actuales para restaurarlas tras el cambio
+        // Guardar firmas actuales
         const currentSigs = {
             'owner-andrea': document.getElementById('sig-canvas-owner-andrea')?.toDataURL(),
             'owner-wai': document.getElementById('sig-canvas-owner-wai')?.toDataURL(),
@@ -1309,8 +1326,8 @@ function updateClientSignersCount(count) {
         };
 
         sigPage.innerHTML = createPageHTML(id, 'signatures');
+        sigPage.setAttribute('data-page-type', 'signatures'); 
         
-        // Reinicializar pads
         setTimeout(() => {
             initSignaturePad('owner-andrea'); initSignaturePad('owner-wai');
             initSignaturePad('client-1'); initSignaturePad('client-2');
@@ -1318,8 +1335,10 @@ function updateClientSignersCount(count) {
             if (currentSigs['owner-wai']) restoreSig('owner-wai', currentSigs['owner-wai']);
             if (currentSigs['client-1']) restoreSig('client-1', currentSigs['client-1']);
             saveDocument(true);
+            console.log("✨ Página de firmas actualizada con éxito.");
         }, 50);
     } else {
+        console.warn("⚠️ No se encontró página de firmas activa. Guardando preferencia global.");
         saveDocument(true);
         initApp();
     }
