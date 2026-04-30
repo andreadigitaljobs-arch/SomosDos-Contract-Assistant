@@ -18,6 +18,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Early Mode Detection to prevent flickering -->
+    <script>
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('mode') === 'client') {
+                document.documentElement.classList.add('is-client-mode');
+                // Ocultar preventivamente para evitar parpadeo
+                document.write('<style>.main-header, .design-side-panel, .zoom-controls, .floating-add-btn, #nav-to-dashboard { display: none !important; }</style>');
+            }
+        })();
+    </script>
 </head>
 
 <body>

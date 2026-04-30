@@ -2366,7 +2366,9 @@ async function initApp() {
     if (hasId && !isEditing) {
         document.getElementById('dashboard-view').classList.add('hidden');
         document.getElementById('editor-view').classList.remove('hidden');
-        document.getElementById('design-panel').classList.remove('hidden');
+        if (!isClient) {
+            document.getElementById('design-panel').classList.remove('hidden');
+        }
     }
     
     // DETECTAR MODO CLIENTE
