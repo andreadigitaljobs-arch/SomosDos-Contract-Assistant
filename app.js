@@ -145,21 +145,14 @@ const injectCatalogStyles = () => {
     style.innerHTML = `
         .catalog-grid { display: grid; gap: 15px; padding: 10px 0; }
         .catalog-item { 
-            background: rgba(255, 255, 255, 0.03); 
-            border: 1px solid rgba(255, 255, 255, 0.05); 
-            border-radius: 16px; padding: 18px; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
-            display: flex; flex-direction: column; gap: 12px;
-            color: white;
+            background: #f8fafc; 
+            border: 1px solid rgba(0, 0, 0, 0.05); 
+            border-radius: 12px; padding: 15px; cursor: pointer; transition: all 0.3s ease; 
         }
-        .catalog-item:hover { 
-            background: rgba(123, 63, 228, 0.15); 
-            transform: translateY(-5px) scale(1.02);
-            border-color: rgba(123, 63, 228, 0.4);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-        }
-        .catalog-item .icon { font-size: 2rem; }
-        .catalog-item h4 { font-weight: 700; color: white; margin: 0; font-size: 1.1rem; }
-        .catalog-item p { font-size: 0.85rem; color: rgba(255, 255, 255, 0.5); margin: 0; line-height: 1.4; }
+        .catalog-item:hover { background: #fff; border-color: #7B3FE4; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(123, 63, 228, 0.1); }
+        .catalog-item .icon { font-size: 1.5rem; margin-bottom: 10px; display: block; }
+        .catalog-item h4 { margin: 0 0 5px 0; font-size: 1rem; color: #1e293b; font-weight: 700; }
+        .catalog-item p { margin: 0; font-size: 0.8rem; color: #64748b; line-height: 1.4; }
         .catalog-item .points-preview { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 5px; }
         .catalog-item .badge-point { font-size: 0.65rem; background: rgba(123, 63, 228, 0.1); color: #7B3FE4; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
 
@@ -180,10 +173,10 @@ const injectHeaderStyles = () => {
     style.id = styleId;
     style.innerHTML = `
         .main-header {
-            background: rgba(15, 15, 25, 0.8) !important;
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             padding: 0 24px !important;
             height: 70px !important;
             display: grid !important;
@@ -192,13 +185,12 @@ const injectHeaderStyles = () => {
             position: sticky;
             top: 0;
             z-index: 1000;
-            color: white;
         }
 
-        .header-container { display: contents; } 
+        .header-container { display: contents; } /* Usamos el grid del padre */
         
         .logo-area { display: flex; align-items: center; gap: 15px; justify-self: start; }
-        .brand-logo-nav { height: 30px; width: auto; filter: brightness(0) invert(1); }
+        .brand-logo-nav { height: 30px; width: auto; }
 
         .header-center-actions {
             display: flex;
@@ -211,10 +203,10 @@ const injectHeaderStyles = () => {
             display: flex;
             align-items: center;
             gap: 6px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.03);
             padding: 4px;
             border-radius: 50px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.04);
         }
 
         .btn-premium {
@@ -225,112 +217,30 @@ const injectHeaderStyles = () => {
             transition: all 0.2s ease !important;
             display: inline-flex !important;
             align-items: center;
-            color: white !important;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-premium:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-1px);
-        }
-
-        .btn-save-pro { background: #7B3FE4 !important; color: white !important; }
-        .btn-save-pro:hover { box-shadow: 0 4px 15px rgba(123, 63, 228, 0.4); }
-
-        .btn-publish-pro { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.1) !important; }
-
-        .input-group-pro {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 50px;
-            padding: 6px 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .input-group-pro input {
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 0.85rem;
-            outline: none;
-            width: 150px;
-        }
-
-        .input-group-pro input::placeholder { color: rgba(255, 255, 255, 0.3); }
-
-        .header-right-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            justify-self: end;
-        }
-
-        .magic-group {
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn-ai-pro {
-            background: linear-gradient(135deg, #7B3FE4, #2D3EAF) !important;
-            border: none !important;
-            box-shadow: 0 4px 15px rgba(123, 63, 228, 0.3);
-        }
-
-        .btn-circle-pro {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
             justify-content: center;
+            gap: 8px !important;
+            border: none !important;
             cursor: pointer;
-            color: white;
-            transition: all 0.2s;
+            white-space: nowrap;
+            height: 36px;
         }
 
-        .btn-circle-pro:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
+        .btn-save-pro { background: #0f172a !important; color: white !important; }
+        .btn-publish-pro { background: var(--brand-purple) !important; color: white !important; }
+        .btn-ghost-pro { background: transparent !important; color: #475569 !important; }
+        .btn-circle-pro:hover { transform: scale(1.05); border-color: rgba(0,0,0,0.2); }
 
         /* FIX DE MENÚS DESPLEGABLES */
         .dropdown { position: relative; }
         .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: rgba(20, 20, 25, 0.9);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            min-width: 200px;
-            box-shadow: 0px 20px 50px 0px rgba(0, 0, 0, 0.5);
-            z-index: 10000;
-            border-radius: 16px;
-            overflow: hidden;
-            top: calc(100% + 10px);
-            right: 0;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 12px 0;
-        }
-
-        .dropdown-content a {
-            color: rgba(255, 255, 255, 0.8);
-            padding: 12px 20px;
-            text-decoration: none;
-            display: block;
-            font-size: 0.95rem;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-
-        .dropdown-content a:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white;
-            padding-left: 25px;
+            z-index: 2000 !important;
+            left: 0 !important;
+            right: auto !important;
+            min-width: 220px !important;
+            border-radius: 16px !important;
+            padding: 10px !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+            border: 1px solid rgba(0,0,0,0.05) !important;
         }
         
         .header-right-actions .dropdown-content {

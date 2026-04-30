@@ -112,33 +112,19 @@ body {
 
 /* Header */
 .main-header {
-    background: rgba(10, 10, 15, 0.7) !important;
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
+    background: #FFFFFF;
     height: 80px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid #E5E7EB;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 15px;
+    /* Reducido para laptops */
     position: fixed;
     top: 0;
     width: 100%;
     z-index: 1000;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-}
-
-.main-header * {
-    color: white !important;
-}
-
-.brand-logo-nav {
-    filter: brightness(0) invert(1);
-}
-
-.input-group-pro input {
-    color: white !important;
-    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
 }
 
 .brand-area {
@@ -294,48 +280,19 @@ body {
 /* Document Container */
 #document-container {
     margin-top: 75px;
+    /* Altura del header */
     margin-left: 300px;
+    /* Ancho del panel lateral */
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 60px 20px 200px;
-    background: #050505; /* Fondo oscuro profundo */
+    background: #FFFFFF;
     transition: margin 0.3s ease;
-    position: relative;
-    overflow-x: hidden;
 }
 
-/* Orbes decorativos para el editor (Ecosistema con Dashboard) */
-#document-container::after {
-    content: '';
-    position: fixed;
-    top: -10%;
-    right: -10%;
-    width: 70vw;
-    height: 70vw;
-    background: radial-gradient(circle, rgba(123, 63, 228, 0.15) 0%, transparent 70%);
-    filter: blur(80px);
-    z-index: 0;
-    pointer-events: none;
-    animation: orbFloat 20s infinite alternate;
-}
-
-#document-container::before {
-    content: '';
-    position: fixed;
-    bottom: -10%;
-    left: -10%;
-    width: 60vw;
-    height: 60vw;
-    background: radial-gradient(circle, rgba(45, 62, 175, 0.1) 0%, transparent 70%);
-    filter: blur(80px);
-    z-index: 0;
-    pointer-events: none;
-    animation: orbFloat 25s infinite alternate-reverse;
-}
-
-/* Empty State Placeholder */
+/* Empty State Placeholder (Light Mode) */
 .empty-state {
     display: flex;
     flex-direction: column;
@@ -345,28 +302,33 @@ body {
     text-align: center;
     max-width: 600px;
     margin: 40px auto;
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 2px dashed rgba(123, 63, 228, 0.1);
     border-radius: 40px;
-    color: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+    color: #64748B;
     animation: fadeIn 0.5s ease-out;
     position: relative;
     z-index: 10;
 }
 
+.empty-state span {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 20px rgba(123, 63, 228, 0.1));
+}
+
 .empty-state h3 {
     font-size: 1.8rem;
-    color: white;
+    color: #1A1A2E;
     margin-bottom: 12px;
 }
 
 .empty-state p {
     font-size: 1.1rem;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.4);
+    color: #94A3B8;
 }
 
 #zoom-wrapper {
@@ -621,36 +583,18 @@ body.client-mode .btn-clear-sig {
     position: fixed;
     left: 20px;
     top: 95px;
+    /* Bajamos un poco para que no choque con la barra superior */
     width: 260px;
-    background: rgba(15, 15, 20, 0.7);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
+    background: white;
     padding: 30px;
     border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid #E2E8F0;
     z-index: 9000;
+    /* Justo debajo del header */
     display: flex;
     flex-direction: column;
     gap: 25px;
     transition: all 0.3s ease;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-    color: white;
-}
-
-.design-side-panel .panel-header h3 {
-    color: white;
-}
-
-.design-side-panel label {
-    color: rgba(255, 255, 255, 0.4);
-}
-
-.design-side-panel .control-row span {
-    color: rgba(255, 255, 255, 0.6);
-}
-
-.design-side-panel p {
-    color: rgba(255, 255, 255, 0.5);
 }
 
 body.client-mode .design-side-panel {
