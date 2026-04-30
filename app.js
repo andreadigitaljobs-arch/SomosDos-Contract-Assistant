@@ -1137,10 +1137,10 @@ function renderDocument(data) {
         document.documentElement.style.setProperty('--logo-small-size', data.styles.logoSmallSize);
     }
 
-    const isClient = document.body.classList.contains('is-client-mode') || document.body.classList.contains('client-mode');
+    const isClient = document.documentElement.classList.contains('is-client-mode') || document.body.classList.contains('client-mode');
 
-    // Inyectar firmas y restaurar datos con prioridad
-    const delay = isClient ? 50 : 200; 
+    // Inyectar firmas y restaurar datos con prioridad (Acelerado para cliente)
+    const delay = isClient ? 20 : 200; 
     setTimeout(() => {
         initSignaturePad('owner'); initSignaturePad('client');
         if (data.sigs?.owner) restoreSig('owner', data.sigs.owner);
