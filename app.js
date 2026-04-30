@@ -1168,25 +1168,41 @@ function renderDocument(data) {
                                         <button class="btn-move" title="Bajar Página" onclick="movePage('${id}', 'down')">↓</button>
                                         <button class="btn-move" title="Cambiar Diseño" onclick="toggleLayout('${id}')">◫</button>
                                         <button class="btn-move" title="Actualizar Formato" onclick="updatePageFormat('${id}')">🪄</button>
-                                    </div>
-                                    <button class="btn-delete-page" title="Eliminar Página" onclick="deletePage('${id}')">×</button>
-                                    <div class="style-selector mini">
-                                        <div class="style-dot dot-1" onclick="setPageTheme('${id}', 1)" title="Estilo Clásico"></div>
-                                        <div class="style-dot dot-2" onclick="setPageTheme('${id}', 2)" title="Estilo SomosDos"></div>
-                                        <div class="style-dot dot-3" onclick="setPageTheme('${id}', 3)" title="Estilo Premium"></div>
-                                    </div>`;
-                }
+    // REPARACIÓN DE CONTROLES Y TEMAS (Solo para diseñador)
+    document.querySelectorAll('.page').forEach(p => {
+        const id = p.id.replace('page-', '');
+        const theme = parseInt(p.getAttribute('data-theme')) || 1;
+
+        // Si no tiene los selectores mini o controles de movimiento, se los inyectamos (re-generar controls)
+        if (!p.querySelector('.style-selector.mini') || !p.querySelector('.move-controls')) {
+            const controls = p.querySelector('.page-controls');
+            if (controls) {
+                controls.innerHTML = `
+                                <div class="move-controls">
+                                    <button class="btn-move" title="Subir Página" onclick="movePage('${id}', 'up')">↑</button>
+                                    <button class="btn-move" title="Bajar Página" onclick="movePage('${id}', 'down')">↓</button>
+                                    <button class="btn-move" title="Cambiar Diseño" onclick="toggleLayout('${id}')">◫</button>
+                                    <button class="btn-move" title="Actualizar Formato" onclick="updatePageFormat('${id}')">🪄</button>
+                                </div>
+                                <button class="btn-delete-page" title="Eliminar Página" onclick="deletePage('${id}')">×</button>
+                                <div class="style-selector mini">
+                                    <div class="style-dot dot-1" onclick="setPageTheme('${id}', 1)" title="Estilo Clásico"></div>
+                                    <div class="style-dot dot-2" onclick="setPageTheme('${id}', 2)" title="Estilo SomosDos"></div>
+                                    <div class="style-dot dot-3" onclick="setPageTheme('${id}', 3)" title="Estilo Premium"></div>
+                                </div>`;
             }
+        }
 
-            // Restaurar visuales de forma aislada
-            setPageTheme(id, theme, true);
-        });
+        // Restaurar visuales de forma aislada
+        setPageTheme(id, theme, true);
+    });
 
-        // Update global client input from document
-        const clientNameEls = document.querySelectorAll('.sig-name');
-        if (clientNameEls.length > 1 && clientNameEls[1].textContent && clientNameEls[1].textContent.trim() !== "[CLIENTE]") {
-            const globalInput = document.getElementById('global-client-name');
-            if (globalInput) globalInput.value = clientNameEls[1].textContent.trim();
+    // Update global client input from document
+    const clientNameEls = document.querySelectorAll('.sig-name');
+    if (clientNameEls.length > 1 && clientNameEls[1].textContent && clientNameEls[1].textContent.trim() !== "[CLIENTE]") {
+        const globalInput = document.getElementById('global-client-name');
+        if (globalInput) {
+            globalInput.value = clientNameEls[1].textContent.trim();
         }
     }
 }
