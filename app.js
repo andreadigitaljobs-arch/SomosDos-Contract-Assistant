@@ -1784,20 +1784,21 @@ async function saveClientSignature() {
 
 // Control de visibilidad del botón por scroll para asegurar que el cliente lea
 function handleClientFabScroll() {
-    if (!document.documentElement.classList.contains('is-client-mode')) return;
+    if (!document.body.classList.contains('client-mode')) return;
     
+    const container = document.getElementById('document-container');
     const fab = document.getElementById('client-fab-save');
-    if (!fab || fab.dataset.status === 'success') return;
+    if (!container || !fab || fab.dataset.status === 'success') return;
 
-    const scrollPos = window.scrollY || window.pageYOffset;
-    const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPos = container.scrollTop;
+    const totalHeight = container.scrollHeight - container.clientHeight;
     
-    // 1. Actualizar barra de progreso de lectura
+    // 1. Actualizar barra de progreso de lectura (Línea Neón)
     const progress = (scrollPos / totalHeight) * 100;
     const progressBar = document.getElementById('reading-progress');
     if (progressBar) progressBar.style.width = `${Math.min(100, progress)}%`;
 
-    // 2. Control del botón FAB
+    // 2. Control del botón FAB (Aparece tras 35% de lectura)
     if (totalHeight > 100 && scrollPos > totalHeight * 0.35) {
         fab.classList.add('visible');
     } else {
@@ -2690,8 +2691,11 @@ async function initApp() {
             // Observador para el brillo de las firmas
             setupSignatureGlow();
 
-            // Escuchar scroll
-            window.addEventListener('scroll', handleClientFabScroll);
+            // Escuchar scroll directamente en el contenedor del documento
+            const container = document.getElementById('document-container');
+            if (container) {
+                container.addEventListener('scroll', handleClientFabScroll);
+            }
         }
 
         setTimeout(() => saveHistory(), 1000);
