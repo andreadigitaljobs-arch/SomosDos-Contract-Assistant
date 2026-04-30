@@ -865,20 +865,29 @@ body.client-mode .design-side-panel {
 
 .signature-top h3 {
     font-family: 'Outfit', sans-serif !important;
-    font-size: 2.8rem;
+    font-size: 2.2rem; /* Reducido para elegancia */
     font-weight: 800;
     background: var(--primary-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     padding: 10px;
+    display: block !important; /* Asegurar visibilidad */
 }
 
-.signature-top h3:focus {
-    background: white !important;
-    -webkit-background-clip: initial;
-    -webkit-text-fill-color: #1A1A2E !important;
-    color: #1A1A2E !important;
+.signature-top p {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    white-space: nowrap;
+    opacity: 0.8;
+    margin-bottom: 30px;
+    letter-spacing: 0.5px;
+}
+
+body.client-mode .signature-top h3 {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
 }
 
 .signature-grid {

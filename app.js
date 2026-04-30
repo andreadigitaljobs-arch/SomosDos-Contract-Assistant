@@ -1008,13 +1008,12 @@ async function saveDocument(isAuto = false) {
     const db = getSupabase();
     if (db && data.id) {
         try {
-            // Buscamos el nombre del cliente desde la p.sig-name correspondiente a la sección cliente
-            const clientNameEls = document.querySelectorAll('.sig-name');
-            let clientName = "Cliente Anon";
-            if (clientNameEls.length > 1 && clientNameEls[1].textContent) {
-                clientName = clientNameEls[1].textContent.trim();
-            } else if (clientNameEls.length > 0) {
-                clientName = clientNameEls[0].textContent.trim();
+            // Buscamos el nombre del cliente de forma segura
+            let clientName = getCurrentClientName();
+            if (clientName === "[NOMBRE DEL CLIENTE]") {
+                // Fallback a los elementos del DOM si el input fallara
+                const clientNameEls = document.querySelectorAll('.client-grid-1 .sig-name, .client-grid-2 .sig-name');
+                if (clientNameEls.length > 0) clientName = clientNameEls[0].textContent.trim();
             }
 
             // Intentar extraer el precio para el dashboard
@@ -1289,10 +1288,22 @@ function syncClientName(val) {
     }
 
     // Actualizar portada (client-info)
-    const clientInfoEls = document.querySelectorAll('.client-info');
+    const clientInfoEls = document.querySelectorAll('.client-info, .sig-name[contenteditable="true"]');
     clientInfoEls.forEach(el => {
-        el.textContent = `PREPARADO PARA: ${val.toUpperCase() || "[NOMBRE DEL CLIENTE]"}`;
+        const isSigs = el.classList.contains('sig-name');
+        if (isSigs) {
+            // Solo actualizar si es el primer firmante del cliente (el socio se edita manual)
+            if (el.closest('.client-grid-1') || (el.closest('.client-grid-2') && el === el.closest('.client-grid-2').querySelector('.sig-name'))) {
+                el.textContent = val.toUpperCase() || "[NOMBRE DEL CLIENTE]";
+            }
+        } else {
+            el.textContent = `PREPARADO PARA: ${val.toUpperCase() || "[NOMBRE DEL CLIENTE]"}`;
+        }
     });
+
+    // Actualizar mención en el texto de aceptación de firmas
+    const sigAcceptance = document.querySelector('.signature-top strong');
+    if (sigAcceptance) sigAcceptance.textContent = val || "[NOMBRE DEL CLIENTE]";
 
     saveHistory(true);
 }
