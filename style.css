@@ -1580,13 +1580,16 @@ body.client-mode #sig-canvas-owner {
     margin-bottom: 20px;
 }
 
-.client-grid-1 {
-    grid-template-columns: 1fr;
-    max-width: 350px;
+/* Grillas específicas para 1 o 2 personas */
+.owner-grid-1, .client-grid-1 {
+    grid-template-columns: 1fr !important;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.client-grid-2 {
-    grid-template-columns: 1fr 1fr;
+.owner-grid-2, .client-grid-2 {
+    grid-template-columns: 1fr 1fr !important;
 }
 
 @media (max-width: 600px) {
