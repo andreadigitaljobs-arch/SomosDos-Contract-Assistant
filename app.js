@@ -1303,11 +1303,6 @@ function syncClientName(val) {
     // 3. Actualizar mención en el texto de aceptación de firmas
     const sigText = document.querySelector('.signature-top p strong');
     if (sigText) sigText.textContent = upperVal;
-}
-
-    // Actualizar mención en el texto de aceptación de firmas
-    const sigAcceptance = document.querySelector('.signature-top strong');
-    if (sigAcceptance) sigAcceptance.textContent = val || "[NOMBRE DEL CLIENTE]";
 
     saveHistory(true);
 }
