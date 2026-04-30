@@ -1137,12 +1137,23 @@ function renderDocument(data) {
         document.documentElement.style.setProperty('--logo-small-size', data.styles.logoSmallSize);
     }
 
+    const isClient = document.body.classList.contains('is-client-mode') || document.body.classList.contains('client-mode');
+
+    // Inyectar firmas y restaurar datos con prioridad
+    const delay = isClient ? 50 : 200; 
     setTimeout(() => {
         initSignaturePad('owner'); initSignaturePad('client');
         if (data.sigs?.owner) restoreSig('owner', data.sigs.owner);
         if (data.sigs?.client) restoreSig('client', data.sigs.client);
+    }, delay);
 
-        // REPARACIÓN DE CONTROLES Y TEMAS (Inyectar mini-dots si faltan)
+    // Si es cliente, saltamos la reparación de controles para cargar instantáneamente
+    if (isClient) {
+        console.log("🚀 Modo Cliente Detectado: Renderizado ultra-rápido activado.");
+        return;
+    }
+
+        // REPARACIÓN DE CONTROLES Y TEMAS (Solo para diseñador)
         document.querySelectorAll('.page').forEach(p => {
             const id = p.id.replace('page-', '');
             const theme = parseInt(p.getAttribute('data-theme')) || 1;

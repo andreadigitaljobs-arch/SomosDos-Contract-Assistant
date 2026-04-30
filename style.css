@@ -23,7 +23,7 @@
 }
 
 #dashboard-view, #editor-view, .view-transition {
-    animation: viewFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: viewFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Efectos de Hover Fluidos */
