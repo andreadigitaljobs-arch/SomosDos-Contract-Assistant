@@ -1664,9 +1664,18 @@ function toggleClientMode(autoShowTutorial = true) {
     const panel = document.getElementById('design-panel');
     if (panel) panel.classList.remove('active');
 
-    // Inyectar botón flotante independiente para el cliente en móvil
+    adaptMobileMenu();
+    
+    // Solo mostrar el FAB si el tutorial no está visible
+    const tutorialVisible = !document.getElementById('client-tutorial')?.classList.contains('hidden');
+    if (!tutorialVisible) {
+        toggleClientFab(isClient);
+    }
+}
+
+function toggleClientFab(show) {
     const existingFab = document.getElementById('client-fab-save');
-    if (isClient && window.innerWidth <= 900) {
+    if (show && window.innerWidth <= 900 && (document.body.classList.contains('client-mode') || document.body.classList.contains('is-client-mode'))) {
         if (!existingFab) {
             const fab = document.createElement('button');
             fab.id = 'client-fab-save';
@@ -1678,8 +1687,6 @@ function toggleClientMode(autoShowTutorial = true) {
     } else {
         if (existingFab) existingFab.remove();
     }
-
-    adaptMobileMenu();
 }
 
 function toggleDesignPanel() {
@@ -1695,7 +1702,11 @@ function nextTutorialStep(n) {
     });
 }
 
-function closeTutorial() { document.getElementById('client-tutorial')?.classList.add('hidden'); }
+function closeTutorial() { 
+    document.getElementById('client-tutorial')?.classList.add('hidden'); 
+    // Mostrar el botón de guardar ahora que el cliente ya leyó las instrucciones
+    toggleClientFab(true);
+}
 
 function showToast(m) {
     const t = document.createElement('div'); t.className = 'save-toast'; t.textContent = m;
