@@ -2119,6 +2119,38 @@ function injectDashboardStyles() {
         
         .hidden { display: none !important; }
         
+        /* MAGIC LOADER OVERLAY */
+        .magic-loader-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .magic-loader-orb {
+            width: 150px; height: 150px;
+            background: linear-gradient(135deg, #7B3FE4, #2D3EAF);
+            border-radius: 50%;
+            filter: blur(40px);
+            animation: pulseOrb 2s infinite alternate;
+        }
+
+        @keyframes pulseOrb {
+            from { transform: scale(1); opacity: 0.6; }
+            to { transform: scale(1.3); opacity: 0.9; }
+        }
+
+        .magic-loader-text {
+            margin-top: 30px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1A1A2E, #7B3FE4);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
         /* MAGIC AI BOX WIDGET */
         .dash-magic-box {
             max-width: 1050px;
@@ -2272,20 +2304,73 @@ function generateMagicContract() {
         return;
     }
     
-    // Guardar el prompt para que el asistente lo use al abrirse
-    localStorage.setItem('s2_magic_prompt', prompt);
+    // 1. Mostrar el Loader Mágico
+    const loader = document.createElement('div');
+    loader.className = 'magic-loader-overlay';
+    loader.innerHTML = `
+        <div class="magic-loader-orb"></div>
+        <div class="magic-loader-text">IA de SomosDos está creando tu contrato...<br><span style="font-size: 0.9rem; font-weight: 400; color: #64748B;">Analizando prompt: "${prompt.substring(0, 40)}..."</span></div>
+    `;
+    document.body.appendChild(loader);
+
+    // 2. Extraer información básica del prompt (Simulación inteligente)
+    const priceMatch = prompt.match(/\$\s?(\d+(\.\d{3})?)/) || prompt.match(/(\d+(\.\d{3})?)\s?(usd|dolares|€|euros)/i);
+    const price = priceMatch ? priceMatch[1].replace('.', '') : "0";
     
-    // Crear contrato y abrir editor
+    // Intentar sacar el cliente (Palabras después de "para" o "cliente")
+    let clientName = "Cliente";
+    const clientMatch = prompt.match(/para\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/) || prompt.match(/cliente\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/);
+    if (clientMatch) clientName = clientMatch[1];
+
+    // 3. Crear el contrato y saltar al editor
     createNewContract();
     
-    // Simular que el asistente se abre
+    // 4. Inyección Mágica de Páginas
     setTimeout(() => {
-        const aiBtn = document.querySelector('.btn-ai-pro');
-        if (aiBtn) aiBtn.click();
-        
-        // Mensaje de feedback en consola (el asistente real leería el localStorage)
-        console.log("✨ Magia activada con prompt:", prompt);
-    }, 1000);
+        // Portada
+        addNewPage('cover');
+        const coverPage = pages[0]?.element;
+        if (coverPage) {
+            const h2 = coverPage.querySelector('.editable[data-field="client-name"]');
+            if (h2) h2.innerText = clientName.toUpperCase();
+        }
+
+        // Servicios
+        setTimeout(() => {
+            addNewPage('services');
+            const servicesPage = pages[1]?.element;
+            if (servicesPage) {
+                const title = servicesPage.querySelector('h2.editable');
+                if (title) title.innerText = "Propuesta de Servicios Premium";
+            }
+
+            // Pago
+            setTimeout(() => {
+                addNewPage('payment');
+                const paymentPage = pages[2]?.element;
+                if (paymentPage) {
+                    const priceEl = paymentPage.querySelector('.payment-card h2');
+                    if (priceEl) priceEl.innerText = `$ ${parseInt(price).toLocaleString()}`;
+                    
+                    const clientEl = paymentPage.querySelector('.payment-card p b');
+                    if (clientEl) clientEl.innerText = clientName;
+                }
+
+                // Finalizar Magia
+                setTimeout(() => {
+                    loader.style.opacity = '0';
+                    setTimeout(() => loader.remove(), 400);
+                    
+                    // Abrir asistente para detalles finales
+                    const aiBtn = document.querySelector('.btn-ai-pro');
+                    if (aiBtn) aiBtn.click();
+                    
+                    saveHistory();
+                    console.log("✅ Contrato generado mágicamente:", { clientName, price });
+                }, 1000);
+            }, 800);
+        }, 800);
+    }, 1500);
 }
 
 const showMainDashboard = async () => {
