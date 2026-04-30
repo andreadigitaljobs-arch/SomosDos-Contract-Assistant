@@ -763,6 +763,10 @@ function addNewPage(type = 'content') {
     const container = getContainer();
     if (!container) return;
 
+    // Quitar mensaje de estado vacío si existe
+    const empty = container.querySelector('.empty-state');
+    if (empty) empty.remove();
+
     const id = Date.now() + Math.floor(Math.random() * 1000);
     const page = document.createElement('section');
     page.id = `page-${id}`;
@@ -980,6 +984,15 @@ async function saveDocument(isAuto = false) {
                 clientName = clientNameEls[0].textContent.trim();
             }
 
+            // Intentar extraer el precio para el dashboard
+            const paymentH2 = container.querySelector('.payment-card h2');
+            let docPrice = 0;
+            if (paymentH2) {
+                const priceText = paymentH2.innerText.replace(/[^0-9]/g, '');
+                docPrice = parseInt(priceText) || 0;
+            }
+            data.price = docPrice;
+
             const { error } = await db.from('agreements').upsert({
                 id: data.id,
                 client_name: clientName,
@@ -1097,8 +1110,20 @@ async function loadDocument() {
 
     // 3. Documento Nuevo (Último recurso):
     console.log("✨ Creando documento nuevo por defecto");
-    // Empezar en blanco como solicitó el usuario
-    if (container) container.innerHTML = '';
+    showEmptyState();
+}
+
+function showEmptyState() {
+    const container = getContainer();
+    if (container) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <span>✨</span>
+                <h3>Lienzo en Blanco</h3>
+                <p>Habla con tu <b>Asistente IA</b> o agrega una página desde el menú superior para comenzar.</p>
+            </div>
+        `;
+    }
     pages = [];
 }
 
@@ -2139,18 +2164,26 @@ async function renderMainDashboard(filterQuery = '') {
     // Si hay base de datos, traer datos de la nube
     if (db) {
         try {
-            // Quitamos 'price' porque puede no existir en la tabla antigua
+            // Seleccionamos html_content para extraer el precio real
             const { data, error } = await db.from('agreements')
-                .select('id, client_name, created_at') 
+                .select('id, client_name, created_at, html_content') 
                 .order('created_at', { ascending: false });
             
             if (!error && data) {
-                registry = data.map(item => ({
-                    id: item.id,
-                    client: item.client_name,
-                    timestamp: new Date(item.created_at).getTime(),
-                    price: 0 // Default a 0 si no existe la columna
-                }));
+                registry = data.map(item => {
+                    let price = 0;
+                    try {
+                        const content = typeof item.html_content === 'string' ? JSON.parse(item.html_content) : item.html_content;
+                        price = content.price || 0;
+                    } catch(e) {}
+                    
+                    return {
+                        id: item.id,
+                        client: item.client_name,
+                        timestamp: new Date(item.created_at).getTime(),
+                        price: price
+                    };
+                });
             } else {
                 console.warn("Aviso de Supabase:", error);
             }
@@ -2279,10 +2312,8 @@ function createNewContract() {
     // Limpiar el estado actual para empezar de cero
     localStorage.removeItem('somosdos_agreement_state');
     
-    // Limpiar el contenedor y el array global de páginas para empezar realmente en blanco
-    const container = getContainer();
-    if (container) container.innerHTML = '';
-    pages = [];
+    // Mostrar mensaje de inicio
+    showEmptyState();
     
     // Abrir el editor
     startEditor();
