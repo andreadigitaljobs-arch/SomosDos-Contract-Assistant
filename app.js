@@ -1091,7 +1091,7 @@ async function loadDocument() {
             try {
                 // Timeout de 4 segundos para la nube
                 const cloudPromise = db.from('agreements').select('html_content').eq('id', cloudId).single();
-                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Supabase Timeout")), 4000));
+                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Supabase Timeout")), 10000));
 
                 const { data, error } = await Promise.race([cloudPromise, timeoutPromise]);
 
