@@ -80,15 +80,24 @@
         </div>
 
         <div class="panel-section" style="border-top: 1px solid rgba(0,0,0,0.05); padding-top: 15px;">
-            <label>REPRESENTANTE SOMOSDOS</label>
-            <select id="owner-signer-select" onchange="updateOwnerSigner(this.value)" style="width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 10px; font-family: inherit;">
-                <option value="Andrea Reyes">Andrea Reyes</option>
-                <option value="Wai Harrington">Wai Harrington</option>
-            </select>
+            <label>FIRMAS SOMOSDOS (SAVES)</label>
+            <p class="panel-hint" style="margin-bottom: 10px;">Dibuja vuestra firma una vez y guárdala aquí.</p>
+            
+            <button class="btn btn-pdf" style="width: 100%; font-size: 0.7rem; margin-bottom: 10px; padding: 10px;" onclick="saveSignerAsDefault()">💾 GUARDAR FIRMA ACTUAL</button>
+            
             <div style="display: flex; gap: 5px;">
-                <button class="btn btn-secondary" style="flex: 1; font-size: 0.7rem; padding: 5px;" onclick="saveSignerAsDefault()">💾 Guardar Firma</button>
-                <button class="btn btn-secondary" style="flex: 1; font-size: 0.7rem; padding: 5px;" onclick="applyDefaultSigner()">✨ Aplicar Firma</button>
+                <button class="btn btn-secondary" style="flex: 1; font-size: 0.65rem; padding: 8px 4px;" onclick="applyDefaultSigner('Andrea Reyes')">✨ ANDREA</button>
+                <button class="btn btn-secondary" style="flex: 1; font-size: 0.65rem; padding: 8px 4px;" onclick="applyDefaultSigner('Wai Harrington')">✨ WAI</button>
             </div>
+        </div>
+
+        <div class="panel-section" style="border-top: 1px solid rgba(0,0,0,0.05); padding-top: 15px;">
+            <label>FIRMANTES DEL CLIENTE</label>
+            <div class="style-selector" style="justify-content: flex-start; gap: 10px; margin-top: 10px;">
+                <button class="btn btn-secondary signer-toggle active" id="client-count-1" onclick="updateClientSignersCount(1)">1 Persona</button>
+                <button class="btn btn-secondary signer-toggle" id="client-count-2" onclick="updateClientSignersCount(2)">2 Personas</button>
+            </div>
+            <p class="panel-hint">Para sociedades (Astro Barber, etc)</p>
         </div>
 
         <div class="panel-footer">
