@@ -2637,8 +2637,9 @@ body.client-mode .header-actions {
 #mobile-bottom-nav { display: none; }
 
 /* OCULTAR HERRAMIENTAS DE EDICION EN MODO CLIENTE */
-body.is-client-mode #mobile-bottom-nav,
-body.is-client-mode #mobile-panel-toggle {
+/* OCULTAR HERRAMIENTAS DE EDICION EN MODO CLIENTE */
+body.client-mode #mobile-bottom-nav,
+body.client-mode #mobile-panel-toggle {
     display: none !important;
 }
 
@@ -2647,8 +2648,11 @@ body.is-client-mode #mobile-panel-toggle {
     display: flex !important;
     justify-content: center !important;
     align-items: flex-start !important;
-    width: 100% !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
     overflow-x: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 #zoom-wrapper {
@@ -2656,13 +2660,14 @@ body.is-client-mode #mobile-panel-toggle {
     flex-direction: column !important;
     align-items: center !important;
     width: 100% !important;
+    min-width: 100% !important;
     margin: 0 auto !important;
+    padding-bottom: 100px !important;
 }
 
 .page {
     transform-origin: center top !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
+    margin: 20px auto !important;
 }
 
 /* Fix para firmas en Modo Oscuro (el lienzo transparente ocultaba la tinta negra) */
