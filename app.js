@@ -1252,13 +1252,6 @@ function initSignaturePad(id) {
     const canvas = document.getElementById(`sig-canvas-${id}`);
     if (!canvas) return;
     
-    // RESTRICCIÓN: En modo cliente, no se puede firmar en el espacio del dueño (SomosDos)
-    const isClient = document.body.classList.contains('is-client-mode') || document.body.classList.contains('client-mode');
-    if (isClient && id === 'owner') {
-        canvas.style.cursor = 'not-allowed';
-        canvas.style.opacity = '0.8';
-        return; 
-    }
 
     // Inicializar estado de dibujo
     if (!canvas.dataset.hasDrawing) canvas.dataset.hasDrawing = 'false';
