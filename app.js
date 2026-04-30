@@ -2186,7 +2186,7 @@ function injectDashboardStyles() {
             color: #7B3FE4;
         }
 
-        .magic-input-wrapper input {
+        .magic-input-wrapper textarea {
             flex: 1;
             border: none;
             outline: none;
@@ -2194,6 +2194,11 @@ function injectDashboardStyles() {
             font-size: 1rem;
             color: #1A1A2E;
             background: transparent;
+            resize: none;
+            min-height: 45px;
+            max-height: 200px;
+            font-family: inherit;
+            line-height: 1.5;
         }
 
         .file-attached-badge {
@@ -2393,7 +2398,7 @@ async function renderMainDashboard(filterQuery = '') {
                     
                     <div id="file-badge" class="file-attached-badge">📎 Archivo listo</div>
                     
-                    <input type="text" id="magic-prompt-input" placeholder="Ej: Contrato para Barbería con 5 servicios de $100...">
+                    <textarea id="magic-prompt-input" placeholder="Ej: Contrato para Barbería con 5 servicios de $100..." oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
                     <button class="btn-magic-generate" onclick="generateMagicContract()">
                         <span>🪄</span> Generar
                     </button>
