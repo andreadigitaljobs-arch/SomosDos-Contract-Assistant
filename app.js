@@ -2906,8 +2906,8 @@ function smartFit() {
     const pageWidth = 800; // Ancho base de la página A4 en px
     const pageHeight = 1130; // Alto base aproximado de la página A4 en px
 
-    // Calculamos la escala por ancho y por alto (con margen de seguridad del 5%)
-    const scaleWidth = (availableWidth / pageWidth) * 0.95;
+    // Calculamos la escala por ancho y por alto (con margen de seguridad más generoso para elegancia)
+    const scaleWidth = (availableWidth / pageWidth) * 0.88;
     const scaleHeight = (availableHeight / pageHeight) * 0.95;
 
     let scale = scaleWidth; // Móvil prioriza el ancho
