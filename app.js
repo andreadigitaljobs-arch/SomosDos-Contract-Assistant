@@ -1270,36 +1270,40 @@ function renderDocument(data) {
     });
 
     // Update global client input from document
-    const clientNameEls = document.querySelectorAll('.sig-name');
-    if (clientNameEls.length > 1 && clientNameEls[1].textContent && clientNameEls[1].textContent.trim() !== "[CLIENTE]") {
+    const clientNameEl = document.querySelector('.sig-name.editable');
+    if (clientNameEl) {
+        const name = clientNameEl.textContent.trim();
         const globalInput = document.getElementById('global-client-name');
-        if (globalInput) {
-            globalInput.value = clientNameEls[1].textContent.trim();
+        if (globalInput && name !== "[NOMBRE DEL CLIENTE]" && name !== "[CLIENTE]") {
+            globalInput.value = name;
         }
     }
 }
 
 // Sincroniza el input global de la barra superior con el texto de la firma del cliente y la portada
 function syncClientName(val) {
-    // Actualizar sección de firmas
-    const clientNameEls = document.querySelectorAll('.sig-name');
-    if (clientNameEls.length > 1) {
-        clientNameEls[1].textContent = val || "[CLIENTE]";
-    }
+    const upperVal = val.toUpperCase() || "[NOMBRE DEL CLIENTE]";
+    
+    // 1. Actualizar cuadros de firma del CLIENTE (solo los editables)
+    const editableNames = document.querySelectorAll('.sig-name.editable');
+    editableNames.forEach(el => {
+        el.textContent = upperVal;
+    });
 
-    // Actualizar portada (client-info)
-    const clientInfoEls = document.querySelectorAll('.client-info, .sig-name[contenteditable="true"]');
-    clientInfoEls.forEach(el => {
-        const isSigs = el.classList.contains('sig-name');
-        if (isSigs) {
-            // Solo actualizar si es el primer firmante del cliente (el socio se edita manual)
-            if (el.closest('.client-grid-1') || (el.closest('.client-grid-2') && el === el.closest('.client-grid-2').querySelector('.sig-name'))) {
-                el.textContent = val.toUpperCase() || "[NOMBRE DEL CLIENTE]";
-            }
+    // 2. Actualizar Portada y otros placeholders
+    const placeholders = document.querySelectorAll('.client-info h2, .client-name-placeholder');
+    placeholders.forEach(el => {
+        if (el.tagName === 'H2') {
+            el.textContent = upperVal;
         } else {
-            el.textContent = `PREPARADO PARA: ${val.toUpperCase() || "[NOMBRE DEL CLIENTE]"}`;
+            el.textContent = upperVal;
         }
     });
+
+    // 3. Actualizar mención en el texto de aceptación de firmas
+    const sigText = document.querySelector('.signature-top p strong');
+    if (sigText) sigText.textContent = upperVal;
+}
 
     // Actualizar mención en el texto de aceptación de firmas
     const sigAcceptance = document.querySelector('.signature-top strong');
