@@ -2644,10 +2644,13 @@ body.client-mode .header-actions {
     }
 }
 
-#mobile-bottom-nav { display: none; }
+@media (max-width: 768px) {
+    #mobile-bottom-nav {
+        display: flex !important;
+    }
+}
 
-/* OCULTAR HERRAMIENTAS DE EDICION EN MODO CLIENTE */
-/* OCULTAR HERRAMIENTAS DE EDICION EN MODO CLIENTE (Sin Parpadeo) */
+/* SUPRESIÓN ABSOLUTA EN MODO CLIENTE */
 html.client-mode #mobile-bottom-nav,
 body.client-mode #mobile-bottom-nav,
 html.client-mode #mobile-panel-toggle,

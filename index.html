@@ -24,11 +24,19 @@
     <script>
         (function() {
             const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('mode') === 'client') {
+            const isClient = urlParams.get('mode') === 'client';
+            const hours = new Date().getHours();
+            const isDarkTime = hours >= 20 || hours < 7;
+
+            if (isClient) {
                 document.documentElement.classList.add('client-mode');
                 document.documentElement.classList.add('is-intrigue');
-                // Ocultar preventivamente para evitar parpadeo
-                document.write('<style>.main-header, .design-side-panel, .zoom-controls, .floating-add-btn, #nav-to-dashboard, .page-controls { display: none !important; }</style>');
+                // Fondo oscuro inmediato para evitar parpadeo blanco
+                document.documentElement.style.backgroundColor = '#0A0A14';
+                // Ocultar preventivamente TODOS los controles de edición
+                document.write('<style>.main-header, .design-side-panel, .zoom-controls, .floating-add-btn, #nav-to-dashboard, .page-controls, #mobile-bottom-nav, #mobile-panel-toggle { display: none !important; } .tutorial-overlay { display: flex !important; }</style>');
+            } else if (isDarkTime) {
+                document.documentElement.style.backgroundColor = '#0A0A14';
             }
         })();
     </script>
@@ -204,7 +212,7 @@
 
     <div id="reading-progress"></div>
     <!-- TUTORIAL CLIENTE -->
-    <div id="client-tutorial" class="tutorial-overlay hidden">
+    <div id="client-tutorial" class="tutorial-overlay">
         <div class="tutorial-card">
             <div class="tutorial-progress">
                 <div class="progress-dot active" data-step="1"></div>
