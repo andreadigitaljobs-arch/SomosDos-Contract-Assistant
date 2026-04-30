@@ -2524,6 +2524,9 @@ function startEditor() {
 }
 
 function showLoader() {
+    const isClient = new URLSearchParams(window.location.search).get('mode') === 'client';
+    if (isClient) return; // En modo cliente no queremos página de carga
+
     showExportLoader("Iniciando Editor", "Preparando tu espacio creativo...");
     // Bloqueamos la vista del editor completamente
     const editor = document.getElementById('editor-view');
@@ -2534,8 +2537,18 @@ function showLoader() {
 }
 
 function hideLoader() {
+    const isClient = new URLSearchParams(window.location.search).get('mode') === 'client';
     const editor = document.getElementById('editor-view');
     
+    if (isClient) {
+        if (editor) {
+            editor.style.visibility = 'visible';
+            editor.style.opacity = '1';
+        }
+        smartFit();
+        return;
+    }
+
     // Primero lo hacemos "presente" para el navegador (pero sigue invisible al ojo)
     if (editor) {
         editor.style.visibility = 'visible';
