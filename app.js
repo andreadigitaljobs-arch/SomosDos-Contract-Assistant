@@ -1972,6 +1972,12 @@ function toggleClientMode(autoShowTutorial = true) {
     const btn = document.getElementById('toggle-client-mode');
     const isClient = document.body.classList.contains('client-mode');
     if (btn) btn.textContent = isClient ? 'Modo Diseño' : 'Modo Cliente';
+    
+    // Bloquear/Desbloquear edición
+    document.querySelectorAll('[contenteditable]').forEach(el => {
+        el.setAttribute('contenteditable', isClient ? 'false' : 'true');
+    });
+
     if (isClient && autoShowTutorial) {
         document.getElementById('client-tutorial')?.classList.remove('hidden');
     }

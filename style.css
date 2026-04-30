@@ -3345,4 +3345,15 @@ body.client-mode .header-actions {
     color: #FFFFFF !important;
     opacity: 1 !important;
 }
+
+/* BLOQUEO DE EDICIÓN EN MODO CLIENTE */
+body.client-mode [contenteditable="true"],
+body.is-client-mode [contenteditable="true"],
+body.client-mode .editable,
+body.is-client-mode .editable {
+    pointer-events: none !important;
+    user-select: text !important;
+    cursor: default !important;
+    -webkit-user-modify: read-only !important;
+}
 
