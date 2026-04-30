@@ -985,9 +985,12 @@ async function saveDocument(isAuto = false) {
     const data = {
         id: new URLSearchParams(window.location.search).get('id') || null,
         html: container.innerHTML,
+        clientSignersCount: window.clientSignersCount || 1,
         sigs: {
-            owner: document.getElementById('sig-canvas-owner')?.toDataURL() || null,
-            client: document.getElementById('sig-canvas-client')?.toDataURL() || null
+            'owner-andrea': document.getElementById('sig-canvas-owner-andrea')?.toDataURL() || null,
+            'owner-wai': document.getElementById('sig-canvas-owner-wai')?.toDataURL() || null,
+            'client-1': document.getElementById('sig-canvas-client-1')?.toDataURL() || null,
+            'client-2': document.getElementById('sig-canvas-client-2')?.toDataURL() || null
         },
         styles: {
             logoSize: getComputedStyle(document.documentElement).getPropertyValue('--logo-size'),
@@ -1181,6 +1184,13 @@ function renderDocument(data) {
     if (data.styles) {
         document.documentElement.style.setProperty('--logo-size', data.styles.logoSize);
         document.documentElement.style.setProperty('--logo-small-size', data.styles.logoSmallSize);
+    }
+
+    // Restaurar configuración de firmantes
+    if (data.clientSignersCount) {
+        window.clientSignersCount = data.clientSignersCount;
+        document.getElementById('client-count-1')?.classList.toggle('active', data.clientSignersCount === 1);
+        document.getElementById('client-count-2')?.classList.toggle('active', data.clientSignersCount === 2);
     }
 
     // MIGRACIÓN: Detectar si hay páginas de firmas antiguas y actualizarlas al nuevo formato dual
