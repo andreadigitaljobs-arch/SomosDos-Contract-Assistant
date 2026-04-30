@@ -1111,7 +1111,7 @@ body.client-mode #sig-canvas-owner {
     color: #2D3EAF;
     border-left: 4px solid #7B3FE4;
     padding-left: 15px;
-    margin-bottom: 20px;
+    margin-bottom: 40px !important;
 }
 
 /* Specific Creative Cover */
@@ -1172,7 +1172,7 @@ body.client-mode #sig-canvas-owner {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: 0 0 15px rgba(129, 140, 248, 0.2);
-    /* Sutil resplandor texturizado */
+    margin-bottom: 40px !important; /* Forzado para que respire */
 }
 
 .page.theme-3 .signature-top h3 {
