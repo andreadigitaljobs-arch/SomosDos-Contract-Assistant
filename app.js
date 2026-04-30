@@ -2134,7 +2134,7 @@ function injectDashboardStyles() {
     style.id = styleId;
     style.innerHTML = `
         .dashboard-container {
-            height: 100vh;
+            min-height: 100vh;
             overflow-y: auto !important;
             background: #F8FAFC; 
             position: relative;
@@ -2145,8 +2145,9 @@ function injectDashboardStyles() {
         }
         
         /* Evitar doble scroll cuando el dashboard está activo */
-        body.dashboard-open {
+        html, body.dashboard-open {
             overflow: hidden !important;
+            height: 100% !important;
         }
         
         /* Orbes Vibrantes con Animación - Suavizados para modo claro */
@@ -2247,6 +2248,24 @@ function injectDashboardStyles() {
         .search-icon { position: absolute; left: 25px; top: 50%; transform: translateY(-50%); font-size: 1.4rem; opacity: 0.3; }
 
         /* Grid Light */
+        .dash-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .dash-hero h1 { font-size: 2.5rem; }
+            .dash-hero p { font-size: 1.1rem; padding: 0 10px; }
+            .dash-stats-row { 
+                flex-direction: column; 
+                align-items: stretch;
+                padding: 0 10px;
+            }
+            .stat-pill { min-width: 0; }
+            .dash-content-wrapper { padding: 10px 20px 100px; }
+            .dash-nav { padding: 20px; }
+        }
         .dash-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
