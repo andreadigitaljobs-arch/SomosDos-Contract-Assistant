@@ -2520,23 +2520,31 @@ body.client-mode .header-actions {
     white-space: normal;
     color: white;
     opacity: 0;
-    display: none;
+    visibility: hidden;
     pointer-events: none;
+    transform: translateX(-50%) translateY(50px) scale(0.8);
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
     background: linear-gradient(135deg, #2D3EAF, #7B3FE4, #2D3EAF);
     background-size: 200% auto;
     border: none;
     border-radius: 100px;
     cursor: pointer;
-    box-shadow: 0 10px 40px rgba(123, 63, 228, 0.4), 0 0 0 4px rgba(255,255,255,0.2);
+    box-shadow: 0 15px 45px rgba(123, 63, 228, 0.5), 0 0 0 4px rgba(255,255,255,0.2);
     letter-spacing: 1px;
     text-transform: uppercase;
     display: flex;
     align-items: center;
     gap: 12px;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     animation: magicPulse 2s infinite, gradientMove 3s linear infinite;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+}
+
+.client-fab-save.visible {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: translateX(-50%) translateY(0) scale(1) !important;
 }
 
 @keyframes magicPulse {

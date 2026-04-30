@@ -1794,16 +1794,9 @@ function handleClientFabScroll() {
     
     // Mostramos el botón solo si ha bajado más del 35% del contrato
     if (totalHeight > 100 && scrollPos > totalHeight * 0.35) {
-        if (fab.style.display !== 'flex') {
-            fab.style.display = 'flex';
-            fab.style.pointerEvents = 'auto';
-            setTimeout(() => fab.style.opacity = '1', 10);
-        }
+        fab.classList.add('visible');
     } else {
-        if (fab.style.opacity !== '0') {
-            fab.style.opacity = '0';
-            fab.style.pointerEvents = 'none';
-        }
+        fab.classList.remove('visible');
     }
 }
 
