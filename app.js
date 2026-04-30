@@ -1084,6 +1084,14 @@ async function loadDocument() {
                         }
                     }
 
+                    // Pre-inyectar datos del cliente en el HTML antes de renderizar para evitar parpadeo visual
+                    const clientParam = urlParams.get('client');
+                    if (clientParam && parsedData.html) {
+                        const upperClient = clientParam.toUpperCase();
+                        parsedData.html = parsedData.html.replace(/\[NOMBRE DEL CLIENTE\]/g, upperClient)
+                                                         .replace(/\[CLIENTE\]/g, upperClient);
+                    }
+
                     renderDocument(parsedData);
                     return;
                 }
@@ -1100,11 +1108,19 @@ async function loadDocument() {
     if (raw && raw !== "undefined") {
         try {
             const data = JSON.parse(raw);
-            if (data && data.html && data.html.includes('class="page"')) {
-                console.log("✅ Datos cargados desde LocalStorage");
-                renderDocument(data);
-                return;
-            }
+                if (data && data.html && data.html.includes('class="page"')) {
+                    console.log("✅ Datos cargados desde LocalStorage");
+                    
+                    const clientParam = urlParams.get('client');
+                    if (clientParam && data.html) {
+                        const upperClient = clientParam.toUpperCase();
+                        data.html = data.html.replace(/\[NOMBRE DEL CLIENTE\]/g, upperClient)
+                                             .replace(/\[CLIENTE\]/g, upperClient);
+                    }
+
+                    renderDocument(data);
+                    return;
+                }
         } catch (e) { console.error("❌ Error carga local:", e); }
     }
 
@@ -2537,18 +2553,9 @@ async function initApp() {
         const clientName = urlParams.get('client');
 
         if (clientName) {
-            // Inyectar nombre del cliente en el documento cargado (Acelerado)
-            setTimeout(() => {
-                const clientEls = document.querySelectorAll('.client-info');
-                clientEls.forEach(el => el.innerText = `PREPARADO PARA: ${clientName.toUpperCase()}`);
-
-                const clientInput = document.getElementById('client-name-input');
-                if (clientInput) {
-                    clientInput.value = clientName;
-                    syncClientName(clientName);
-                }
-                saveDocument(true);
-            }, 10);
+            // Sincronizar input si existe, pero el HTML ya fue pre-inyectado en loadDocument
+            const clientInput = document.getElementById('client-name-input');
+            if (clientInput) clientInput.value = clientName;
         }
 
         if (urlParams.get('mode') === 'client') {
