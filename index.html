@@ -79,6 +79,18 @@
             <input type="range" min="0" max="300" value="40" oninput="resizeGlobalSpacing(this.value, 'text')">
         </div>
 
+        <div class="panel-section" style="border-top: 1px solid rgba(0,0,0,0.05); padding-top: 15px;">
+            <label>REPRESENTANTE SOMOSDOS</label>
+            <select id="owner-signer-select" onchange="updateOwnerSigner(this.value)" style="width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 10px; font-family: inherit;">
+                <option value="Andrea Reyes">Andrea Reyes</option>
+                <option value="Wai Harrington">Wai Harrington</option>
+            </select>
+            <div style="display: flex; gap: 5px;">
+                <button class="btn btn-secondary" style="flex: 1; font-size: 0.7rem; padding: 5px;" onclick="saveSignerAsDefault()">💾 Guardar Firma</button>
+                <button class="btn btn-secondary" style="flex: 1; font-size: 0.7rem; padding: 5px;" onclick="applyDefaultSigner()">✨ Aplicar Firma</button>
+            </div>
+        </div>
+
         <div class="panel-footer">
             <button class="btn btn-pdf" style="width: 100%; margin-top: 10px;" onclick="generateProfessionalPDF()">📄
                 Generar PDF Real 4K</button>

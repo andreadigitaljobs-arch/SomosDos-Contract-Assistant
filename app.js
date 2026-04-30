@@ -707,7 +707,7 @@ function createPageHTML(id, type = 'content') {
                 <div class="signature-grid">
                     <div class="sig-box">
                         <div class="sig-line-container"><canvas id="sig-canvas-owner" class="sig-canvas" width="300" height="100"></canvas></div>
-                        <p class="sig-name">SomosDos Studio</p>
+                        <p class="sig-name" id="owner-signer-name">Andrea Reyes</p>
                         <p class="sig-detail">Representante Autorizado</p>
                         <button class="btn-clear-sig" onclick="clearSignature('owner')">Limpiar</button>
                     </div>
@@ -1246,6 +1246,47 @@ function restoreSig(id, url) {
         canvas.dataset.hasDrawing = 'true';
     };
     img.src = url;
+}
+
+// --- GESTIÓN DE FIRMANTES PREDETERMINADOS (Andrea / Wai) ---
+function updateOwnerSigner(name) {
+    const el = document.getElementById('owner-signer-name');
+    if (el) el.textContent = name;
+    saveDocument(true);
+}
+
+function saveSignerAsDefault() {
+    const canvas = document.getElementById('sig-canvas-owner');
+    if (!canvas || canvas.dataset.hasDrawing !== 'true') {
+        showModal('⚠️', 'Firma vacía', 'Dibuja tu firma antes de guardarla como predeterminada.');
+        return;
+    }
+    const name = document.getElementById('owner-signer-select')?.value || "Andrea Reyes";
+    const dataUrl = canvas.toDataURL();
+    localStorage.setItem(`default_sig_${name}`, dataUrl);
+    showModal('✅', 'Firma Guardada', `La firma de ${name} se ha guardado correctamente en este navegador.`);
+}
+
+function applyDefaultSigner() {
+    const canvas = document.getElementById('sig-canvas-owner');
+    const name = document.getElementById('owner-signer-select')?.value || "Andrea Reyes";
+    const dataUrl = localStorage.getItem(`default_sig_${name}`);
+    
+    if (!dataUrl) {
+        showModal('ℹ️', 'Sin firma guardada', `No hay una firma guardada para ${name} todavía.`);
+        return;
+    }
+
+    const img = new Image();
+    img.onload = () => {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+        canvas.dataset.hasDrawing = 'true';
+        saveDocument(true);
+        saveHistory();
+    };
+    img.src = dataUrl;
 }
 
 function initSignaturePad(id) {
@@ -2618,9 +2659,9 @@ async function initApp() {
         `;
         document.head.appendChild(style);
     } else {
-        // LIMPIEZA: Si no es modo cliente, quitar clases restrictivas
-        document.body.classList.remove('is-client-mode');
-        document.body.classList.remove('client-mode');
+        // LIMPIEZA TOTAL: Si no es modo cliente, quitar clases restrictivas de Body y Document
+        document.body.classList.remove('is-client-mode', 'client-mode');
+        document.documentElement.classList.remove('is-intrigue', 'is-client-mode');
     }
     console.log("🏁 Inicializando Aplicación v18.5...");
 
