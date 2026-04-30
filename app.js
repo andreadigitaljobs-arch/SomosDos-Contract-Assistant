@@ -2154,21 +2154,59 @@ function injectDashboardStyles() {
             position: relative; z-index: 2;
             flex: 1.5;
             display: flex;
+            align-items: center;
             background: white;
             border-radius: 20px;
-            padding: 8px;
+            padding: 8px 15px;
             border: 1px solid rgba(123, 63, 228, 0.15);
             box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            gap: 10px;
+        }
+
+        .magic-actions-left {
+            display: flex;
+            gap: 12px;
+            padding-right: 15px;
+            border-right: 1px solid #f1f5f9;
+        }
+
+        .magic-btn-icon {
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .magic-btn-icon:hover {
+            opacity: 1;
+            transform: scale(1.1);
+            color: #7B3FE4;
         }
 
         .magic-input-wrapper input {
             flex: 1;
             border: none;
             outline: none;
-            padding: 12px 20px;
+            padding: 12px 0;
             font-size: 1rem;
             color: #1A1A2E;
             background: transparent;
+        }
+
+        .file-attached-badge {
+            background: #f0fdf4;
+            color: #16a34a;
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 5px;
+            margin-right: 10px;
         }
 
         .btn-magic-generate {
@@ -2210,6 +2248,17 @@ const MOTIVATIONAL_PHRASES = [
     "La excelencia no es un acto, es un hábito.",
     "Tu próximo gran proyecto comienza con un sí."
 ];
+
+function handleMagicFile(input) {
+    const badge = document.getElementById('file-badge');
+    if (input.files && input.files[0]) {
+        if (badge) {
+            badge.style.display = 'inline-flex';
+            badge.innerText = `📎 ${input.files[0].name.substring(0, 15)}...`;
+        }
+        console.log("📁 Archivo adjunto para la IA:", input.files[0].name);
+    }
+}
 
 function generateMagicContract() {
     const prompt = document.getElementById('magic-prompt-input')?.value;
@@ -2332,9 +2381,18 @@ async function renderMainDashboard(filterQuery = '') {
             <div class="dash-magic-box">
                 <div class="magic-content">
                     <h2>Magia con IA ✨</h2>
-                    <p>Dime para quién es el contrato y qué incluye...</p>
+                    <p>Habla, escribe o sube un archivo para generar tu contrato.</p>
                 </div>
                 <div class="magic-input-wrapper">
+                    <div class="magic-actions-left">
+                        <label class="magic-btn-icon" title="Adjuntar archivo">
+                            📎 <input type="file" id="magic-file-input" style="display:none" onchange="handleMagicFile(this)">
+                        </label>
+                        <span class="magic-btn-icon" title="Hablar con IA">🎙️</span>
+                    </div>
+                    
+                    <div id="file-badge" class="file-attached-badge">📎 Archivo listo</div>
+                    
                     <input type="text" id="magic-prompt-input" placeholder="Ej: Contrato para Barbería con 5 servicios de $100...">
                     <button class="btn-magic-generate" onclick="generateMagicContract()">
                         <span>🪄</span> Generar
