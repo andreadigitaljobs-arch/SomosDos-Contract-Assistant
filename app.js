@@ -2524,14 +2524,11 @@ function startEditor() {
 }
 
 function showLoader() {
-    document.body.classList.add('loading-editor');
+    showExportLoader("Iniciando Editor", "Preparando tu espacio creativo...");
 }
 
 function hideLoader() {
-    // Pequeño delay de 500ms para asegurar que el zoom/fit se asentó perfectamente
-    setTimeout(() => {
-        document.body.classList.remove('loading-editor');
-    }, 500);
+    hideExportLoader();
 }
 
 async function initApp() {
@@ -2769,8 +2766,9 @@ function smartFit() {
     updateZoom(finalPercent);
     // showToast(`Ajuste Automático: ${finalPercent}%`); // Detenido por solicitud del usuario
     
-    // Si estamos cargando el editor, este es el momento de revelar
-    if (document.body.classList.contains('loading-editor')) {
+    // Si el loader está visible (lo detectamos por opacidad del elemento #loader), lo ocultamos
+    const loader = document.getElementById('loader');
+    if (loader && loader.style.opacity === '1') {
         hideLoader();
     }
 }
