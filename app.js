@@ -173,6 +173,34 @@ const injectCatalogStyles = () => {
         .catalog-item p { margin: 0; font-size: 0.8rem; color: #64748b; line-height: 1.4; }
         .catalog-item .points-preview { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 5px; }
         .catalog-item .badge-point { font-size: 0.65rem; background: rgba(123, 63, 228, 0.1); color: #7B3FE4; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+        
+        .signature-subtitle {
+            font-size: 0.7rem !important; /* Más pequeño para móvil */
+            color: #FFFFFF !important;
+            opacity: 0.9;
+            letter-spacing: 0.5px;
+            margin-bottom: 30px;
+            white-space: normal !important; /* Permitir que rompa línea si es muy largo pero con letra pequeña */
+        }
+
+        .btn-finish-contract {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: white;
+            padding: 18px 35px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            box-shadow: 0 15px 35px rgba(99, 102, 241, 0.4);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            white-space: nowrap !important;
+        }
 
         /* MODO OSCURO (TEMA 3) */
         .theme-3 .catalog-panel { background: #0a0a14; border-left: 1px solid rgba(255, 255, 255, 0.1); }
@@ -726,23 +754,8 @@ function createPageHTML(id, type = 'content') {
                     <p>Al firmar este documento, ambas partes aceptan los términos y condiciones para <strong>${clientName}</strong>.</p>
                 </div>
                 
-                <div class="signature-section-label">REPRESENTANTES SOMOSDOS</div>
-                <div class="signature-grid owner-grid-${ownerCount}">
-                    <div class="sig-box">
-                        <div class="sig-line-container"><canvas id="sig-canvas-owner-andrea" class="sig-canvas" width="300" height="100"></canvas></div>
-                        <p class="sig-name">Andrea Reyes</p>
-                        <p class="sig-detail">SomosDos Studio</p>
-                        <button class="btn-clear-sig" onclick="clearSignature('owner-andrea')">Limpiar</button>
-                    </div>
-                    <div class="sig-box">
-                        <div class="sig-line-container"><canvas id="sig-canvas-owner-wai" class="sig-canvas" width="300" height="100"></canvas></div>
-                        <p class="sig-name">Wai Harrington</p>
-                        <p class="sig-detail">SomosDos Studio</p>
-                        <button class="btn-clear-sig" onclick="clearSignature('owner-wai')">Limpiar</button>
-                    </div>
-                </div>
-
-                <div class="signature-section-label">FIRMA(S) DEL CLIENTE</div>
+                <!-- FIRMAS DEL CLIENTE PRIMERO -->
+                <div class="signature-section-title">FIRMA(S) DEL CLIENTE</div>
                 <div class="signature-grid client-grid-${clientCount}">
                     <div class="sig-box">
                         <div class="sig-line-container"><canvas id="sig-canvas-client-1" class="sig-canvas" width="300" height="100"></canvas></div>
@@ -757,6 +770,23 @@ function createPageHTML(id, type = 'content') {
                         <p class="sig-detail">Firma Digital</p>
                         <button class="btn-clear-sig" onclick="clearSignature('client-2')">Limpiar</button>
                     </div>` : ''}
+                </div>
+
+                <!-- REPRESENTANTES SOMOSDOS DEBAJO -->
+                <div class="signature-section-title" style="margin-top: 40px;">REPRESENTANTES SOMOSDOS</div>
+                <div class="signature-grid owner-grid-${ownerCount}">
+                    <div class="sig-box">
+                        <div class="sig-line-container"><canvas id="sig-canvas-owner-andrea" class="sig-canvas" width="300" height="100"></canvas></div>
+                        <p class="sig-name">Andrea Reyes</p>
+                        <p class="sig-detail">SomosDos Studio</p>
+                        <button class="btn-clear-sig" onclick="clearSignature('owner-andrea')">Limpiar</button>
+                    </div>
+                    <div class="sig-box">
+                        <div class="sig-line-container"><canvas id="sig-canvas-owner-wai" class="sig-canvas" width="300" height="100"></canvas></div>
+                        <p class="sig-name">Wai Harrington</p>
+                        <p class="sig-detail">SomosDos Studio</p>
+                        <button class="btn-clear-sig" onclick="clearSignature('owner-wai')">Limpiar</button>
+                    </div>
                 </div>
             </div>`;
     } else {
