@@ -2624,6 +2624,10 @@ async function initApp() {
             button[onclick*="'owner'"] { display: none !important; }
         `;
         document.head.appendChild(style);
+    } else {
+        // LIMPIEZA: Si no es modo cliente, quitar clases restrictivas
+        document.body.classList.remove('is-client-mode');
+        document.body.classList.remove('client-mode');
     }
     console.log("🏁 Inicializando Aplicación v18.5...");
 

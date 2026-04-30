@@ -1517,7 +1517,8 @@ body.client-mode .design-side-panel {
 }
 
 .page.theme-3 .sig-canvas {
-    filter: invert(1) brightness(2) !important;
+    /* Eliminamos el invert para evitar que el fondo blanco se vuelva negro y oculte todo */
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
 /* Header Actions */
