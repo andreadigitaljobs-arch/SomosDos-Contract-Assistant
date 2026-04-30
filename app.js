@@ -700,6 +700,7 @@ function createPageHTML(id, type = 'content') {
             <div class="content-footer"><span class="page-number">Propuesta Económica</span></div>`;
     } else if (isSigs) {
         const clientCount = window.clientSignersCount || 1;
+        const ownerCount = window.ownerSignersCount || 2;
         inner = `
             <div class="signature-layout">
                 <div class="signature-top">
@@ -708,7 +709,7 @@ function createPageHTML(id, type = 'content') {
                 </div>
                 
                 <div class="signature-section-label">REPRESENTANTES SOMOSDOS</div>
-                <div class="signature-grid owner-grid">
+                <div class="signature-grid owner-grid-${ownerCount}">
                     <div class="sig-box">
                         <div class="sig-line-container"><canvas id="sig-canvas-owner-andrea" class="sig-canvas" width="300" height="100"></canvas></div>
                         <p class="sig-name">Andrea Reyes</p>
