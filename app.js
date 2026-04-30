@@ -2538,7 +2538,7 @@ async function initApp() {
         const clientName = urlParams.get('client');
 
         if (clientName) {
-            // Inyectar nombre del cliente en el documento cargado
+            // Inyectar nombre del cliente en el documento cargado (Acelerado)
             setTimeout(() => {
                 const clientEls = document.querySelectorAll('.client-info');
                 clientEls.forEach(el => el.innerText = `PREPARADO PARA: ${clientName.toUpperCase()}`);
@@ -2549,7 +2549,7 @@ async function initApp() {
                     syncClientName(clientName);
                 }
                 saveDocument(true);
-            }, 1000);
+            }, 10);
         }
 
         if (urlParams.get('mode') === 'client') {
