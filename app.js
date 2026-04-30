@@ -2118,6 +2118,81 @@ function injectDashboardStyles() {
         }
         
         .hidden { display: none !important; }
+        
+        /* MAGIC AI BOX WIDGET */
+        .dash-magic-box {
+            max-width: 1050px;
+            margin: 0 auto 50px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(123, 63, 228, 0.05));
+            backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+            border-radius: 40px;
+            padding: 35px;
+            border: 1px solid rgba(123, 63, 228, 0.1);
+            box-shadow: 0 25px 60px rgba(123, 63, 228, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            position: relative;
+            overflow: hidden;
+            animation: viewFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .dash-magic-box::after {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(123, 63, 228, 0.1), transparent 30%);
+            animation: rotate 8s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .magic-content { position: relative; z-index: 2; flex: 1; }
+        .magic-content h2 { font-size: 1.8rem; font-weight: 800; color: #1A1A2E; margin-bottom: 8px; }
+        .magic-content p { color: #64748B; font-size: 1.1rem; }
+
+        .magic-input-wrapper {
+            position: relative; z-index: 2;
+            flex: 1.5;
+            display: flex;
+            background: white;
+            border-radius: 20px;
+            padding: 8px;
+            border: 1px solid rgba(123, 63, 228, 0.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        }
+
+        .magic-input-wrapper input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 12px 20px;
+            font-size: 1rem;
+            color: #1A1A2E;
+            background: transparent;
+        }
+
+        .btn-magic-generate {
+            background: linear-gradient(135deg, #7B3FE4, #2D3EAF);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 10px 20px rgba(123, 63, 228, 0.3);
+        }
+
+        .btn-magic-generate:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 15px 30px rgba(123, 63, 228, 0.4);
+        }
+
+        .btn-magic-generate span { font-size: 1.2rem; }
+
         .editor-layout { animation: fadeScaleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeScaleIn {
             from { opacity: 0; transform: scale(0.98) translateY(20px); }
@@ -2136,7 +2211,30 @@ const MOTIVATIONAL_PHRASES = [
     "Tu próximo gran proyecto comienza con un sí."
 ];
 
-function showMainDashboard() {
+function generateMagicContract() {
+    const prompt = document.getElementById('magic-prompt-input')?.value;
+    if (!prompt) {
+        alert("¡Cuéntame un poco qué contrato necesitas!");
+        return;
+    }
+    
+    // Guardar el prompt para que el asistente lo use al abrirse
+    localStorage.setItem('s2_magic_prompt', prompt);
+    
+    // Crear contrato y abrir editor
+    createNewContract();
+    
+    // Simular que el asistente se abre
+    setTimeout(() => {
+        const aiBtn = document.querySelector('.btn-ai-pro');
+        if (aiBtn) aiBtn.click();
+        
+        // Mensaje de feedback en consola (el asistente real leería el localStorage)
+        console.log("✨ Magia activada con prompt:", prompt);
+    }, 1000);
+}
+
+const showMainDashboard = async () => {
     injectDashboardStyles();
     // Resetear scroll al inicio
     window.scrollTo(0, 0);
@@ -2228,6 +2326,22 @@ async function renderMainDashboard(filterQuery = '') {
                 <span class="search-icon">🔍</span>
                 <input type="text" class="search-input" placeholder="Buscar cliente o proyecto..." value="${filterQuery}" oninput="renderMainDashboard(this.value)">
             </div>
+
+            <!-- MAGIC AI WIDGET -->
+            ${!filterQuery ? `
+            <div class="dash-magic-box">
+                <div class="magic-content">
+                    <h2>Magia con IA ✨</h2>
+                    <p>Dime para quién es el contrato y qué incluye...</p>
+                </div>
+                <div class="magic-input-wrapper">
+                    <input type="text" id="magic-prompt-input" placeholder="Ej: Contrato para Barbería con 5 servicios de $100...">
+                    <button class="btn-magic-generate" onclick="generateMagicContract()">
+                        <span>🪄</span> Generar
+                    </button>
+                </div>
+            </div>
+            ` : ''}
 
 
 
