@@ -264,6 +264,15 @@ const injectHeaderStyles = () => {
             background: transparent !important;
         }
 
+        /* ESTADO DE INTRIGA PARA CLIENTE (Carga inicial) */
+        .is-intrigue #editor-view {
+            opacity: 0.4 !important;
+            filter: blur(30px) !important;
+            visibility: visible !important;
+            pointer-events: none !important;
+            transition: none !important;
+        }
+
         .is-client-mode #document-container {
             margin-left: 0 !important;
         }
@@ -1765,6 +1774,9 @@ function nextTutorialStep(n) {
 }
 
 function closeTutorial() { 
+    // Eliminar estado de intriga para permitir la transición fluida
+    document.documentElement.classList.remove('is-intrigue');
+    
     const tutorial = document.getElementById('client-tutorial');
     if (tutorial) {
         tutorial.style.opacity = '0';
@@ -2463,6 +2475,8 @@ async function initApp() {
         
         if (isClient) {
             // MODO CLIENTE: Lo dejamos visible con baja opacidad para que se vea tras el blur del tutorial
+            document.documentElement.classList.add('is-intrigue');
+            document.write('<style>.main-header, .design-side-panel, .zoom-controls, .floating-add-btn, #nav-to-dashboard, .page-controls { display: none !important; }</style>');
             const editor = document.getElementById('editor-view');
             editor.classList.remove('hidden');
             editor.style.opacity = '0.4';
