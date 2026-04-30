@@ -1152,22 +1152,7 @@ function renderDocument(data) {
         console.log("🚀 Modo Cliente Detectado: Renderizado ultra-rápido activado.");
         return;
     }
-
-        // REPARACIÓN DE CONTROLES Y TEMAS (Solo para diseñador)
-        document.querySelectorAll('.page').forEach(p => {
-            const id = p.id.replace('page-', '');
-            const theme = parseInt(p.getAttribute('data-theme')) || 1;
-
-            // Si no tiene los selectores mini o controles de movimiento, se los inyectamos (re-generar controls)
-            if (!p.querySelector('.style-selector.mini') || !p.querySelector('.move-controls')) {
-                const controls = p.querySelector('.page-controls');
-                if (controls) {
-                    controls.innerHTML = `
-                                    <div class="move-controls">
-                                        <button class="btn-move" title="Subir Página" onclick="movePage('${id}', 'up')">↑</button>
-                                        <button class="btn-move" title="Bajar Página" onclick="movePage('${id}', 'down')">↓</button>
-                                        <button class="btn-move" title="Cambiar Diseño" onclick="toggleLayout('${id}')">◫</button>
-                                        <button class="btn-move" title="Actualizar Formato" onclick="updatePageFormat('${id}')">🪄</button>
+    
     // REPARACIÓN DE CONTROLES Y TEMAS (Solo para diseñador)
     document.querySelectorAll('.page').forEach(p => {
         const id = p.id.replace('page-', '');
