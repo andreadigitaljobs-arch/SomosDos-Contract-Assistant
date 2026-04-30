@@ -2525,10 +2525,23 @@ function startEditor() {
 
 function showLoader() {
     showExportLoader("Iniciando Editor", "Preparando tu espacio creativo...");
+    // Asegurar que el editor esté invisible mientras carga
+    const editor = document.getElementById('editor-view');
+    if (editor) editor.style.opacity = '0';
 }
 
 function hideLoader() {
-    hideExportLoader();
+    // Aumentamos el delay a 1.2s para que el smartFit tenga tiempo de sobra para estabilizarse
+    setTimeout(() => {
+        // Un último ajuste preventivo antes de revelar
+        smartFit();
+        
+        setTimeout(() => {
+            hideExportLoader();
+            const editor = document.getElementById('editor-view');
+            if (editor) editor.style.opacity = '1';
+        }, 100);
+    }, 1200);
 }
 
 async function initApp() {
