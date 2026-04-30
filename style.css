@@ -865,7 +865,7 @@ body.client-mode .design-side-panel {
 
 .signature-top h3 {
     font-family: 'Outfit', sans-serif !important;
-    font-size: 1.6rem; /* Reducido para máxima elegancia */
+    font-size: 2.2rem; /* El tamaño de la Foto 2 */
     font-weight: 800;
     background: var(--primary-gradient);
     -webkit-background-clip: text;
@@ -876,11 +876,11 @@ body.client-mode .design-side-panel {
 }
 
 .signature-top p {
-    font-size: 0.75rem; /* Más sutil */
+    font-size: 0.8rem;
     color: var(--text-light);
     white-space: nowrap;
     opacity: 0.9;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     letter-spacing: 0.5px;
 }
 
@@ -893,8 +893,8 @@ body.client-mode .signature-top h3 {
 .signature-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 30px;
-    margin-top: 20px;
+    gap: 60px;
+    margin-top: 40px;
     width: 100%;
 }
 
@@ -903,10 +903,6 @@ body.client-mode .signature-top h3 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: rgba(255, 255, 255, 0.03);
-    padding: 15px 10px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .sig-line-container {
@@ -1185,13 +1181,13 @@ body.client-mode #sig-canvas-owner {
     -webkit-text-fill-color: transparent !important;
     text-shadow: 0 4px 20px rgba(129, 140, 248, 0.3);
     opacity: 1 !important;
-    font-size: 1.6rem !important; /* Forzar tamaño elegante */
+    font-size: 2.2rem !important; /* Restaurado tamaño de Foto 2 */
 }
 
 .page.theme-3 .signature-top p {
     color: #FFFFFF !important;
     opacity: 1 !important;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
 }
 
 .page.theme-3 .cover-title h2 {
