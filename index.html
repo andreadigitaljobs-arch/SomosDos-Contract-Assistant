@@ -177,8 +177,28 @@
         </div>
     </div>
 
-    <!-- Botón flotante para panel de diseño en móvil -->
-    <button id="mobile-panel-toggle" onclick="toggleDesignPanel()">
+    <!-- Menú Inferior Estilo App para Móvil (Solo Visible en Móvil) -->
+    <nav id="mobile-bottom-nav">
+        <button onclick="showMainDashboard()" class="nav-item">
+            <span class="nav-icon">📚</span>
+            <span class="nav-label">Biblioteca</span>
+        </button>
+        <button onclick="showEditor()" class="nav-item">
+            <span class="nav-icon">📝</span>
+            <span class="nav-label">Editor</span>
+        </button>
+        <button onclick="toggleDesignPanel()" class="nav-item">
+            <span class="nav-icon">🎨</span>
+            <span class="nav-label">Estilos</span>
+        </button>
+        <button onclick="saveDocument(true)" class="nav-item">
+            <span class="nav-icon">💾</span>
+            <span class="nav-label">Guardar</span>
+        </button>
+    </nav>
+
+    <!-- Botón flotante para panel de diseño en móvil (Oculto ahora que hay menú abajo) -->
+    <button id="mobile-panel-toggle" style="display:none !important;" onclick="toggleDesignPanel()">
         <span>🎨</span>
     </button>
 

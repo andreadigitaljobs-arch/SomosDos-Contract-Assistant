@@ -2539,56 +2539,102 @@ body.client-mode .header-actions {
     /* Editor Móvil: Panel se vuelve Drawer */
     .design-side-panel {
         position: fixed !important;
-        bottom: 0 !important;
+        bottom: 70px !important; /* Arriba del nav inferior */
         left: 0 !important;
         right: 0 !important;
         top: auto !important;
         width: 100% !important;
-        height: 70vh !important;
+        height: 60vh !important;
         border-radius: 30px 30px 0 0 !important;
-        transform: translateY(110%);
+        transform: translateY(120%);
         z-index: 100000 !important;
         box-shadow: 0 -20px 60px rgba(0,0,0,0.2) !important;
         transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
         background: white !important;
         display: block !important;
+        padding-bottom: 30px !important;
     }
 
     .design-side-panel.active {
         transform: translateY(0) !important;
     }
 
+    /* MENÚ INFERIOR PREMIUM */
+    #mobile-bottom-nav {
+        display: flex !important;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 75px;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        z-index: 100001;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0 10px;
+        padding-bottom: env(safe-area-inset-bottom);
+        box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.05);
+    }
+
+    .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        background: none;
+        border: none;
+        color: #64748b;
+        font-size: 0.7rem;
+        font-weight: 600;
+        flex: 1;
+        transition: all 0.3s ease;
+    }
+
+    .nav-item:active {
+        transform: scale(0.9);
+        color: #7B3FE4;
+    }
+
+    .nav-icon {
+        font-size: 1.4rem;
+        margin-bottom: 2px;
+    }
+
     #document-container {
-        padding-top: 20px !important;
+        padding-top: 10px !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: flex-start !important;
     }
 
     #zoom-wrapper {
         margin-left: 0 !important;
         width: 100% !important;
-        padding: 10px !important;
+        padding: 0 !important;
+        display: flex !important;
+        justify-content: center !important;
+        overflow-x: hidden !important;
     }
 
-    /* Botón flotante para abrir el panel en móvil */
-    #mobile-panel-toggle {
-        display: flex !important;
-        position: fixed;
-        right: 20px;
-        bottom: 100px;
-        width: 60px;
-        height: 60px;
-        background: #7B3FE4;
-        border-radius: 50%;
-        color: white;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        box-shadow: 0 10px 30px rgba(123, 63, 228, 0.4);
-        z-index: 9999;
-        border: none;
+    .page {
+        margin: 10px auto !important;
+        transform-origin: center top !important;
+    }
+
+    /* Ocultar botones de cabecera que ahora están abajo */
+    .header-actions .btn-save, 
+    .header-actions .btn-library,
+    .header-actions .btn-publish,
+    .header-actions .btn-add,
+    .header-actions .btn-client {
+        display: none !important;
     }
 }
 
-#mobile-panel-toggle { display: none; }
+#mobile-bottom-nav { display: none; }
 
 /* Fix para firmas en Modo Oscuro (el lienzo transparente ocultaba la tinta negra) */
 .theme-3 [id^="sig-canvas"] {
