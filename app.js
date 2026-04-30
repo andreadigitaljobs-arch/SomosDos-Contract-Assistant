@@ -2320,20 +2320,36 @@ const MOTIVATIONAL_PHRASES = [
     "Tu próximo gran proyecto comienza con un sí."
 ];
 
-const showMainDashboard = async () => {
-    injectDashboardStyles();
-    // Resetear scroll al inicio
-    window.scrollTo(0, 0);
-    document.body.style.overflow = 'auto';
+function showMainDashboard() {
+    const dash = document.getElementById('dashboard-view');
+    const editor = document.getElementById('editor-view');
     
-    document.getElementById('dashboard-view').classList.remove('hidden');
-    document.getElementById('editor-view').classList.add('hidden');
-    document.getElementById('design-panel').classList.add('hidden');
-    document.body.classList.add('dashboard-open');
+    // Transición fluida
+    editor.classList.remove('active');
+    setTimeout(() => {
+        editor.classList.add('hidden');
+        dash.classList.remove('hidden');
+        setTimeout(() => dash.classList.add('active'), 10);
+    }, 300);
+
     renderMainDashboard();
 }
 
+function showEditor() {
+    const dash = document.getElementById('dashboard-view');
+    const editor = document.getElementById('editor-view');
+
+    dash.classList.remove('active');
+    setTimeout(() => {
+        dash.classList.add('hidden');
+        editor.classList.remove('hidden');
+        setTimeout(() => editor.classList.add('active'), 10);
+        smartFit();
+    }, 300);
+}
+
 async function renderMainDashboard(filterQuery = '') {
+    injectDashboardStyles();
     const dash = document.getElementById('dashboard-view');
     const db = getSupabase();
     let registry = [];
@@ -2493,7 +2509,7 @@ function createNewContract() {
     showEmptyState();
     
     // Abrir el editor
-    startEditor();
+    showEditor();
 }
 
 async function loadContract(id) {

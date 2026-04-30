@@ -97,6 +97,36 @@ body {
     flex-direction: column;
     align-items: stretch;
     min-height: 100vh;
+    transition: background-color 0.5s ease;
+}
+
+/* --- SISTEMA DE TRANSICIONES GLOBALES --- */
+.view-container {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
+                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    visibility: hidden;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+
+.view-container.active {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    position: relative;
+}
+
+#dashboard-view, #editor-view {
+    padding-bottom: 50px;
+}
+
+#editor-view {
+    display: flex;
+    flex-direction: column;
 }
 
 /* --- BRAND SCROLLBARS --- */
@@ -2310,6 +2340,21 @@ body.client-mode #toggle-client-mode {
         box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
     }
 
+    /* Botón flotante para panel de diseño en móvil */
+    #mobile-panel-toggle {
+        display: block !important;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 10001;
+        background: var(--accent-color);
+        color: white;
+        border: none;
+        padding: 15px;
+        border-radius: 50%;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
     .design-side-panel.active {
         left: 0;
     }
@@ -2460,42 +2505,90 @@ body.client-mode .header-actions {
     width: auto !important;
 }
 
-/* Botón flotante para el cliente en móvil y ocultar el resto */
-@media (max-width: 900px) {
-    body.client-mode .actions {
-        display: flex !important;
+/* --- ADAPTACIÓN INTELIGENTE: MÓVIL VS PC --- */
+@media (max-width: 768px) {
+    /* Header Móvil */
+    .main-header {
+        padding: 15px 20px !important;
+        height: auto !important;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .header-center { 
+        order: 3;
+        width: 100%;
+        display: none !important; 
+    }
+    
+    .header-actions {
+        gap: 8px;
     }
 
-    body.client-mode .header-actions {
-        display: flex !important;
+    /* Dashboard Móvil */
+    .dashboard-container {
+        padding: 15px !important;
+        margin-top: 10px !important;
+    }
+    
+    .contract-grid {
+        grid-template-columns: 1fr !important;
+        gap: 15px !important;
     }
 
-    body.client-mode #btn-client-save {
+    /* Editor Móvil: Panel se vuelve Drawer */
+    .design-side-panel {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        top: auto !important;
+        width: 100% !important;
+        height: 70vh !important;
+        border-radius: 30px 30px 0 0 !important;
+        transform: translateY(110%);
+        z-index: 100000 !important;
+        box-shadow: 0 -20px 60px rgba(0,0,0,0.2) !important;
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        background: white !important;
         display: block !important;
-        position: fixed;
-        bottom: 30px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 100000;
-        width: 90%;
-        padding: 18px;
-        font-size: 1.2rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
-        border-radius: 12px;
     }
 
-    body.client-mode .template-selector,
-    body.client-mode .history-controls,
-    body.client-mode .btn-save,
-    body.client-mode .btn-publish,
-    body.client-mode .btn-library,
-    body.client-mode .btn-client,
-    body.client-mode .btn-settings,
-    body.client-mode .client-name-input-wrapper,
-    body.client-mode #btn-client-save {
-        display: none !important;
+    .design-side-panel.active {
+        transform: translateY(0) !important;
+    }
+
+    #document-container {
+        padding-top: 20px !important;
+    }
+
+    #zoom-wrapper {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding: 10px !important;
+    }
+
+    /* Botón flotante para abrir el panel en móvil */
+    #mobile-panel-toggle {
+        display: flex !important;
+        position: fixed;
+        right: 20px;
+        bottom: 100px;
+        width: 60px;
+        height: 60px;
+        background: #7B3FE4;
+        border-radius: 50%;
+        color: white;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 10px 30px rgba(123, 63, 228, 0.4);
+        z-index: 9999;
+        border: none;
     }
 }
+
+#mobile-panel-toggle { display: none; }
 
 /* Fix para firmas en Modo Oscuro (el lienzo transparente ocultaba la tinta negra) */
 .theme-3 [id^="sig-canvas"] {
