@@ -1746,13 +1746,13 @@ async function saveClientSignature() {
     const isBlank = !canvas || isCanvasBlank(canvas);
     
     if (isBlank) {
-        showModal('✍️', 'Firma Requerida', 'Por favor, firma el documento en el espacio correspondiente antes de enviar el acuerdo.');
+        showModal('✍🏻', 'Firma Requerida', 'Por favor, firma el documento en el espacio correspondiente antes de enviar el acuerdo.');
         return;
     }
 
     // 1. Confirmación de Seguridad (Evitar accidentes)
     const confirmed = await showConfirmModal(
-        '✍️',
+        '✍🏻',
         '¿Finalizar y Enviar?',
         '¿Estás listo para registrar tu firma de forma definitiva? Asegúrate de haber revisado todos los puntos del acuerdo.',
         'Sí, enviar ahora',
