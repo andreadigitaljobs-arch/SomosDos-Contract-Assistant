@@ -50,7 +50,8 @@ function restoreState(state) {
         document.documentElement.style.setProperty('--logo-small-size', state.styles.logoSmallSize);
     }
     setTimeout(() => {
-        initSignaturePad('owner'); initSignaturePad('client');
+        initSignaturePad('owner-andrea'); initSignaturePad('owner-wai');
+        initSignaturePad('client-1'); initSignaturePad('client-2');
         updateHistoryButtons();
         saveDocument(true);
     }, 10);
@@ -698,25 +699,45 @@ function createPageHTML(id, type = 'content') {
             </div>
             <div class="content-footer"><span class="page-number">Propuesta Económica</span></div>`;
     } else if (isSigs) {
+        const clientCount = window.clientSignersCount || 1;
         inner = `
             <div class="signature-layout">
                 <div class="signature-top">
                     <h3 class="editable" contenteditable="true">ACEPTACIÓN Y FIRMAS</h3>
                     <p>Al firmar este documento, ambas partes aceptan los términos y condiciones para <strong>${clientName}</strong>.</p>
                 </div>
-                <div class="signature-grid">
+                
+                <div class="signature-section-label">REPRESENTANTES SOMOSDOS</div>
+                <div class="signature-grid owner-grid">
                     <div class="sig-box">
-                        <div class="sig-line-container"><canvas id="sig-canvas-owner" class="sig-canvas" width="300" height="100"></canvas></div>
-                        <p class="sig-name" id="owner-signer-name">Andrea Reyes</p>
-                        <p class="sig-detail">Representante Autorizado</p>
-                        <button class="btn-clear-sig" onclick="clearSignature('owner')">Limpiar</button>
+                        <div class="sig-line-container"><canvas id="sig-canvas-owner-andrea" class="sig-canvas" width="300" height="100"></canvas></div>
+                        <p class="sig-name">Andrea Reyes</p>
+                        <p class="sig-detail">SomosDos Studio</p>
+                        <button class="btn-clear-sig" onclick="clearSignature('owner-andrea')">Limpiar</button>
                     </div>
                     <div class="sig-box">
-                        <div class="sig-line-container"><canvas id="sig-canvas-client" class="sig-canvas" width="300" height="100"></canvas></div>
+                        <div class="sig-line-container"><canvas id="sig-canvas-owner-wai" class="sig-canvas" width="300" height="100"></canvas></div>
+                        <p class="sig-name">Wai Harrington</p>
+                        <p class="sig-detail">SomosDos Studio</p>
+                        <button class="btn-clear-sig" onclick="clearSignature('owner-wai')">Limpiar</button>
+                    </div>
+                </div>
+
+                <div class="signature-section-label">FIRMA(S) DEL CLIENTE</div>
+                <div class="signature-grid client-grid-${clientCount}">
+                    <div class="sig-box">
+                        <div class="sig-line-container"><canvas id="sig-canvas-client-1" class="sig-canvas" width="300" height="100"></canvas></div>
                         <p class="sig-name editable" contenteditable="true">${clientNameUpper}</p>
-                        <p class="sig-detail">Firma Digital del Cliente</p>
-                        <button class="btn-clear-sig" onclick="clearSignature('client')">Limpiar</button>
+                        <p class="sig-detail">Firma Digital</p>
+                        <button class="btn-clear-sig" onclick="clearSignature('client-1')">Limpiar</button>
                     </div>
+                    ${clientCount === 2 ? `
+                    <div class="sig-box">
+                        <div class="sig-line-container"><canvas id="sig-canvas-client-2" class="sig-canvas" width="300" height="100"></canvas></div>
+                        <p class="sig-name editable" contenteditable="true">[NOMBRE SOCIO]</p>
+                        <p class="sig-detail">Firma Digital</p>
+                        <button class="btn-clear-sig" onclick="clearSignature('client-2')">Limpiar</button>
+                    </div>` : ''}
                 </div>
             </div>`;
     } else {
@@ -1168,9 +1189,13 @@ function renderDocument(data) {
     // Inyectar firmas y restaurar datos con prioridad (Acelerado para cliente)
     const delay = isClient ? 20 : 200; 
     setTimeout(() => {
-        initSignaturePad('owner'); initSignaturePad('client');
-        if (data.sigs?.owner) restoreSig('owner', data.sigs.owner);
-        if (data.sigs?.client) restoreSig('client', data.sigs.client);
+        initSignaturePad('owner-andrea'); initSignaturePad('owner-wai');
+        initSignaturePad('client-1'); initSignaturePad('client-2');
+        
+        if (data.sigs?.['owner-andrea']) restoreSig('owner-andrea', data.sigs['owner-andrea']);
+        if (data.sigs?.['owner-wai']) restoreSig('owner-wai', data.sigs['owner-wai']);
+        if (data.sigs?.['client-1']) restoreSig('client-1', data.sigs['client-1']);
+        if (data.sigs?.['client-2']) restoreSig('client-2', data.sigs['client-2']);
     }, delay);
 
     // Si es cliente, saltamos la reparación de controles para cargar instantáneamente
@@ -1236,6 +1261,30 @@ function syncClientName(val) {
 }
 
 // --- FIRMAS ---
+window.clientSignersCount = 1;
+
+function updateClientSignersCount(count) {
+    window.clientSignersCount = count;
+    
+    // Actualizar UI del panel
+    document.getElementById('client-count-1')?.classList.toggle('active', count === 1);
+    document.getElementById('client-count-2')?.classList.toggle('active', count === 2);
+    
+    // Forzar re-render de las páginas de firma
+    const sigPages = document.querySelectorAll('.page[data-type="signatures"]');
+    sigPages.forEach(p => {
+        const id = p.id.replace('page-', '');
+        renderDocument(historyStack[historyIndex]); 
+    });
+    
+    // Método más ligero: Solo regenerar el HTML de las firmas
+    saveDocument(true);
+    const state = historyStack[historyIndex];
+    if (state) {
+        initApp(); // Reiniciar para aplicar cambios estructurales
+    }
+}
+
 function restoreSig(id, url) {
     const canvas = document.getElementById(`sig-canvas-${id}`);
     const ctx = canvas?.getContext('2d');
@@ -1250,28 +1299,29 @@ function restoreSig(id, url) {
 
 // --- GESTIÓN DE FIRMANTES PREDETERMINADOS (Andrea / Wai) ---
 function updateOwnerSigner(name) {
-    const el = document.getElementById('owner-signer-name');
-    if (el) el.textContent = name;
-    saveDocument(true);
+    // Deprecado en favor de firmas conjuntas
 }
 
 function saveSignerAsDefault() {
-    const canvas = document.getElementById('sig-canvas-owner');
-    if (!canvas || canvas.dataset.hasDrawing !== 'true') {
-        showModal('⚠️', 'Firma vacía', 'Dibuja tu firma antes de guardarla como predeterminada.');
-        return;
+    const andreaCanvas = document.getElementById('sig-canvas-owner-andrea');
+    const waiCanvas = document.getElementById('sig-canvas-owner-wai');
+    
+    if (andreaCanvas && andreaCanvas.dataset.hasDrawing === 'true') {
+        localStorage.setItem(`default_sig_Andrea Reyes`, andreaCanvas.toDataURL());
     }
-    const name = document.getElementById('owner-signer-select')?.value || "Andrea Reyes";
-    const dataUrl = canvas.toDataURL();
-    localStorage.setItem(`default_sig_${name}`, dataUrl);
-    showModal('✅', 'Firma Guardada', `La firma de ${name} se ha guardado correctamente en este navegador.`);
+    if (waiCanvas && waiCanvas.dataset.hasDrawing === 'true') {
+        localStorage.setItem(`default_sig_Wai Harrington`, waiCanvas.toDataURL());
+    }
+    
+    showModal('✅', 'Firmas Guardadas', 'Se han guardado las firmas detectadas para Andrea y Wai en este navegador.');
 }
 
-function applyDefaultSigner() {
-    const canvas = document.getElementById('sig-canvas-owner');
-    const name = document.getElementById('owner-signer-select')?.value || "Andrea Reyes";
+function applyDefaultSigner(name) {
+    const targetId = name === 'Andrea Reyes' ? 'owner-andrea' : 'owner-wai';
+    const canvas = document.getElementById(`sig-canvas-${targetId}`);
     const dataUrl = localStorage.getItem(`default_sig_${name}`);
     
+    if (!canvas) return;
     if (!dataUrl) {
         showModal('ℹ️', 'Sin firma guardada', `No hay una firma guardada para ${name} todavía.`);
         return;
@@ -1293,6 +1343,13 @@ function initSignaturePad(id) {
     const canvas = document.getElementById(`sig-canvas-${id}`);
     if (!canvas) return;
     
+    // RESTRICCIÓN: En modo cliente, no se puede firmar en el espacio de SomosDos
+    const isClient = document.body.classList.contains('is-client-mode') || document.body.classList.contains('client-mode');
+    if (isClient && id.startsWith('owner-')) {
+        canvas.style.cursor = 'not-allowed';
+        canvas.style.opacity = '0.8';
+        return; 
+    }
 
     // Inicializar estado de dibujo
     if (!canvas.dataset.hasDrawing) canvas.dataset.hasDrawing = 'false';
