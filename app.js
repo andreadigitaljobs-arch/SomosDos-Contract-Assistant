@@ -1211,6 +1211,15 @@ function restoreSig(id, url) {
 function initSignaturePad(id) {
     const canvas = document.getElementById(`sig-canvas-${id}`);
     if (!canvas) return;
+    
+    // RESTRICCIÓN: En modo cliente, no se puede firmar en el espacio del dueño (SomosDos)
+    const isClient = document.body.classList.contains('is-client-mode') || document.body.classList.contains('client-mode');
+    if (isClient && id === 'owner') {
+        canvas.style.cursor = 'not-allowed';
+        canvas.style.opacity = '0.8';
+        return; 
+    }
+
     const ctx = canvas.getContext('2d');
     let drawing = false;
     const getPos = (e) => {
@@ -1228,6 +1237,10 @@ function initSignaturePad(id) {
 }
 
 function clearSignature(id) {
+    // RESTRICCIÓN: En modo cliente, no se puede borrar la firma del dueño
+    const isClient = document.body.classList.contains('is-client-mode') || document.body.classList.contains('client-mode');
+    if (isClient && id === 'owner') return;
+
     const canvas = document.getElementById(`sig-canvas-${id}`);
     if (canvas) {
         canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
@@ -2366,6 +2379,8 @@ async function initApp() {
             #zoom-wrapper { margin-top: 0 !important; padding-top: 40px !important; }
             .page { box-shadow: 0 15px 50px rgba(0,0,0,0.12) !important; }
             body { background: #fdfdfd !important; }
+            /* Bloquear Limpiar firma del dueño en modo cliente */
+            button[onclick*="'owner'"] { display: none !important; }
         `;
         document.head.appendChild(style);
     }
