@@ -2608,6 +2608,29 @@ body.client-mode .header-actions {
     body.client-mode #btn-client-save {
         display: none !important;
     }
+
+    /* FIXES DE ESPACIADO Y TAMAÑO PARA MOVIL */
+    .signature-top h3 {
+        font-size: 1.8rem !important;
+        margin-top: 0 !important;
+        line-height: 1.1 !important;
+    }
+    .signature-top p {
+        font-size: 0.7rem !important;
+        white-space: normal !important;
+        line-height: 1.4 !important;
+        margin-bottom: 25px !important;
+    }
+    .signature-grid {
+        gap: 30px !important;
+    }
+    .content-body h3 {
+        margin-bottom: 35px !important;
+        font-size: 1.8rem !important;
+    }
+    .feature-card {
+        margin-top: 10px !important;
+    }
 }
 
 /* Fix para firmas en Modo Oscuro (el lienzo transparente ocultaba la tinta negra) */
