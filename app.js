@@ -1051,6 +1051,7 @@ async function saveClientSignature() {
 }
 
 async function loadDocument() {
+    showLoader();
     console.log("📂 Iniciando carga de documento...");
     const container = getContainer();
     if (!container) { console.error("❌ No se encontró el contenedor principal"); return; }
@@ -2330,6 +2331,7 @@ const MOTIVATIONAL_PHRASES = [
 ];
 
 const showMainDashboard = async () => {
+    hideLoader();
     injectDashboardStyles();
     // Resetear scroll al inicio
     window.scrollTo(0, 0);
@@ -2521,6 +2523,17 @@ function startEditor() {
     initApp();
 }
 
+function showLoader() {
+    document.body.classList.add('loading-editor');
+}
+
+function hideLoader() {
+    // Pequeño delay de 500ms para asegurar que el zoom/fit se asentó perfectamente
+    setTimeout(() => {
+        document.body.classList.remove('loading-editor');
+    }, 500);
+}
+
 async function initApp() {
     injectHeaderStyles();
     injectCatalogStyles();
@@ -2531,6 +2544,8 @@ async function initApp() {
     const urlParams = new URLSearchParams(window.location.search);
     const hasId = urlParams.has('id');
     const isClient = urlParams.get('mode') === 'client';
+
+    if (hasId) showLoader();
 
     // Si no estamos en el editor explícitamente, mostrar Dashboard
     const isEditing = document.getElementById('editor-view').classList.contains('hidden') === false;
@@ -2753,6 +2768,11 @@ function smartFit() {
 
     updateZoom(finalPercent);
     // showToast(`Ajuste Automático: ${finalPercent}%`); // Detenido por solicitud del usuario
+    
+    // Si estamos cargando el editor, este es el momento de revelar
+    if (document.body.classList.contains('loading-editor')) {
+        hideLoader();
+    }
 }
 
 function adaptMobileMenu() {
