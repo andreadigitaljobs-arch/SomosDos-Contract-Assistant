@@ -1686,18 +1686,53 @@ function toggleClientMode(autoShowTutorial = true) {
 
 function toggleClientFab(show) {
     const existingFab = document.getElementById('client-fab-save');
-    if (show && window.innerWidth <= 900 && (document.body.classList.contains('client-mode') || document.body.classList.contains('is-client-mode'))) {
+    const isClient = document.body.classList.contains('client-mode') || document.body.classList.contains('is-client-mode');
+    
+    if (show && isClient) {
         if (!existingFab) {
             const fab = document.createElement('button');
             fab.id = 'client-fab-save';
             fab.className = 'client-fab-save';
-            fab.textContent = '✅ Guardar Firma y Enviar';
+            fab.innerHTML = '<span>✨ Finalizar y Enviar Acuerdo</span>';
             fab.onclick = () => saveClientSignature();
             document.body.appendChild(fab);
         }
     } else {
         if (existingFab) existingFab.remove();
     }
+}
+
+async function saveClientSignature() {
+    const btn = document.getElementById('client-fab-save');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>⏳ Enviando...</span>';
+    }
+
+    // 1. Guardar el estado actual (firma incluida)
+    await saveDocument(true); 
+
+    // 2. Efecto Arrechísimo (Confetti)
+    if (window.confetti) {
+        confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#2D3EAF', '#7B3FE4', '#FFD700']
+        });
+    }
+
+    // 3. Modal de Éxito Premium
+    showConfirmModal(
+        '🚀',
+        '¡Acuerdo Enviado!',
+        'Tu firma ha sido registrada con éxito. Hemos notificado a SomosDos Studio para proceder con los siguientes pasos.',
+        'Perfecto, gracias',
+        ''
+    ).then(() => {
+        // Opcional: Redirigir o limpiar
+        if (btn) btn.innerHTML = '<span>✅ Enviado con Éxito</span>';
+    });
 }
 
 function toggleDesignPanel() {

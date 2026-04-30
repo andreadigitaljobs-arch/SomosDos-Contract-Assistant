@@ -2469,30 +2469,64 @@ body.client-mode .header-actions {
     border-radius: 8px;
 }
 
-/* Botón flotante inyectado dinámicamente para cliente en móvil */
+/* Botón flotante PREMIUM (Arrechísimo) para el cliente */
 .client-fab-save {
     position: fixed;
-    bottom: 20px;
+    bottom: 30px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 999999;
-    width: auto;
-    padding: 12px 32px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    font-family: 'Outfit', sans-serif;
+    padding: 16px 40px;
+    font-size: 1.1rem;
+    font-weight: 800;
     color: white;
-    background: linear-gradient(135deg, #2D3EAF, #7B3FE4);
+    background: linear-gradient(135deg, #2D3EAF, #7B3FE4, #2D3EAF);
+    background-size: 200% auto;
     border: none;
-    border-radius: 50px;
+    border-radius: 100px;
     cursor: pointer;
-    box-shadow: 0 4px 20px rgba(123, 63, 228, 0.35);
-    letter-spacing: 0.3px;
+    box-shadow: 0 10px 40px rgba(123, 63, 228, 0.4), 0 0 0 4px rgba(255,255,255,0.2);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: magicPulse 2s infinite, gradientMove 3s linear infinite;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+@keyframes magicPulse {
+    0% { box-shadow: 0 10px 40px rgba(123, 63, 228, 0.4), 0 0 0 0px rgba(123, 63, 228, 0.2); }
+    70% { box-shadow: 0 10px 40px rgba(123, 63, 228, 0.6), 0 0 0 20px rgba(123, 63, 228, 0); }
+    100% { box-shadow: 0 10px 40px rgba(123, 63, 228, 0.4), 0 0 0 0px rgba(123, 63, 228, 0); }
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.client-fab-save:hover {
+    transform: translateX(-50%) scale(1.05) translateY(-5px);
+    box-shadow: 0 20px 60px rgba(123, 63, 228, 0.6);
+    filter: brightness(1.2);
 }
 
 .client-fab-save:active {
-    transform: translateX(-50%) scale(0.96);
-    box-shadow: 0 2px 12px rgba(123, 63, 228, 0.5);
+    transform: translateX(-50%) scale(0.95);
+}
+
+.client-fab-save i {
+    font-size: 1.4rem;
+    animation: bounceIcon 1s infinite alternate;
+}
+
+@keyframes bounceIcon {
+    from { transform: translateY(0); }
+    to { transform: translateY(-3px); }
 }
 
 /* Botón de eliminar en tarjetas de la biblioteca */
