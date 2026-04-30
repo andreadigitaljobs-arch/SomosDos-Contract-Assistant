@@ -1361,18 +1361,41 @@ function updateOwnerSigner(name) {
     // Deprecado en favor de firmas conjuntas
 }
 
-function saveSignerAsDefault() {
+async function saveSignerAsDefault() {
     const andreaCanvas = document.getElementById('sig-canvas-owner-andrea');
     const waiCanvas = document.getElementById('sig-canvas-owner-wai');
     
+    let savedNames = [];
+    
     if (andreaCanvas && andreaCanvas.dataset.hasDrawing === 'true') {
-        localStorage.setItem(`default_sig_Andrea Reyes`, andreaCanvas.toDataURL());
+        const exists = localStorage.getItem(`default_sig_Andrea Reyes`);
+        let confirm = true;
+        if (exists) {
+            confirm = await showConfirmModal('✍🏻', 'Sobreescribir Firma', 'Ya tienes una firma guardada para Andrea Reyes. ¿Quieres reemplazarla con la nueva?', 'Sí, reemplazar', 'Cancelar');
+        }
+        if (confirm) {
+            localStorage.setItem(`default_sig_Andrea Reyes`, andreaCanvas.toDataURL());
+            savedNames.push("Andrea Reyes");
+        }
     }
+
     if (waiCanvas && waiCanvas.dataset.hasDrawing === 'true') {
-        localStorage.setItem(`default_sig_Wai Harrington`, waiCanvas.toDataURL());
+        const exists = localStorage.getItem(`default_sig_Wai Harrington`);
+        let confirm = true;
+        if (exists) {
+            confirm = await showConfirmModal('✍🏻', 'Sobreescribir Firma', 'Ya tienes una firma guardada para Wai Harrington. ¿Quieres reemplazarla con la nueva?', 'Sí, reemplazar', 'Cancelar');
+        }
+        if (confirm) {
+            localStorage.setItem(`default_sig_Wai Harrington`, waiCanvas.toDataURL());
+            savedNames.push("Wai Harrington");
+        }
     }
     
-    showModal('✅', 'Firmas Guardadas', 'Se han guardado las firmas detectadas para Andrea y Wai en este navegador.');
+    if (savedNames.length > 0) {
+        showModal('✅', 'Guardado Exitoso', `Se han guardado correctamente las firmas de: ${savedNames.join(" y ")}.`);
+    } else {
+        showModal('⚠️', 'Sin firmas nuevas', 'No hemos detectado trazos nuevos en los cuadros de firma de Andrea o Wai para guardar.');
+    }
 }
 
 function applyDefaultSigner(name) {
@@ -1382,7 +1405,7 @@ function applyDefaultSigner(name) {
     
     if (!canvas) return;
     if (!dataUrl) {
-        showModal('ℹ️', 'Sin firma guardada', `No hay una firma guardada para ${name} todavía.`);
+        showModal('ℹ️', 'Sin firma guardada', `No hay una firma guardada para ${name} todavía. Dibuja una y dale a "Guardar".`);
         return;
     }
 
@@ -1394,6 +1417,7 @@ function applyDefaultSigner(name) {
         canvas.dataset.hasDrawing = 'true';
         saveDocument(true);
         saveHistory();
+        showToast(`✨ Firma de ${name} aplicada`);
     };
     img.src = dataUrl;
 }
