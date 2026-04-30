@@ -2637,8 +2637,10 @@ body.client-mode .header-actions {
 #mobile-bottom-nav { display: none; }
 
 /* OCULTAR HERRAMIENTAS DE EDICION EN MODO CLIENTE */
-/* OCULTAR HERRAMIENTAS DE EDICION EN MODO CLIENTE */
+/* OCULTAR HERRAMIENTAS DE EDICION EN MODO CLIENTE (Sin Parpadeo) */
+html.client-mode #mobile-bottom-nav,
 body.client-mode #mobile-bottom-nav,
+html.client-mode #mobile-panel-toggle,
 body.client-mode #mobile-panel-toggle {
     display: none !important;
 }
