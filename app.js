@@ -1193,15 +1193,21 @@ function renderDocument(data) {
         document.getElementById('client-count-2')?.classList.toggle('active', data.clientSignersCount === 2);
     }
 
-    // MIGRACIÓN: Detectar si hay páginas de firmas antiguas y actualizarlas al nuevo formato dual
+    // MIGRACIÓN Y ACTUALIZACIÓN DINÁMICA: Detectar desajustes en el número de firmantes
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = data.html;
     const oldSigPage = tempDiv.querySelector('.page[data-page-type="signatures"]');
-    if (oldSigPage && oldSigPage.innerHTML.includes('id="sig-canvas-owner"') && !oldSigPage.innerHTML.includes('sig-canvas-owner-andrea')) {
-        console.log("♻️ Actualizando página de firmas al nuevo formato dual...");
-        const id = oldSigPage.id.replace('page-', '');
-        oldSigPage.innerHTML = createPageHTML(id, 'signatures');
-        data.html = tempDiv.innerHTML; // Actualizar el HTML que se va a inyectar
+    if (oldSigPage) {
+        const hasOldId = oldSigPage.innerHTML.includes('id="sig-canvas-owner"');
+        const currentClientSigners = oldSigPage.querySelectorAll('[id^="sig-canvas-client-"]').length;
+        const needsUpdate = hasOldId || (currentClientSigners !== window.clientSignersCount);
+
+        if (needsUpdate) {
+            console.log("♻️ Regenerando página de firmas para coincidir con la configuración...");
+            const id = oldSigPage.id.replace('page-', '');
+            oldSigPage.innerHTML = createPageHTML(id, 'signatures');
+            data.html = tempDiv.innerHTML;
+        }
     }
 
     container.innerHTML = data.html;
@@ -1291,18 +1297,31 @@ function updateClientSignersCount(count) {
     document.getElementById('client-count-1')?.classList.toggle('active', count === 1);
     document.getElementById('client-count-2')?.classList.toggle('active', count === 2);
     
-    // Forzar re-render de las páginas de firma
-    const sigPages = document.querySelectorAll('.page[data-page-type="signatures"]');
-    sigPages.forEach(p => {
-        const id = p.id.replace('page-', '');
-        renderDocument(historyStack[historyIndex]); 
-    });
-    
-    // Método más ligero: Solo regenerar el HTML de las firmas
-    saveDocument(true);
-    const state = historyStack[historyIndex];
-    if (state) {
-        initApp(); // Reiniciar para aplicar cambios estructurales
+    const sigPage = document.querySelector('.page[data-page-type="signatures"]');
+    if (sigPage) {
+        const id = sigPage.id.replace('page-', '');
+        
+        // Guardar firmas actuales para restaurarlas tras el cambio
+        const currentSigs = {
+            'owner-andrea': document.getElementById('sig-canvas-owner-andrea')?.toDataURL(),
+            'owner-wai': document.getElementById('sig-canvas-owner-wai')?.toDataURL(),
+            'client-1': document.getElementById('sig-canvas-client-1')?.toDataURL()
+        };
+
+        sigPage.innerHTML = createPageHTML(id, 'signatures');
+        
+        // Reinicializar pads
+        setTimeout(() => {
+            initSignaturePad('owner-andrea'); initSignaturePad('owner-wai');
+            initSignaturePad('client-1'); initSignaturePad('client-2');
+            if (currentSigs['owner-andrea']) restoreSig('owner-andrea', currentSigs['owner-andrea']);
+            if (currentSigs['owner-wai']) restoreSig('owner-wai', currentSigs['owner-wai']);
+            if (currentSigs['client-1']) restoreSig('client-1', currentSigs['client-1']);
+            saveDocument(true);
+        }, 50);
+    } else {
+        saveDocument(true);
+        initApp();
     }
 }
 
