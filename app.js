@@ -1259,6 +1259,9 @@ function initSignaturePad(id) {
         return; 
     }
 
+    // Inicializar estado de dibujo
+    if (!canvas.dataset.hasDrawing) canvas.dataset.hasDrawing = 'false';
+
     const ctx = canvas.getContext('2d');
     let drawing = false;
     const getPos = (e) => {
@@ -1738,9 +1741,11 @@ function toggleClientFab(show) {
 }
 
 async function saveClientSignature() {
-    // 0. Validación de Firma Obligatoria
+    // 0. Validación de Firma Obligatoria (Píxel por Píxel para evitar trampas)
     const canvas = document.getElementById('sig-canvas-client');
-    if (!canvas || canvas.dataset.hasDrawing !== 'true') {
+    const isBlank = !canvas || isCanvasBlank(canvas);
+    
+    if (isBlank) {
         showModal('✍️', 'Firma Requerida', 'Por favor, firma el documento en el espacio correspondiente antes de enviar el acuerdo.');
         return;
     }
@@ -1782,8 +1787,7 @@ async function saveClientSignature() {
             '🚀',
             '¡Acuerdo Enviado!',
             'Tu firma ha sido registrada con éxito. Hemos notificado a SomosDos Studio para proceder con los siguientes pasos.',
-            'Cerrar',
-            ''
+            'Cerrar'
         ).then(() => {
             if (btn) {
                 btn.innerHTML = '<span>✅ Enviado con Éxito</span>';
@@ -1949,13 +1953,14 @@ function showConfirmModal(icon, title, message, confirmText = 'Confirmar', cance
                     <p>${message}</p>
                 </div>
                 <div class="s2-modal-actions">
-                    <button class="btn btn-modal-secondary" id="s2-modal-cancel">${cancelText}</button>
-                    <button class="btn btn-modal-danger" id="s2-modal-confirm">${confirmText}</button>
+                    ${cancelText ? `<button class="btn btn-modal-secondary" id="s2-modal-cancel">${cancelText}</button>` : ''}
+                    <button class="btn btn-modal-primary" id="s2-modal-confirm">${confirmText}</button>
                 </div>
             </div>`;
         document.body.appendChild(overlay);
         document.getElementById('s2-modal-confirm').addEventListener('click', () => { dismissModal(); resolve(true); });
-        document.getElementById('s2-modal-cancel').addEventListener('click', () => { dismissModal(); resolve(false); });
+        const cancelBtn = document.getElementById('s2-modal-cancel');
+        if (cancelBtn) cancelBtn.addEventListener('click', () => { dismissModal(); resolve(false); });
         overlay.addEventListener('click', (e) => { if (e.target === overlay) { dismissModal(); resolve(false); } });
     });
 }
@@ -1964,6 +1969,15 @@ function dismissModal() {
     const m = document.getElementById('s2-modal');
     if (m) m.remove();
     document.body.style.overflow = 'auto';
+}
+
+function isCanvasBlank(canvas) {
+    const context = canvas.getContext('2d');
+    const pixelData = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    for (let i = 0; i < pixelData.length; i += 4) {
+        if (pixelData[i+3] !== 0) return false; // Si hay algún píxel no transparente
+    }
+    return true;
 }
 
 // --- DASHBOARD DE CLIENTES (BIBLIOTECA) ---

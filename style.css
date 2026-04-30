@@ -2056,6 +2056,17 @@ body.client-mode #toggle-client-mode {
     color: #1e293b;
 }
 
+.s2-modal-actions .btn-modal-primary {
+    background: linear-gradient(135deg, #2D3EAF, #7B3FE4);
+    color: white;
+    box-shadow: 0 4px 15px rgba(123, 63, 228, 0.25);
+}
+
+.s2-modal-actions .btn-modal-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(123, 63, 228, 0.4);
+}
+
 .s2-modal-actions .btn-modal-danger {
     background: linear-gradient(135deg, #ef4444, #dc2626);
     color: white;
