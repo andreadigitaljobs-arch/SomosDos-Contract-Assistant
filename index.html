@@ -23,6 +23,7 @@
     <!-- Early Mode Detection to prevent flickering -->
     <script>
         (function() {
+            const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('mode') === 'client') {
                 document.documentElement.classList.add('is-client-mode');
                 document.documentElement.classList.add('is-intrigue');

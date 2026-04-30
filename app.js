@@ -2476,11 +2476,12 @@ async function initApp() {
         if (isClient) {
             // MODO CLIENTE: Lo dejamos visible con baja opacidad para que se vea tras el blur del tutorial
             document.documentElement.classList.add('is-intrigue');
-            document.write('<style>.main-header, .design-side-panel, .zoom-controls, .floating-add-btn, #nav-to-dashboard, .page-controls { display: none !important; }</style>');
             const editor = document.getElementById('editor-view');
-            editor.classList.remove('hidden');
-            editor.style.opacity = '0.4';
-            editor.style.visibility = 'visible';
+            if (editor) {
+                editor.classList.remove('hidden');
+                editor.style.opacity = '0.4';
+                editor.style.visibility = 'visible';
+            }
             
             // Ejecutar smartFit preventivamente
             setTimeout(() => smartFit(), 300);

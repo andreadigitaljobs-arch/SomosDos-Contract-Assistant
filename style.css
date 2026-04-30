@@ -2440,9 +2440,9 @@ body.client-mode #toggle-client-mode {
 
 /* FIX PARA MODO CLIENTE EN MOVIL */
 body.client-mode #document-container {
-    margin-top: 100px !important;
+    margin-top: 0 !important;
     padding-bottom: 20px !important;
-    /* Mínimo espacio al final para el cliente */
+    padding-top: 10px !important;
 }
 
 body.client-mode .main-header {
@@ -2512,8 +2512,8 @@ body.client-mode .header-actions {
     z-index: 999999;
     width: max-content;
     max-width: 85vw;
-    padding: 14px 28px;
-    font-size: 1.05rem;
+    padding: 18px 40px;
+    font-size: 1.1rem;
     line-height: 1.3;
     font-weight: 800;
     text-align: center;
