@@ -1722,7 +1722,11 @@ function closeTutorial() {
         editor.classList.remove('hidden');
         editor.style.opacity = '0';
         editor.style.transition = 'opacity 1s ease';
-        setTimeout(() => editor.style.opacity = '1', 50);
+        setTimeout(() => {
+            editor.style.opacity = '1';
+            // Ajustar el tamaño del documento a la pantalla ahora que es visible
+            smartFit();
+        }, 50);
     }
 
     // Mostrar el botón de guardar ahora que el cliente ya leyó las instrucciones
