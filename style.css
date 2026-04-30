@@ -900,8 +900,11 @@ body.client-mode .design-side-panel {
 }
 
 /* Bloqueo dinámico de firma SomosDos en modo cliente */
-body.client-mode #sig-canvas-owner,
-body.is-client-mode #sig-canvas-owner {
+/* Bloqueo de firmas del dueño en modo cliente (Nuevos IDs) */
+body.is-client-mode [id^="sig-canvas-owner-"],
+body.client-mode [id^="sig-canvas-owner-"],
+body.is-client-mode #sig-canvas-owner,
+body.client-mode #sig-canvas-owner {
     cursor: not-allowed !important;
     opacity: 0.8 !important;
     pointer-events: none !important;
@@ -1561,6 +1564,11 @@ body.is-client-mode #sig-canvas-owner {
     .signature-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* Restaurar filtro para firmas en modo oscuro */
+.page.theme-3 .sig-canvas {
+    filter: invert(1) brightness(2) !important;
 }
 .actions {
     display: flex;

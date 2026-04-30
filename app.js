@@ -496,7 +496,7 @@ function getCurrentClientName() {
 // --- MOTOR DE PLANTILLAS ---
 function createPageHTML(id, type = 'content') {
     const isCover = type === 'cover';
-    const isSigs = type === 'signatures';
+    const isSigs = type === 'signatures' || type === 'sigs'; // Mejora: compatible con varias versiones
     const logoSrc = "assets/logo.png";
     const clientName = getCurrentClientName();
     const clientNameUpper = clientName.toUpperCase();
@@ -806,8 +806,8 @@ function addNewPage(type = 'content') {
 
     setPageTheme(id, 1, true); // Inicializar sin guardar
     updatePageNumbers();
-    if (type === 'signatures') {
-        setTimeout(() => { initSignaturePad('owner'); initSignaturePad('client'); }, 50);
+    if (type === 'signatures' || type === 'sigs') {
+        setTimeout(() => { initSignaturePad('owner-andrea'); initSignaturePad('owner-wai'); initSignaturePad('client-1'); initSignaturePad('client-2'); }, 50);
     }
     saveHistory();
 
@@ -1178,12 +1178,23 @@ function renderDocument(data) {
     const container = getContainer();
     if (!container || !data) return;
 
-    container.innerHTML = data.html;
     if (data.styles) {
         document.documentElement.style.setProperty('--logo-size', data.styles.logoSize);
         document.documentElement.style.setProperty('--logo-small-size', data.styles.logoSmallSize);
     }
 
+    // MIGRACIÓN: Detectar si hay páginas de firmas antiguas y actualizarlas al nuevo formato dual
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = data.html;
+    const oldSigPage = tempDiv.querySelector('.page[data-page-type="signatures"]');
+    if (oldSigPage && oldSigPage.innerHTML.includes('id="sig-canvas-owner"') && !oldSigPage.innerHTML.includes('sig-canvas-owner-andrea')) {
+        console.log("♻️ Actualizando página de firmas al nuevo formato dual...");
+        const id = oldSigPage.id.replace('page-', '');
+        oldSigPage.innerHTML = createPageHTML(id, 'signatures');
+        data.html = tempDiv.innerHTML; // Actualizar el HTML que se va a inyectar
+    }
+
+    container.innerHTML = data.html;
     const isClient = document.documentElement.classList.contains('is-client-mode') || document.body.classList.contains('client-mode');
 
     // Inyectar firmas y restaurar datos con prioridad (Acelerado para cliente)
@@ -1271,7 +1282,7 @@ function updateClientSignersCount(count) {
     document.getElementById('client-count-2')?.classList.toggle('active', count === 2);
     
     // Forzar re-render de las páginas de firma
-    const sigPages = document.querySelectorAll('.page[data-type="signatures"]');
+    const sigPages = document.querySelectorAll('.page[data-page-type="signatures"]');
     sigPages.forEach(p => {
         const id = p.id.replace('page-', '');
         renderDocument(historyStack[historyIndex]); 
@@ -1379,7 +1390,7 @@ function initSignaturePad(id) {
 function clearSignature(id) {
     // RESTRICCIÓN: En modo cliente, no se puede borrar la firma del dueño
     const isClient = document.body.classList.contains('is-client-mode') || document.body.classList.contains('client-mode');
-    if (isClient && id === 'owner') return;
+    if (isClient && id.startsWith('owner-')) return;
 
     const canvas = document.getElementById(`sig-canvas-${id}`);
     if (canvas) {
@@ -1829,70 +1840,6 @@ function toggleClientFab(show) {
         }
     } else {
         if (existingFab) existingFab.remove();
-    }
-}
-
-async function saveClientSignature() {
-    // 0. Validación de Firma Obligatoria (Píxel por Píxel para evitar trampas)
-    const canvas = document.getElementById('sig-canvas-client');
-    const isBlank = !canvas || isCanvasBlank(canvas);
-    
-    if (isBlank) {
-        showModal('✍🏻', 'Firma Requerida', 'Por favor, firma el documento en el espacio correspondiente antes de enviar el acuerdo.');
-        return;
-    }
-
-    // 1. Confirmación de Seguridad (Evitar accidentes)
-    const confirmed = await showConfirmModal(
-        '✍🏻',
-        '¿Finalizar y Enviar?',
-        '¿Estás listo para registrar tu firma de forma definitiva? Asegúrate de haber revisado todos los puntos del acuerdo.',
-        'Sí, enviar ahora',
-        'Seguir revisando'
-    );
-
-    if (!confirmed) return;
-
-    const btn = document.getElementById('client-fab-save');
-    if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<span>⏳ Enviando...</span>';
-        btn.style.opacity = '0.7';
-    }
-
-    try {
-        // 1. Guardar el estado actual (firma incluida)
-        await saveDocument(true); 
-
-        // 2. Efecto Arrechísimo (Confetti)
-        if (window.confetti) {
-            confetti({
-                particleCount: 200,
-                spread: 100,
-                origin: { y: 0.6 },
-                colors: ['#2D3EAF', '#7B3FE4', '#FFD700', '#ffffff']
-            });
-        }
-
-        // 3. Modal de Éxito Premium
-        showConfirmModal(
-            '🚀',
-            '¡Acuerdo Enviado!',
-            'Tu firma ha sido registrada con éxito. Hemos notificado a SomosDos Studio para proceder con los siguientes pasos.',
-            'Cerrar'
-        ).then(() => {
-            if (btn) {
-                btn.innerHTML = '<span>✅ Enviado con Éxito</span>';
-                btn.style.background = '#059669'; // Verde éxito
-            }
-        });
-    } catch (err) {
-        console.error(err);
-        if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = '<span>❌ Reintentar envío</span>';
-        }
-        showModal('⚠️', 'Error al enviar', 'Hubo un problema al guardar tu firma. Por favor, intenta de nuevo.');
     }
 }
 
