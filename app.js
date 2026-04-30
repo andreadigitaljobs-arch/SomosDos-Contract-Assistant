@@ -2446,15 +2446,14 @@ async function initApp() {
         document.getElementById('dashboard-view').classList.add('hidden');
         
         if (isClient) {
-            // MODO CLIENTE: Lo dejamos "visible" pero con opacidad 0 para que el layout se calcule
-            // pero el usuario solo vea el tutorial inicialmente.
+            // MODO CLIENTE: Lo dejamos visible con baja opacidad para que se vea tras el blur del tutorial
             const editor = document.getElementById('editor-view');
             editor.classList.remove('hidden');
-            editor.style.opacity = '0';
-            editor.style.visibility = 'hidden';
+            editor.style.opacity = '0.4';
+            editor.style.visibility = 'visible';
             
             // Ejecutar smartFit preventivamente
-            setTimeout(() => smartFit(), 500);
+            setTimeout(() => smartFit(), 300);
         } else {
             document.getElementById('editor-view').classList.remove('hidden');
             document.getElementById('design-panel').classList.remove('hidden');

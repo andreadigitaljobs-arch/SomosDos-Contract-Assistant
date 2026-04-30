@@ -1761,9 +1761,9 @@ body.client-mode #toggle-client-mode {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(13, 13, 26, 0.85); /* Fondo oscuro misterioso */
-    backdrop-filter: blur(60px);
-    -webkit-backdrop-filter: blur(60px);
+    background: rgba(13, 13, 26, 0.7); /* Fondo azul profundo translúcido */
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
     z-index: 1000000;
     display: flex;
     justify-content: center;
