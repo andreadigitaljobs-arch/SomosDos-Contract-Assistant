@@ -8,6 +8,8 @@ let historyStack = [];
 let historyIndex = -1;
 const MAX_HISTORY = 50;
 let historyTimer = null;
+window.ownerSignersCount = 2; // Inicializar por defecto
+window.clientSignersCount = 1; // Inicializar por defecto
 
 function saveHistory(debounce = false) {
     if (debounce) {
@@ -137,6 +139,21 @@ const SERVICE_CATALOG = [
     }
 ];
 
+// Logo SVG Vectorial de SomosDos Studio
+const logoSVG = `
+<svg class="brand-logo-svg" viewBox="0 0 500 120" xmlns="http://www.w3.org/2000/svg" style="height: 45px; width: auto;">
+    <defs>
+        <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#6366F1;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#7928CA;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+    <path d="M45 60c0-18 12-30 30-30s30 12 30 30-12 30-30 30-30-12-30-30z" fill="url(#logoGrad)"/>
+    <text x="120" y="75" font-family="'Inter', sans-serif" font-weight="900" font-size="45" fill="white">SomosDos</text>
+    <text x="120" y="100" font-family="'Inter', sans-serif" font-weight="400" font-size="14" letter-spacing="10" fill="white" opacity="0.8">STUDIO</text>
+</svg>`;
+
+
 // --- INYECCIÓN DE ESTILOS DINÁMICOS (Fallback por bloqueo de archivo) ---
 const injectCatalogStyles = () => {
     const styleId = 'catalog-dynamic-styles';
@@ -174,18 +191,19 @@ const injectHeaderStyles = () => {
     style.id = styleId;
     style.innerHTML = `
         .main-header {
-            background: rgba(255, 255, 255, 0.8) !important;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.95) !important;
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             padding: 0 24px !important;
             height: 70px !important;
-            display: grid !important;
-            grid-template-columns: 1fr auto 1fr !important;
             align-items: center;
             position: sticky;
             top: 0;
             z-index: 1000;
+        }
+
+        .owner-grid-2, .client-grid-2 {
+            grid-template-columns: 1fr 1fr !important;
+            display: grid !important;
         }
 
         .header-container { display: contents; } /* Usamos el grid del padre */
@@ -619,7 +637,7 @@ function createPageHTML(id, type = 'content') {
     } else if (type === 'exchange') {
         inner = `
             <div class="content-header">
-                <img src="${logoSrc}" class="brand-logo-small">
+                ${logoSVG}
                 <div class="header-tag">ACUERDO DE COLABORACIÓN</div>
             </div>
             <div class="content-body editable" contenteditable="true">
@@ -1092,7 +1110,7 @@ async function loadDocument() {
             try {
                 // Timeout de 4 segundos para la nube
                 const cloudPromise = db.from('agreements').select('html_content').eq('id', cloudId).single();
-                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Supabase Timeout")), 10000));
+                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Supabase Timeout")), 30000));
 
                 const { data, error } = await Promise.race([cloudPromise, timeoutPromise]);
 
@@ -2396,6 +2414,19 @@ function injectDashboardStyles() {
             position: relative; overflow: hidden;
         }
         
+        .support-dashed-box {
+            padding: 30px;
+            background: rgba(123, 63, 228, 0.03);
+            border: 2px dashed rgba(123, 63, 228, 0.2);
+            border-radius: 20px;
+            margin-top: 30px !important;
+        }
+        
+        .support-text {
+            font-size: 1.1rem;
+            color: white;
+        }
+        
         .dash-card:hover {
             transform: translateY(-12px) scale(1.02);
             border-color: rgba(123, 63, 228, 0.3);
@@ -3287,33 +3318,31 @@ function generateSmartContract() {
                 if (body) {
                     body.innerHTML = `
                         <h2 class="gradient-text">Arquitectura de Trabajo</h2>
-                        <p style="font-size: 1.1rem; margin-bottom: 40px;">Nuestro enfoque no es solo técnico, sino estratégico. Cada proyecto en SomosDos Studio sigue un ecosistema de ejecución diseñado para minimizar riesgos y maximizar el impacto comercial.</p>
-                        
-                        <div style="display: grid; grid-template-columns: 1fr; gap: 25px; margin: 30px 0;">
-                            <div class="info-block-premium" style="display: flex; gap: 20px; align-items: flex-start;">
-                                <div style="font-size: 2.5rem;">🔍</div>
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin: 20px 0;">
+                            <div class="info-block-premium" style="display: flex; gap: 15px; align-items: flex-start; margin-bottom: 5px;">
+                                <div style="font-size: 1.8rem;">🔍</div>
                                 <div>
-                                    <strong style="color: var(--brand-purple); display: block; font-size: 1.1rem; margin-bottom: 5px;">01. DIAGNÓSTICO ESTRATÉGICO</strong>
-                                    <p style="font-size: 0.85rem; line-height: 1.6;">Auditamos el estado actual de su marca para identificar cuellos de botella y oportunidades de crecimiento. No empezamos a construir hasta que el plano estratégico sea impecable.</p>
+                                    <strong style="color: var(--brand-purple); display: block; font-size: 1.1rem; margin-bottom: 2px;">01. DIAGNÓSTICO ESTRATÉGICO</strong>
+                                    <p style="font-size: 0.85rem; line-height: 1.5;">Auditamos el estado actual de su marca para identificar cuellos de botella y oportunidades de crecimiento.</p>
                                 </div>
                             </div>
-                            <div class="info-block-premium" style="display: flex; gap: 20px; align-items: flex-start;">
-                                <div style="font-size: 2.5rem;">⚙️</div>
+                            <div class="info-block-premium" style="display: flex; gap: 15px; align-items: flex-start; margin-bottom: 5px;">
+                                <div style="font-size: 1.8rem;">⚙️</div>
                                 <div>
-                                    <strong style="color: var(--brand-purple); display: block; font-size: 1.1rem; margin-bottom: 5px;">02. INGENIERÍA Y CREATIVIDAD</strong>
-                                    <p style="font-size: 0.85rem; line-height: 1.6;">Nuestro equipo de especialistas desarrolla la solución utilizando tecnologías de vanguardia y estándares de diseño internacionales. Garantizamos una interfaz intuitiva y una infraestructura robusta.</p>
+                                    <strong style="color: var(--brand-purple); display: block; font-size: 1.1rem; margin-bottom: 2px;">02. INGENIERÍA Y CREATIVIDAD</strong>
+                                    <p style="font-size: 0.85rem; line-height: 1.5;">Desarrollamos soluciones utilizando tecnologías de vanguardia y estándares de diseño internacionales.</p>
                                 </div>
                             </div>
-                            <div class="info-block-premium" style="display: flex; gap: 20px; align-items: flex-start;">
-                                <div style="font-size: 2.5rem;">🚀</div>
+                            <div class="info-block-premium" style="display: flex; gap: 15px; align-items: flex-start; margin-bottom: 5px;">
+                                <div style="font-size: 1.8rem;">🚀</div>
                                 <div>
-                                    <strong style="color: var(--brand-purple); display: block; font-size: 1.1rem; margin-bottom: 5px;">03. DESPLIEGUE Y OPTIMIZACIÓN</strong>
-                                    <p style="font-size: 0.85rem; line-height: 1.6;">Lanzamiento controlado y monitoreo de rendimiento. Nos aseguramos de que cada activo entregado funcione al 100% de su capacidad desde el primer día.</p>
+                                    <strong style="color: var(--brand-purple); display: block; font-size: 1.1rem; margin-bottom: 2px;">03. DESPLIEGUE Y OPTIMIZACIÓN</strong>
+                                    <p style="font-size: 0.85rem; line-height: 1.5;">Lanzamiento controlado y monitoreo de rendimiento para asegurar el 100% de capacidad operativa.</p>
                                 </div>
                             </div>
                         </div>
-                        <div style="margin-top: 40px; text-align: center; border-top: 1px solid rgba(123, 63, 228, 0.2); padding-top: 30px;">
-                            <p style="font-style: italic; color: var(--brand-purple); font-weight: 600;">"En SomosDos, no entregamos archivos, entregamos resultados de negocio."</p>
+                        <div style="margin-top: 15px; text-align: center; border-top: 1px solid rgba(123, 63, 228, 0.2); padding-top: 15px;">
+                            <p style="font-style: italic; color: var(--brand-purple); font-weight: 600; font-size: 0.95rem;">"En SomosDos, no entregamos archivos, entregamos resultados de negocio."</p>
                         </div>
                     `;
                 }
@@ -3340,14 +3369,14 @@ function generateSmartContract() {
                                 </ul>
                             </div>
 
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 25px;">
                                 <div class="value-tag-green">
-                                    <strong style="font-size: 0.8rem; display: block; margin-bottom: 5px;">VALOR AGREGADO</strong>
-                                    <p style="font-size: 0.75rem;">Optimización de procesos operativos y reducción de tiempos de respuesta.</p>
+                                    <strong style="font-size: 0.95rem; display: block; margin-bottom: 5px;">VALOR AGREGADO</strong>
+                                    <p style="font-size: 0.9rem;">Optimización de procesos operativos y reducción de tiempos de respuesta.</p>
                                 </div>
                                 <div class="value-tag-blue">
-                                    <strong style="font-size: 0.8rem; display: block; margin-bottom: 5px;">GARANTÍA SOMOSDOS</strong>
-                                    <p style="font-size: 0.75rem;">Soporte técnico prioritario y revisiones de calidad post-entrega.</p>
+                                    <strong style="font-size: 0.95rem; display: block; margin-bottom: 5px;">GARANTÍA SOMOSDOS</strong>
+                                    <p style="font-size: 0.9rem;">Soporte técnico prioritario y revisiones de calidad post-entrega.</p>
                                 </div>
                             </div>
                         `;
@@ -3376,7 +3405,7 @@ function generateSmartContract() {
                             </div>
                         </div>
 
-                        <div class="support-dashed-box">
+                        <div class="support-dashed-box" style="margin-top: 35px;">
                             <div style="display: flex; gap: 20px; align-items: flex-start;">
                                 <div style="font-size: 2rem;">➕</div>
                                 <div>
@@ -3386,7 +3415,7 @@ function generateSmartContract() {
                             </div>
                         </div>
 
-                        <p style="margin-top: 40px; font-size: 0.8rem; color: #94a3b8; text-align: center;">Este marco de trabajo asegura la máxima calidad y transparencia en la ejecución del proyecto.</p>
+                        <p style="margin-top: 50px; font-size: 1.3rem; color: #FFFFFF; text-align: center; font-weight: 500; letter-spacing: 0.5px; opacity: 1 !important; white-space: nowrap;">Este marco de trabajo asegura la máxima calidad y transparencia en la ejecución del proyecto.</p>
                     `;
                 }
             }
