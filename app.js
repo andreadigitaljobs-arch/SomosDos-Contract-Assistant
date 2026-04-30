@@ -1784,21 +1784,15 @@ async function saveClientSignature() {
 
 // Control de visibilidad del botón por scroll para asegurar que el cliente lea
 function handleClientFabScroll() {
-    if (!document.body.classList.contains('client-mode')) return;
+    if (!document.documentElement.classList.contains('is-client-mode')) return;
     
-    const container = document.getElementById('document-container');
     const fab = document.getElementById('client-fab-save');
-    if (!container || !fab || fab.dataset.status === 'success') return;
+    if (!fab || fab.dataset.status === 'success') return;
 
-    const scrollPos = container.scrollTop;
-    const totalHeight = container.scrollHeight - container.clientHeight;
+    const scrollPos = window.scrollY || window.pageYOffset;
+    const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
     
-    // 1. Actualizar barra de progreso de lectura (Línea Neón)
-    const progress = (scrollPos / totalHeight) * 100;
-    const progressBar = document.getElementById('reading-progress');
-    if (progressBar) progressBar.style.width = `${Math.min(100, progress)}%`;
-
-    // 2. Control del botón FAB (Aparece tras 35% de lectura)
+    // Mostramos el botón solo si ha bajado más del 35% del contrato
     if (totalHeight > 100 && scrollPos > totalHeight * 0.35) {
         fab.classList.add('visible');
     } else {
@@ -1848,24 +1842,6 @@ function closeTutorial() {
 
     // Mostrar el botón de guardar ahora que el cliente ya leyó las instrucciones
     toggleClientFab(true);
-}
-
-// Configurar observador para el brillo de firmas cuando entran en pantalla
-function setupSignatureGlow() {
-    if (typeof IntersectionObserver === 'undefined') return;
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('signature-glow');
-            } else {
-                entry.target.classList.remove('signature-glow');
-            }
-        });
-    }, { threshold: 0.5 });
-
-    // Observamos todos los contenedores de firmas
-    document.querySelectorAll('.sig-container').forEach(sig => observer.observe(sig));
 }
 
 function showToast(m) {
@@ -2135,7 +2111,7 @@ function injectDashboardStyles() {
     style.id = styleId;
     style.innerHTML = `
         .dashboard-container {
-            min-height: 100vh;
+            height: 100vh;
             overflow-y: auto !important;
             background: #F8FAFC; 
             position: relative;
@@ -2146,9 +2122,8 @@ function injectDashboardStyles() {
         }
         
         /* Evitar doble scroll cuando el dashboard está activo */
-        html, body.dashboard-open {
+        body.dashboard-open {
             overflow: hidden !important;
-            height: 100% !important;
         }
         
         /* Orbes Vibrantes con Animación - Suavizados para modo claro */
@@ -2251,24 +2226,6 @@ function injectDashboardStyles() {
         /* Grid Light */
         .dash-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 30px;
-        }
-
-        @media (max-width: 768px) {
-            .dash-hero h1 { font-size: 2.5rem; }
-            .dash-hero p { font-size: 1.1rem; padding: 0 10px; }
-            .dash-stats-row { 
-                flex-direction: column; 
-                align-items: stretch;
-                padding: 0 10px;
-            }
-            .stat-pill { min-width: 0; }
-            .dash-content-wrapper { padding: 10px 20px 100px; }
-            .dash-nav { padding: 20px; }
-        }
-        .dash-grid {
-            display: grid;
             grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
             gap: 30px;
         }
@@ -2340,36 +2297,20 @@ const MOTIVATIONAL_PHRASES = [
     "Tu próximo gran proyecto comienza con un sí."
 ];
 
-function showMainDashboard() {
-    const dash = document.getElementById('dashboard-view');
-    const editor = document.getElementById('editor-view');
+const showMainDashboard = async () => {
+    injectDashboardStyles();
+    // Resetear scroll al inicio
+    window.scrollTo(0, 0);
+    document.body.style.overflow = 'auto';
     
-    // Transición fluida
-    editor.classList.remove('active');
-    setTimeout(() => {
-        editor.classList.add('hidden');
-        dash.classList.remove('hidden');
-        setTimeout(() => dash.classList.add('active'), 10);
-    }, 300);
-
+    document.getElementById('dashboard-view').classList.remove('hidden');
+    document.getElementById('editor-view').classList.add('hidden');
+    document.getElementById('design-panel').classList.add('hidden');
+    document.body.classList.add('dashboard-open');
     renderMainDashboard();
 }
 
-function showEditor() {
-    const dash = document.getElementById('dashboard-view');
-    const editor = document.getElementById('editor-view');
-
-    dash.classList.remove('active');
-    setTimeout(() => {
-        dash.classList.add('hidden');
-        editor.classList.remove('hidden');
-        setTimeout(() => editor.classList.add('active'), 10);
-        smartFit();
-    }, 300);
-}
-
 async function renderMainDashboard(filterQuery = '') {
-    injectDashboardStyles();
     const dash = document.getElementById('dashboard-view');
     const db = getSupabase();
     let registry = [];
@@ -2529,7 +2470,7 @@ function createNewContract() {
     showEmptyState();
     
     // Abrir el editor
-    showEditor();
+    startEditor();
 }
 
 async function loadContract(id) {
@@ -2677,25 +2618,8 @@ async function initApp() {
             if (toggleBtn) toggleBtn.style.display = 'none';
             setTimeout(() => toggleClientMode(true), 500);
 
-            // Mostrar barra de progreso
-            const pb = document.getElementById('reading-progress');
-            if (pb) pb.style.display = 'block';
-
-            // Detectar Modo Noche Automático (8 PM - 7 AM)
-            const hours = new Date().getHours();
-            if (hours >= 20 || hours < 7) {
-                document.body.classList.add('is-dark-mode');
-                console.log("🌙 Modo Noche Automático Activado");
-            }
-
-            // Observador para el brillo de las firmas
-            setupSignatureGlow();
-
-            // Escuchar scroll directamente en el contenedor del documento
-            const container = document.getElementById('document-container');
-            if (container) {
-                container.addEventListener('scroll', handleClientFabScroll);
-            }
+            // Escuchar scroll para mostrar el botón de acción
+            window.addEventListener('scroll', handleClientFabScroll);
         }
 
         setTimeout(() => saveHistory(), 1000);

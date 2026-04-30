@@ -24,19 +24,11 @@
     <script>
         (function() {
             const urlParams = new URLSearchParams(window.location.search);
-            const isClient = urlParams.get('mode') === 'client';
-            const hours = new Date().getHours();
-            const isDarkTime = hours >= 20 || hours < 7;
-
-            if (isClient) {
-                document.documentElement.classList.add('client-mode');
+            if (urlParams.get('mode') === 'client') {
+                document.documentElement.classList.add('is-client-mode');
                 document.documentElement.classList.add('is-intrigue');
-                // Fondo oscuro inmediato para evitar parpadeo blanco
-                document.documentElement.style.backgroundColor = '#0A0A14';
-                // Ocultar preventivamente TODOS los controles de edición
-                document.write('<style>.main-header, .design-side-panel, .zoom-controls, .floating-add-btn, #nav-to-dashboard, .page-controls, #mobile-bottom-nav, #mobile-panel-toggle { display: none !important; } .tutorial-overlay { display: flex !important; }</style>');
-            } else if (isDarkTime) {
-                document.documentElement.style.backgroundColor = '#0A0A14';
+                // Ocultar preventivamente para evitar parpadeo
+                document.write('<style>.main-header, .design-side-panel, .zoom-controls, .floating-add-btn, #nav-to-dashboard, .page-controls { display: none !important; }</style>');
             }
         })();
     </script>
@@ -185,34 +177,8 @@
         </div>
     </div>
 
-    <!-- Menú Inferior Estilo App para Móvil (Solo Visible en Móvil) -->
-    <nav id="mobile-bottom-nav">
-        <button onclick="showMainDashboard()" class="nav-item">
-            <span class="nav-icon">📚</span>
-            <span class="nav-label">Biblioteca</span>
-        </button>
-        <button onclick="showEditor()" class="nav-item">
-            <span class="nav-icon">📝</span>
-            <span class="nav-label">Editor</span>
-        </button>
-        <button onclick="toggleDesignPanel()" class="nav-item">
-            <span class="nav-icon">🎨</span>
-            <span class="nav-label">Estilos</span>
-        </button>
-        <button onclick="saveDocument(true)" class="nav-item">
-            <span class="nav-icon">💾</span>
-            <span class="nav-label">Guardar</span>
-        </button>
-    </nav>
-
-    <!-- Botón flotante para panel de diseño en móvil (Oculto ahora que hay menú abajo) -->
-    <button id="mobile-panel-toggle" style="display:none !important;" onclick="toggleDesignPanel()">
-        <span>🎨</span>
-    </button>
-
-    <div id="reading-progress"></div>
     <!-- TUTORIAL CLIENTE -->
-    <div id="client-tutorial" class="tutorial-overlay">
+    <div id="client-tutorial" class="tutorial-overlay hidden">
         <div class="tutorial-card">
             <div class="tutorial-progress">
                 <div class="progress-dot active" data-step="1"></div>

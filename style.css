@@ -97,36 +97,6 @@ body {
     flex-direction: column;
     align-items: stretch;
     min-height: 100vh;
-    transition: background-color 0.5s ease;
-}
-
-/* --- SISTEMA DE TRANSICIONES GLOBALES --- */
-.view-container {
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
-                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    visibility: hidden;
-    position: absolute;
-    width: 100%;
-    top: 0;
-    left: 0;
-}
-
-.view-container.active {
-    opacity: 1;
-    transform: translateY(0);
-    visibility: visible;
-    position: relative;
-}
-
-#dashboard-view, #editor-view {
-    padding-bottom: 50px;
-}
-
-#editor-view {
-    display: flex;
-    flex-direction: column;
 }
 
 /* --- BRAND SCROLLBARS --- */
@@ -466,17 +436,7 @@ html, body {
 }
 
 #document-container {
-    overflow-y: auto !important;
     overflow-x: hidden !important;
-    background: transparent !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE/Edge */
-}
-
-#document-container::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
 }
 
 /* Fondo decorativo de marca */
@@ -2350,21 +2310,6 @@ body.client-mode #toggle-client-mode {
         box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
     }
 
-    /* Botón flotante para panel de diseño en móvil */
-    #mobile-panel-toggle {
-        display: block !important;
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 10001;
-        background: var(--accent-color);
-        color: white;
-        border: none;
-        padding: 15px;
-        border-radius: 50%;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-
     .design-side-panel.active {
         left: 0;
     }
@@ -2515,191 +2460,40 @@ body.client-mode .header-actions {
     width: auto !important;
 }
 
-/* --- ADAPTACIÓN INTELIGENTE: MÓVIL VS PC --- */
-@media (max-width: 768px) {
-    /* Header Móvil */
-    .main-header {
-        padding: 15px 20px !important;
-        height: auto !important;
-        flex-wrap: wrap;
-        gap: 15px;
-    }
-    
-    .header-center { 
-        order: 3;
-        width: 100%;
-        display: none !important; 
-    }
-    
-    .header-actions {
-        gap: 8px;
+/* Botón flotante para el cliente en móvil y ocultar el resto */
+@media (max-width: 900px) {
+    body.client-mode .actions {
+        display: flex !important;
     }
 
-    /* Dashboard Móvil */
-    .dashboard-container {
-        padding: 15px !important;
-        margin-top: 10px !important;
-    }
-    
-    .contract-grid {
-        grid-template-columns: 1fr !important;
-        gap: 15px !important;
+    body.client-mode .header-actions {
+        display: flex !important;
     }
 
-    /* Editor Móvil: Panel se vuelve Drawer */
-    .design-side-panel {
-        position: fixed !important;
-        bottom: 70px !important; /* Arriba del nav inferior */
-        left: 0 !important;
-        right: 0 !important;
-        top: auto !important;
-        width: 100% !important;
-        height: 60vh !important;
-        border-radius: 30px 30px 0 0 !important;
-        transform: translateY(120%);
-        z-index: 100000 !important;
-        box-shadow: 0 -20px 60px rgba(0,0,0,0.2) !important;
-        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
-        background: white !important;
+    body.client-mode #btn-client-save {
         display: block !important;
-        padding-bottom: 30px !important;
-    }
-
-    .design-side-panel.active {
-        transform: translateY(0) !important;
-    }
-
-    /* MENÚ INFERIOR PREMIUM */
-    #mobile-bottom-nav {
-        display: flex !important;
         position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 75px;
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-top: 1px solid rgba(0, 0, 0, 0.05);
-        z-index: 100001;
-        justify-content: space-around;
-        align-items: center;
-        padding: 0 10px;
-        padding-bottom: env(safe-area-inset-bottom);
-        box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.05);
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 100000;
+        width: 90%;
+        padding: 18px;
+        font-size: 1.2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+        border-radius: 12px;
     }
 
-    .nav-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-        background: none;
-        border: none;
-        color: #64748b;
-        font-size: 0.7rem;
-        font-weight: 600;
-        flex: 1;
-        transition: all 0.3s ease;
-    }
-
-    .nav-item:active {
-        transform: scale(0.9);
-        color: #7B3FE4;
-    }
-
-    .nav-icon {
-        font-size: 1.4rem;
-        margin-bottom: 2px;
-    }
-
-    #document-container {
-        padding-top: 10px !important;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: flex-start !important;
-    }
-
-    #zoom-wrapper {
-        margin-left: 0 !important;
-        width: 100% !important;
-        padding: 0 !important;
-        display: flex !important;
-        justify-content: center !important;
-        overflow-x: hidden !important;
-    }
-
-    .page {
-        margin: 10px auto !important;
-        transform-origin: center top !important;
-    }
-
-    /* Ocultar botones de cabecera que ahora están abajo */
-    .header-actions .btn-save, 
-    .header-actions .btn-library,
-    .header-actions .btn-publish,
-    .header-actions .btn-add,
-    .header-actions .btn-client {
+    body.client-mode .template-selector,
+    body.client-mode .history-controls,
+    body.client-mode .btn-save,
+    body.client-mode .btn-publish,
+    body.client-mode .btn-library,
+    body.client-mode .btn-client,
+    body.client-mode .btn-settings,
+    body.client-mode .client-name-input-wrapper,
+    body.client-mode #btn-client-save {
         display: none !important;
-    }
-}
-
-@media (max-width: 768px) {
-    #mobile-bottom-nav {
-        display: flex !important;
-    }
-}
-
-/* SUPRESIÓN ABSOLUTA EN MODO CLIENTE */
-html.client-mode #mobile-bottom-nav,
-body.client-mode #mobile-bottom-nav,
-html.client-mode #mobile-panel-toggle,
-body.client-mode #mobile-panel-toggle {
-    display: none !important;
-}
-
-/* CENTRADO Y SCROLL UNIFICADO */
-#document-container {
-    width: 100vw !important;
-    height: 100vh !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    display: block !important;
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    z-index: 1 !important;
-    background: #0A0A14 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-#zoom-wrapper {
-    display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 auto !important;
-    padding-bottom: 250px !important;
-    transform-origin: top center !important;
-    overflow: visible !important;
-    background: transparent !important;
-    text-align: center !important;
-}
-
-.page {
-    margin: 30px auto !important;
-    display: inline-block !important;
-    transform-origin: top center !important;
-}
-
-/* Solo permitir el menú en modo diseño y móvil */
-#mobile-bottom-nav { 
-    display: none !important; 
-}
-
-@media (max-width: 768px) {
-    body:not(.client-mode) #mobile-bottom-nav {
-        display: flex !important;
     }
 }
 
@@ -2726,31 +2520,35 @@ body.client-mode #mobile-panel-toggle {
     white-space: normal;
     color: white;
     opacity: 0;
-    visibility: hidden;
+    display: none !important;
     pointer-events: none;
-    transform: translateX(-50%) translateY(50px) scale(0.8);
-    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
     background: linear-gradient(135deg, #2D3EAF, #7B3FE4, #2D3EAF);
     background-size: 200% auto;
     border: none;
     border-radius: 100px;
     cursor: pointer;
-    box-shadow: 0 15px 45px rgba(123, 63, 228, 0.5), 0 0 0 4px rgba(255,255,255,0.2);
+    box-shadow: 0 10px 40px rgba(123, 63, 228, 0.4), 0 0 0 4px rgba(255,255,255,0.2);
     letter-spacing: 1px;
     text-transform: uppercase;
     display: flex;
     align-items: center;
     gap: 12px;
-    animation: magicPulse 2s infinite, gradientMove 3s linear infinite;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 }
 
 .client-fab-save.visible {
+    display: flex !important;
     opacity: 1 !important;
-    visibility: visible !important;
     pointer-events: auto !important;
-    transform: translateX(-50%) translateY(0) scale(1) !important;
+    animation: fabEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards, magicPulse 2s infinite, gradientMove 3s linear infinite;
+}
+
+@keyframes fabEntrance {
+    0% { transform: translate(-50%, 40px) scale(0.7); opacity: 0; filter: blur(15px); }
+    100% { transform: translate(-50%, 0) scale(1); opacity: 1; filter: blur(0); }
+}
 }
 
 @keyframes magicPulse {
@@ -3315,109 +3113,6 @@ body.client-mode #mobile-panel-toggle {
 .theme-3 .date-info {
     color: rgba(255, 255, 255, 0.6) !important;
     font-weight: 500;
-}
-
-/* --- 1. BARRA DE PROGRESO DE LECTURA PREMIUM --- */
-#reading-progress {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 0%;
-    height: 5px;
-    background: linear-gradient(90deg, #7B3FE4, #2D3EAF, #FFD700, #7B3FE4);
-    background-size: 200% 100%;
-    z-index: 1000001;
-    transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 0 15px rgba(123, 63, 228, 0.8), 0 0 30px rgba(123, 63, 228, 0.4);
-    animation: gradientMove 3s linear infinite;
-    display: none;
-    border-radius: 0 100px 100px 0;
-}
-
-/* --- 2. BRILLO DE FIRMAS (GUIDANCE) --- */
-.signature-glow {
-    animation: pulseGlow 2s infinite ease-in-out !important;
-    border-color: #7B3FE4 !important;
-    transform: scale(1.01);
-    transition: all 0.3s ease;
-}
-
-@keyframes pulseGlow {
-    0% { box-shadow: 0 0 5px rgba(123, 63, 228, 0.2); }
-    50% { box-shadow: 0 0 25px rgba(123, 63, 228, 0.7); }
-    100% { box-shadow: 0 0 5px rgba(123, 63, 228, 0.2); }
-}
-
-/* --- 5. MODO NOCHE ATMOSFÉRICO PREMIUM --- */
-body.is-dark-mode {
-    background-color: #0A0A14 !important; /* Azul medianoche ultra-profundo */
-    color: #F8FAFC !important;
-}
-
-body.is-dark-mode .is-intrigue #editor-view {
-    opacity: 0.15 !important;
-    filter: blur(50px) brightness(0.4) !important;
-}
-
-body.is-dark-mode .tutorial-overlay {
-    background: radial-gradient(circle at center, rgba(13, 13, 30, 0.8), rgba(5, 5, 15, 0.95)) !important;
-}
-
-body.is-dark-mode .tutorial-card {
-    background: linear-gradient(165deg, #15152E 0%, #0A0A1A 100%) !important;
-    border: 1px solid rgba(123, 63, 228, 0.4) !important;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(123, 63, 228, 0.1) !important;
-}
-
-body.is-dark-mode .tutorial-card h2 {
-    color: #FFFFFF !important;
-    text-shadow: 0 2px 10px rgba(123, 63, 228, 0.3);
-}
-
-body.is-dark-mode .tutorial-card p {
-    color: #94A3B8 !important; /* Gris azulado claro para lectura */
-    line-height: 1.6;
-}
-
-body.is-dark-mode .tutorial-card strong {
-    color: #A78BFA !important; /* Lila vibrante para resaltar */
-}
-
-body.is-dark-mode .tutorial-icon {
-    filter: drop-shadow(0 0 10px rgba(123, 63, 228, 0.4));
-}
-
-body.is-dark-mode .progress-dot {
-    background: rgba(255, 255, 255, 0.1) !important;
-}
-
-body.is-dark-mode .progress-dot.active {
-    background: #7B3FE4 !important;
-    box-shadow: 0 0 15px #7B3FE4;
-}
-
-body.is-dark-mode .btn-secondary {
-    background: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    color: #E2E8F0 !important;
-}
-
-body.is-dark-mode .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.1) !important;
-}
-
-body.is-dark-mode .info-alert {
-    background: rgba(123, 63, 228, 0.1) !important;
-    border: 1px solid rgba(123, 63, 228, 0.3) !important;
-    color: #E2E8F0 !important;
-}
-
-body.is-dark-mode .info-alert small {
-    color: #CBD5E1 !important;
-}
-
-body.is-dark-mode #document-container {
-    background-color: transparent !important;
 }
 
 .theme-3 .client-info {
