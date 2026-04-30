@@ -183,6 +183,33 @@ const injectCatalogStyles = () => {
             white-space: normal !important; /* Permitir que rompa línea si es muy largo pero con letra pequeña */
         }
 
+        .client-fab-save {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 999999;
+            width: auto;
+            min-width: 280px;
+            max-width: 90vw; /* Asegura que no choque con los bordes */
+            padding: 14px 28px;
+            font-size: 1rem;
+            line-height: 1;
+            font-weight: 800;
+            text-align: center;
+            white-space: nowrap !important;
+            color: white;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+            box-shadow: 0 15px 35px rgba(99, 102, 241, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
         .btn-finish-contract {
             position: fixed;
             bottom: 30px;
