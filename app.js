@@ -180,10 +180,10 @@ const injectHeaderStyles = () => {
     style.id = styleId;
     style.innerHTML = `
         .main-header {
-            background: rgba(255, 255, 255, 0.8) !important;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background: rgba(15, 15, 25, 0.8) !important;
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             padding: 0 24px !important;
             height: 70px !important;
             display: grid !important;
@@ -192,12 +192,13 @@ const injectHeaderStyles = () => {
             position: sticky;
             top: 0;
             z-index: 1000;
+            color: white;
         }
 
-        .header-container { display: contents; } /* Usamos el grid del padre */
+        .header-container { display: contents; } 
         
         .logo-area { display: flex; align-items: center; gap: 15px; justify-self: start; }
-        .brand-logo-nav { height: 30px; width: auto; }
+        .brand-logo-nav { height: 30px; width: auto; filter: brightness(0) invert(1); }
 
         .header-center-actions {
             display: flex;
@@ -210,10 +211,10 @@ const injectHeaderStyles = () => {
             display: flex;
             align-items: center;
             gap: 6px;
-            background: rgba(0, 0, 0, 0.03);
+            background: rgba(255, 255, 255, 0.05);
             padding: 4px;
             border-radius: 50px;
-            border: 1px solid rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .btn-premium {
@@ -224,18 +225,78 @@ const injectHeaderStyles = () => {
             transition: all 0.2s ease !important;
             display: inline-flex !important;
             align-items: center;
-            justify-content: center;
-            gap: 8px !important;
-            border: none !important;
+            color: white !important;
+            background: transparent;
+            border: none;
             cursor: pointer;
-            white-space: nowrap;
-            height: 36px;
         }
 
-        .btn-save-pro { background: #0f172a !important; color: white !important; }
-        .btn-publish-pro { background: var(--brand-purple) !important; color: white !important; }
-        .btn-ghost-pro { background: transparent !important; color: #475569 !important; }
-        .btn-circle-pro:hover { transform: scale(1.05); border-color: rgba(0,0,0,0.2); }
+        .btn-premium:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .btn-save-pro { background: #7B3FE4 !important; color: white !important; }
+        .btn-save-pro:hover { box-shadow: 0 4px 15px rgba(123, 63, 228, 0.4); }
+
+        .btn-publish-pro { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.1) !important; }
+
+        .input-group-pro {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50px;
+            padding: 6px 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .input-group-pro input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 0.85rem;
+            outline: none;
+            width: 150px;
+        }
+
+        .input-group-pro input::placeholder { color: rgba(255, 255, 255, 0.3); }
+
+        .header-right-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            justify-self: end;
+        }
+
+        .magic-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-ai-pro {
+            background: linear-gradient(135deg, #7B3FE4, #2D3EAF) !important;
+            border: none !important;
+            box-shadow: 0 4px 15px rgba(123, 63, 228, 0.3);
+        }
+
+        .btn-circle-pro {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            transition: all 0.2s;
+        }
+
+        .btn-circle-pro:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
 
         /* FIX DE MENÚS DESPLEGABLES */
         .dropdown { position: relative; }
