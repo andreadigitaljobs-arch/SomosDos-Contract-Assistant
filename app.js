@@ -175,15 +175,22 @@ const injectCatalogStyles = () => {
         .catalog-item .badge-point { font-size: 0.65rem; background: rgba(123, 63, 228, 0.1); color: #7B3FE4; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
         
         .signature-subtitle {
-            font-size: 0.65rem !important;
+            font-size: 0.85rem !important;
             color: #FFFFFF !important;
-            opacity: 0.7;
+            opacity: 0.8;
             letter-spacing: 0.5px;
             margin: 0 auto 25px !important;
-            max-width: 280px !important; /* Fuerza a romper en 2 líneas */
+            max-width: 320px !important; 
             white-space: normal !important; 
             line-height: 1.5 !important;
             text-align: center !important;
+            display: block !important;
+            overflow-wrap: break-word !important;
+            word-break: break-word !important;
+        }
+
+        .signature-subtitle p {
+            white-space: normal !important;
             display: block !important;
         }
 
@@ -782,8 +789,8 @@ function createPageHTML(id, type = 'content') {
             <div class="signature-layout">
                 <div class="signature-top">
                     <h3 class="editable" contenteditable="true">ACEPTACIÓN Y FIRMAS</h3>
-                    <div class="signature-subtitle" style="font-size: 0.65rem !important; white-space: normal !important; text-align: center; margin: 0 auto 25px; max-width: 280px; display: block;">
-                        <p style="margin: 0; line-height: 1.5;">Al firmar este documento, ambas partes aceptan los términos y condiciones para <strong>${clientName}</strong>.</p>
+                    <div class="signature-subtitle" style="font-size: 0.85rem !important; white-space: normal !important; text-align: center; margin: 0 auto 25px; max-width: 320px; display: block; overflow-wrap: break-word; word-break: break-word;">
+                        <p style="margin: 0; line-height: 1.5; white-space: normal !important;">Al firmar este documento, ambas partes aceptan los términos y condiciones para <strong>${clientName}</strong>.</p>
                     </div>
                 </div>
                 
@@ -2956,24 +2963,21 @@ function updateZoom(v) {
         container.style.overflow = 'visible';
 
         if (window.innerWidth <= 900) {
-            // Apply scale and center it dynamically to fix mobile cutoffs
-            const docContainer = document.getElementById('document-container');
-            const style = window.getComputedStyle(docContainer);
-            const paddingLeft = parseFloat(style.paddingLeft);
-            const paddingRight = parseFloat(style.paddingRight);
-            const contentWidth = docContainer.clientWidth - paddingLeft - paddingRight;
-
-            const scaledWidth = 800 * scale;
-            const leftOffset = Math.max(0, (contentWidth - scaledWidth) / 2);
-            // Centrado absoluto para evitar desbordamiento lateral
-            container.style.transformOrigin = '0 0';
-            container.style.transform = `translateX(${leftOffset}px) scale(${scale})`;
+            // Fix centering logic for mobile
+            container.style.transformOrigin = 'top center';
+            container.style.transform = `scale(${scale})`;
             
-            // Forzar que el contenedor no sea más ancho que el viewport
-            docContainer.style.maxWidth = '100vw';
-            docContainer.style.overflowX = 'hidden';
+            // Ensure parent container doesn't restrict the scaled element
+            const docContainer = document.getElementById('document-container');
+            if (docContainer) {
+                docContainer.style.width = '100vw';
+                docContainer.style.overflowX = 'hidden';
+                docContainer.style.paddingLeft = '0';
+                docContainer.style.paddingRight = '0';
+            }
         } else {
-            container.style.transform = `scale(${scale})`; // Desktop uses top center origin naturally
+            container.style.transformOrigin = 'top center';
+            container.style.transform = `scale(${scale})`;
         }
     }
     const label = document.getElementById('zoom-label');

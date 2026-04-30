@@ -3248,15 +3248,23 @@ body.client-mode .header-actions {
 }
 
 .signature-subtitle {
-    font-size: 0.65rem !important;
+    font-size: 0.85rem !important;
     color: #FFFFFF !important;
-    opacity: 0.7;
+    opacity: 0.8;
     letter-spacing: 0.5px;
     margin: 0 auto 25px !important;
-    max-width: 280px !important;
+    max-width: 320px !important;
     white-space: normal !important; 
     line-height: 1.5 !important;
     text-align: center !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+}
+
+.signature-subtitle p {
+    white-space: normal !important;
+    display: block !important;
+    width: 100% !important;
 }
 
 .theme-3 p[style*="color: #64748b"] {
