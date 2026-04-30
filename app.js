@@ -2597,7 +2597,13 @@ function updateZoom(v) {
 
             const scaledWidth = 800 * scale;
             const leftOffset = Math.max(0, (contentWidth - scaledWidth) / 2);
+            // Centrado absoluto para evitar desbordamiento lateral
+            container.style.transformOrigin = '0 0';
             container.style.transform = `translateX(${leftOffset}px) scale(${scale})`;
+            
+            // Forzar que el contenedor no sea más ancho que el viewport
+            docContainer.style.maxWidth = '100vw';
+            docContainer.style.overflowX = 'hidden';
         } else {
             container.style.transform = `scale(${scale})`; // Desktop uses top center origin naturally
         }
@@ -2633,9 +2639,9 @@ function smartFit() {
     const pageWidth = 800; // Ancho base de la página A4 en px
     const pageHeight = 1130; // Alto base aproximado de la página A4 en px
 
-    // Calculamos la escala por ancho y por alto
-    const scaleWidth = (availableWidth / pageWidth) * 0.98;
-    const scaleHeight = (availableHeight / pageHeight);
+    // Calculamos la escala por ancho y por alto (con margen de seguridad del 5%)
+    const scaleWidth = (availableWidth / pageWidth) * 0.95;
+    const scaleHeight = (availableHeight / pageHeight) * 0.95;
 
     let scale = scaleWidth; // Móvil prioriza el ancho
 

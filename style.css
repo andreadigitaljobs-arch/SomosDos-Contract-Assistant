@@ -426,6 +426,19 @@ body.client-mode .btn-clear-sig {
     pointer-events: all !important;
 }
 
+/* GLOBAL FIX: Prevent horizontal scroll on all devices */
+html, body {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+#document-container {
+    overflow-x: hidden !important;
+}
+
 /* Fondo decorativo de marca */
 #document-container::before {
     content: '';
@@ -2476,9 +2489,9 @@ body.client-mode .header-actions {
     left: 50%;
     transform: translateX(-50%);
     z-index: 999999;
-    width: 90%;
-    max-width: 450px;
-    padding: 18px 24px;
+    width: max-content;
+    max-width: 90vw;
+    padding: 18px 36px;
     font-size: 1.15rem;
     line-height: 1.3;
     font-weight: 800;
