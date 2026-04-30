@@ -175,15 +175,16 @@ const injectCatalogStyles = () => {
         .catalog-item .badge-point { font-size: 0.65rem; background: rgba(123, 63, 228, 0.1); color: #7B3FE4; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
         
         .signature-subtitle {
-            font-size: 0.65rem !important; /* REDUCIDO AL MÁXIMO */
+            font-size: 0.65rem !important;
             color: #FFFFFF !important;
             opacity: 0.7;
             letter-spacing: 0.5px;
-            margin-bottom: 25px;
+            margin: 0 auto 25px !important;
+            max-width: 280px !important; /* Fuerza a romper en 2 líneas */
             white-space: normal !important; 
-            line-height: 1.4 !important;
+            line-height: 1.5 !important;
             text-align: center !important;
-            padding: 0 10px;
+            display: block !important;
         }
 
         .client-fab-save {
@@ -781,8 +782,8 @@ function createPageHTML(id, type = 'content') {
             <div class="signature-layout">
                 <div class="signature-top">
                     <h3 class="editable" contenteditable="true">ACEPTACIÓN Y FIRMAS</h3>
-                    <div class="signature-subtitle" style="font-size: 0.65rem !important; white-space: normal !important; text-align: center; margin-bottom: 25px; padding: 0 15px;">
-                        <p style="margin: 0;">Al firmar este documento, ambas partes aceptan los términos y condiciones para <strong>${clientName}</strong>.</p>
+                    <div class="signature-subtitle" style="font-size: 0.65rem !important; white-space: normal !important; text-align: center; margin: 0 auto 25px; max-width: 280px; display: block;">
+                        <p style="margin: 0; line-height: 1.5;">Al firmar este documento, ambas partes aceptan los términos y condiciones para <strong>${clientName}</strong>.</p>
                     </div>
                 </div>
                 
