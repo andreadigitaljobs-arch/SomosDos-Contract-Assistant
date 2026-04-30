@@ -3111,6 +3111,60 @@ body.client-mode .header-actions {
     font-weight: 500;
 }
 
+/* --- 1. BARRA DE PROGRESO DE LECTURA PREMIUM --- */
+#reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 4px;
+    background: linear-gradient(90deg, #7B3FE4, #2D3EAF, #7B3FE4);
+    background-size: 200% 100%;
+    z-index: 1000001;
+    transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 0 10px rgba(123, 63, 228, 0.5);
+    animation: gradientMove 3s linear infinite;
+    display: none;
+}
+
+/* --- 2. BRILLO DE FIRMAS (GUIDANCE) --- */
+.signature-glow {
+    animation: pulseGlow 2s infinite ease-in-out !important;
+    border-color: #7B3FE4 !important;
+    transform: scale(1.01);
+    transition: all 0.3s ease;
+}
+
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 5px rgba(123, 63, 228, 0.2); }
+    50% { box-shadow: 0 0 25px rgba(123, 63, 228, 0.7); }
+    100% { box-shadow: 0 0 5px rgba(123, 63, 228, 0.2); }
+}
+
+/* --- 5. MODO NOCHE ATMOSFÉRICO AUTOMÁTICO --- */
+body.is-dark-mode {
+    background-color: #050510 !important;
+    color: #e2e8f0 !important;
+}
+
+body.is-dark-mode .is-intrigue #editor-view {
+    opacity: 0.2 !important;
+    filter: blur(40px) brightness(0.5) !important;
+}
+
+body.is-dark-mode .tutorial-overlay {
+    background: rgba(3, 3, 10, 0.85) !important;
+}
+
+body.is-dark-mode .tutorial-card {
+    background: rgba(15, 15, 30, 0.95) !important;
+    border: 1px solid rgba(123, 63, 228, 0.3) !important;
+}
+
+body.is-dark-mode #document-container {
+    background-color: transparent !important;
+}
+
 .theme-3 .client-info {
     color: #ffffff !important;
 }

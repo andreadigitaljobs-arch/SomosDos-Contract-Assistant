@@ -1792,7 +1792,12 @@ function handleClientFabScroll() {
     const scrollPos = window.scrollY || window.pageYOffset;
     const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
     
-    // Mostramos el botón solo si ha bajado más del 35% del contrato
+    // 1. Actualizar barra de progreso de lectura
+    const progress = (scrollPos / totalHeight) * 100;
+    const progressBar = document.getElementById('reading-progress');
+    if (progressBar) progressBar.style.width = `${Math.min(100, progress)}%`;
+
+    // 2. Control del botón FAB
     if (totalHeight > 100 && scrollPos > totalHeight * 0.35) {
         fab.classList.add('visible');
     } else {
@@ -1842,6 +1847,24 @@ function closeTutorial() {
 
     // Mostrar el botón de guardar ahora que el cliente ya leyó las instrucciones
     toggleClientFab(true);
+}
+
+// Configurar observador para el brillo de firmas cuando entran en pantalla
+function setupSignatureGlow() {
+    if (typeof IntersectionObserver === 'undefined') return;
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('signature-glow');
+            } else {
+                entry.target.classList.remove('signature-glow');
+            }
+        });
+    }, { threshold: 0.5 });
+
+    // Observamos todos los contenedores de firmas
+    document.querySelectorAll('.sig-container').forEach(sig => observer.observe(sig));
 }
 
 function showToast(m) {
@@ -2618,7 +2641,21 @@ async function initApp() {
             if (toggleBtn) toggleBtn.style.display = 'none';
             setTimeout(() => toggleClientMode(true), 500);
 
-            // Escuchar scroll para mostrar el botón de acción
+            // Mostrar barra de progreso
+            const pb = document.getElementById('reading-progress');
+            if (pb) pb.style.display = 'block';
+
+            // Detectar Modo Noche Automático (8 PM - 7 AM)
+            const hours = new Date().getHours();
+            if (hours >= 20 || hours < 7) {
+                document.body.classList.add('is-dark-mode');
+                console.log("🌙 Modo Noche Automático Activado");
+            }
+
+            // Observador para el brillo de las firmas
+            setupSignatureGlow();
+
+            // Escuchar scroll
             window.addEventListener('scroll', handleClientFabScroll);
         }
 
