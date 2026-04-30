@@ -1728,36 +1728,83 @@ function toggleClientFab(show) {
 }
 
 async function saveClientSignature() {
+    const confirmed = await showConfirmModal(
+        '✍️',
+        '¿Finalizar y Enviar?',
+        '¿Estás listo para registrar tu firma de forma definitiva? Asegúrate de haber revisado todos los puntos del acuerdo.',
+        'Sí, enviar ahora',
+        'Seguir revisando'
+    );
+
+    if (!confirmed) return;
+
     const btn = document.getElementById('client-fab-save');
     if (btn) {
         btn.disabled = true;
         btn.innerHTML = '<span>⏳ Enviando...</span>';
+        btn.style.opacity = '0.7';
     }
 
-    // 1. Guardar el estado actual (firma incluida)
-    await saveDocument(true); 
+    try {
+        // 1. Guardar el estado actual (firma incluida)
+        await saveDocument(true); 
 
-    // 2. Efecto Arrechísimo (Confetti)
-    if (window.confetti) {
-        confetti({
-            particleCount: 150,
-            spread: 70,
-            origin: { y: 0.6 },
-            colors: ['#2D3EAF', '#7B3FE4', '#FFD700']
+        // 2. Efecto Arrechísimo (Confetti)
+        if (window.confetti) {
+            confetti({
+                particleCount: 200,
+                spread: 100,
+                origin: { y: 0.6 },
+                colors: ['#2D3EAF', '#7B3FE4', '#FFD700', '#ffffff']
+            });
+        }
+
+        // 3. Modal de Éxito Premium
+        showConfirmModal(
+            '🚀',
+            '¡Acuerdo Enviado!',
+            'Tu firma ha sido registrada con éxito. Hemos notificado a SomosDos Studio para proceder con los siguientes pasos.',
+            'Cerrar',
+            ''
+        ).then(() => {
+            if (btn) {
+                btn.innerHTML = '<span>✅ Enviado con Éxito</span>';
+                btn.style.background = '#059669'; // Verde éxito
+            }
         });
+    } catch (err) {
+        console.error(err);
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<span>❌ Reintentar envío</span>';
+        }
+        showModal('⚠️', 'Error al enviar', 'Hubo un problema al guardar tu firma. Por favor, intenta de nuevo.');
     }
+}
 
-    // 3. Modal de Éxito Premium
-    showConfirmModal(
-        '🚀',
-        '¡Acuerdo Enviado!',
-        'Tu firma ha sido registrada con éxito. Hemos notificado a SomosDos Studio para proceder con los siguientes pasos.',
-        'Perfecto, gracias',
-        ''
-    ).then(() => {
-        // Opcional: Redirigir o limpiar
-        if (btn) btn.innerHTML = '<span>✅ Enviado con Éxito</span>';
-    });
+// Control de visibilidad del botón por scroll para asegurar que el cliente lea
+function handleClientFabScroll() {
+    if (!document.documentElement.classList.contains('is-client-mode')) return;
+    
+    const fab = document.getElementById('client-fab-save');
+    if (!fab || fab.dataset.status === 'success') return;
+
+    const scrollPos = window.scrollY || window.pageYOffset;
+    const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+    
+    // Mostramos el botón solo si ha bajado más del 35% del contrato
+    if (totalHeight > 100 && scrollPos > totalHeight * 0.35) {
+        if (fab.style.display !== 'flex') {
+            fab.style.display = 'flex';
+            fab.style.pointerEvents = 'auto';
+            setTimeout(() => fab.style.opacity = '1', 10);
+        }
+    } else {
+        if (fab.style.opacity !== '0') {
+            fab.style.opacity = '0';
+            fab.style.pointerEvents = 'none';
+        }
+    }
 }
 
 function toggleDesignPanel() {
@@ -2577,6 +2624,9 @@ async function initApp() {
             const toggleBtn = document.getElementById('toggle-client-mode');
             if (toggleBtn) toggleBtn.style.display = 'none';
             setTimeout(() => toggleClientMode(true), 500);
+
+            // Escuchar scroll para mostrar el botón de acción
+            window.addEventListener('scroll', handleClientFabScroll);
         }
 
         setTimeout(() => saveHistory(), 1000);
