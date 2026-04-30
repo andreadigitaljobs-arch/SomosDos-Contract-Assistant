@@ -1799,6 +1799,27 @@ body.client-mode #toggle-client-mode {
     margin-bottom: 30px;
 }
 
+.tutorial-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.tutorial-actions .btn {
+    flex: 1;
+}
+
+.btn-secondary {
+    background: transparent !important;
+    color: #475569 !important;
+    border: 1px solid #E2E8F0 !important;
+}
+
+.btn-secondary:hover {
+    background: #F8FAFC !important;
+    border-color: #CBD5E1 !important;
+}
+
 .tutorial-progress {
     display: flex;
     justify-content: center;

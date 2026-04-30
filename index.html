@@ -196,21 +196,24 @@
             <div class="tutorial-step hidden" id="step-2">
                 <div class="tutorial-icon">📖</div>
                 <h2>Lee con calma</h2>
-                <p>Desliza hacia abajo para revisar todos los puntos del acuerdo. Queremos que todo sea transparente
-                    para ti.</p>
-                <button class="btn btn-active" onclick="nextTutorialStep(3)">¿Cómo firmo?</button>
+                <p>Desliza hacia abajo para revisar todos los puntos del acuerdo. Queremos que todo sea transparente para ti.</p>
+                <div class="tutorial-actions">
+                    <button class="btn btn-secondary" onclick="nextTutorialStep(1)">Atrás</button>
+                    <button class="btn btn-active" onclick="nextTutorialStep(3)">¿Cómo firmo?</button>
+                </div>
             </div>
 
             <div class="tutorial-step hidden" id="step-3">
                 <div class="tutorial-icon">✏️</div>
                 <h2>Firma al final</h2>
-                <p>Al final del documento encontrarás tu espacio de firma. Si estás de acuerdo, firma con el dedo o el
-                    ratón y dale a <strong>Guardar</strong>.</p>
+                <p>Al final del documento encontrarás tu espacio de firma. Si estás de acuerdo, firma con el dedo o el ratón y dale a <strong>Guardar</strong>.</p>
                 <div class="info-alert">
-                    <small>💡 Si tienes dudas o quieres cambios, vuelve a WhatsApp y cuéntanoslo para ajustarlo de
-                        inmediato.</small>
+                    <small>💡 Si tienes dudas o quieres cambios, vuelve a WhatsApp y cuéntanoslo para ajustarlo de inmediato.</small>
                 </div>
-                <button class="btn btn-active" onclick="closeTutorial()">¡Entendido, vamos!</button>
+                <div class="tutorial-actions">
+                    <button class="btn btn-secondary" onclick="nextTutorialStep(2)">Atrás</button>
+                    <button class="btn btn-active" onclick="closeTutorial()">¡Entendido!</button>
+                </div>
             </div>
         </div>
     </div>
