@@ -1953,11 +1953,11 @@ function injectDashboardStyles() {
         .dashboard-container {
             height: 100vh;
             overflow-y: auto !important;
-            background: #050505; 
+            background: #F8FAFC; 
             position: relative;
             overflow-x: hidden;
             font-family: 'Outfit', sans-serif;
-            color: white;
+            color: #1A1A2E;
             animation: viewFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         
@@ -1966,25 +1966,25 @@ function injectDashboardStyles() {
             overflow: hidden !important;
         }
         
-        /* Orbes Vibrantes con Animación */
+        /* Orbes Vibrantes con Animación - Suavizados para modo claro */
         .dash-bg-orb-1 {
             position: absolute; top: -10%; left: -10%;
             width: 70vw; height: 70vw;
-            background: radial-gradient(circle, rgba(123, 63, 228, 0.3) 0%, rgba(45, 62, 175, 0) 70%);
+            background: radial-gradient(circle, rgba(123, 63, 228, 0.1) 0%, rgba(45, 62, 175, 0) 70%);
             filter: blur(80px); border-radius: 50%; z-index: 0;
             animation: orbFloat 20s infinite alternate;
         }
         .dash-bg-orb-2 {
             position: absolute; bottom: -10%; right: -10%;
             width: 60vw; height: 60vw;
-            background: radial-gradient(circle, rgba(45, 62, 175, 0.25) 0%, rgba(123, 63, 228, 0) 70%);
+            background: radial-gradient(circle, rgba(45, 62, 175, 0.08) 0%, rgba(123, 63, 228, 0) 70%);
             filter: blur(100px); border-radius: 50%; z-index: 0;
             animation: orbFloat 25s infinite alternate-reverse;
         }
         .dash-bg-orb-3 {
             position: absolute; top: 40%; right: 10%;
             width: 40vw; height: 40vw;
-            background: radial-gradient(circle, rgba(236, 72, 153, 0.15) 0%, rgba(123, 63, 228, 0) 70%);
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.05) 0%, rgba(123, 63, 228, 0) 70%);
             filter: blur(120px); border-radius: 50%; z-index: 0;
             animation: orbFloat 30s infinite linear;
         }
@@ -1998,7 +1998,7 @@ function injectDashboardStyles() {
             display: flex; justify-content: center;
             padding: 40px; position: relative; z-index: 10;
         }
-        .dash-nav img { height: 45px; filter: brightness(0) invert(1); }
+        .dash-nav img { height: 45px; }
 
         .dash-content-wrapper {
             position: relative; z-index: 1;
@@ -2009,61 +2009,61 @@ function injectDashboardStyles() {
         .dash-hero { text-align: center; margin-bottom: 60px; }
         .dash-hero h1 {
             font-size: 4.5rem; font-weight: 800;
-            background: linear-gradient(135deg, #fff 30%, #7B3FE4 100%);
+            background: linear-gradient(135deg, #1A1A2E 30%, #7B3FE4 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             letter-spacing: -0.05em; margin-bottom: 12px;
         }
         .dash-hero p {
-            font-size: 1.3rem; color: rgba(255,255,255,0.6);
+            font-size: 1.3rem; color: #64748B;
             font-weight: 400; max-width: 650px;
             margin: 0 auto; line-height: 1.5;
         }
 
-        /* Stats Row - Glassmorphism */
+        /* Stats Row - Glassmorphism Light */
         .dash-stats-row {
             display: flex; justify-content: center; gap: 25px;
             margin-bottom: 60px;
         }
         .stat-pill {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             padding: 20px 30px; border-radius: 24px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(0,0,0,0.05);
             display: flex; flex-direction: column; align-items: center;
             min-width: 200px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
             transition: all 0.3s ease;
         }
         .stat-pill:hover {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.9);
             transform: translateY(-5px);
-            border-color: rgba(123, 63, 228, 0.4);
+            border-color: rgba(123, 63, 228, 0.2);
         }
-        .stat-pill label { font-size: 0.8rem; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 1px; }
-        .stat-pill span { font-size: 1.8rem; font-weight: 800; color: white; }
+        .stat-pill label { font-size: 0.8rem; font-weight: 700; color: #94A3B8; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 1px; }
+        .stat-pill span { font-size: 1.8rem; font-weight: 800; color: #1A1A2E; }
 
-        /* Search Bar */
+        /* Search Bar Light */
         .search-wrapper {
             max-width: 700px; margin: 0 auto 70px;
             position: relative;
         }
         .search-input {
             width: 100%; padding: 22px 30px 22px 65px;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
             border-radius: 30px; font-size: 1.2rem; outline: none;
-            color: white; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            color: #1A1A2E; box-shadow: 0 20px 50px rgba(0,0,0,0.04);
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .search-input:focus {
-            background: rgba(255, 255, 255, 0.07);
+            background: #fff;
             border-color: #7B3FE4;
-            box-shadow: 0 25px 60px rgba(123, 63, 228, 0.2);
+            box-shadow: 0 25px 60px rgba(123, 63, 228, 0.1);
         }
-        .search-icon { position: absolute; left: 25px; top: 50%; transform: translateY(-50%); font-size: 1.4rem; opacity: 0.5; }
+        .search-icon { position: absolute; left: 25px; top: 50%; transform: translateY(-50%); font-size: 1.4rem; opacity: 0.3; }
 
-        /* Grid */
+        /* Grid Light */
         .dash-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -2071,36 +2071,28 @@ function injectDashboardStyles() {
         }
         
         .dash-card {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(50px); -webkit-backdrop-filter: blur(50px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
             border-radius: 35px; padding: 40px;
-            box-shadow: 0 15px 45px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 45px rgba(0,0,0,0.04);
             transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             cursor: pointer; min-height: 260px;
             display: flex; flex-direction: column; justify-content: space-between;
             position: relative; overflow: hidden;
         }
         
-        .dash-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, rgba(123, 63, 228, 0.1), transparent);
-            opacity: 0; transition: opacity 0.5s;
-        }
-
         .dash-card:hover {
             transform: translateY(-12px) scale(1.02);
-            border-color: rgba(123, 63, 228, 0.5);
-            background: rgba(255, 255, 255, 0.06);
-            box-shadow: 0 30px 70px rgba(123, 63, 228, 0.15);
+            border-color: rgba(123, 63, 228, 0.3);
+            background: #fff;
+            box-shadow: 0 30px 70px rgba(123, 63, 228, 0.1);
         }
         
-        .dash-card:hover::before { opacity: 1; }
-        
         .card-new {
-            border: 2px dashed rgba(255, 255, 255, 0.15);
-            background: transparent;
-            align-items: center; justify-content: center; text-align: center;
+            border: 2px dashed rgba(123, 63, 228, 0.2);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(123, 63, 228, 0.02);
         }
         .card-new:hover {
             border-color: #7B3FE4;
@@ -2114,14 +2106,14 @@ function injectDashboardStyles() {
             font-size: 2.5rem; margin-bottom: 25px;
             box-shadow: 0 15px 35px rgba(123, 63, 228, 0.4);
         }
-        .card-new h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
+        .card-new h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; color: #1A1A2E; }
         
-        .contract-card .card-top h3 { font-size: 1.6rem; font-weight: 700; color: white; margin-bottom: 10px; }
-        .contract-card .card-top .date { color: rgba(255,255,255,0.4); font-size: 1rem; }
+        .contract-card .card-top h3 { font-size: 1.6rem; font-weight: 700; color: #1A1A2E; margin-bottom: 10px; }
+        .contract-card .card-top .date { color: #94A3B8; font-size: 1rem; }
         
         .badge-active {
             display: inline-flex; align-items: center; padding: 8px 18px;
-            background: rgba(123, 63, 228, 0.2); color: #c084fc;
+            background: rgba(123, 63, 228, 0.1); color: #7B3FE4;
             border-radius: 25px; font-size: 0.8rem; font-weight: 700;
         }
         
@@ -2241,7 +2233,7 @@ async function renderMainDashboard(filterQuery = '') {
 
             <div class="dash-section-header" style="max-width: 1050px; margin: 0 auto 20px; display: flex; align-items: center; gap: 10px;">
                 <span style="font-size: 1.2rem;">📂</span>
-                <h2 style="font-size: 1.1rem; font-weight: 700; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1px;">${filterQuery ? 'Resultados de búsqueda' : 'Todos los Proyectos'}</h2>
+                <h2 style="font-size: 1.1rem; font-weight: 700; color: #1A1A2E; text-transform: uppercase; letter-spacing: 1px; opacity: 0.6;">${filterQuery ? 'Resultados de búsqueda' : 'Todos los Proyectos'}</h2>
             </div>
 
             <div class="dash-grid">
