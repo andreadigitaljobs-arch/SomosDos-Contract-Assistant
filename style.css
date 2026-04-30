@@ -466,7 +466,17 @@ html, body {
 }
 
 #document-container {
+    overflow-y: auto !important;
     overflow-x: hidden !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+#document-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
 }
 
 /* Fondo decorativo de marca */
@@ -2648,20 +2658,25 @@ body.client-mode #mobile-panel-toggle {
 /* CENTRADO Y SCROLL UNIFICADO */
 #document-container {
     width: 100vw !important;
-    height: calc(100vh - 75px) !important;
+    height: 100vh !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
     display: block !important;
-    position: relative !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 1 !important;
+    background: transparent !important;
 }
 
 #zoom-wrapper {
     display: block !important;
     width: 100% !important;
     margin: 0 auto !important;
-    padding-bottom: 120px !important;
+    padding-bottom: 200px !important;
     transform-origin: top center !important;
     overflow: visible !important;
+    background: transparent !important;
 }
 
 .page {
@@ -3300,14 +3315,15 @@ body.client-mode #mobile-panel-toggle {
     top: 0;
     left: 0;
     width: 0%;
-    height: 4px;
-    background: linear-gradient(90deg, #7B3FE4, #2D3EAF, #7B3FE4);
+    height: 5px;
+    background: linear-gradient(90deg, #7B3FE4, #2D3EAF, #FFD700, #7B3FE4);
     background-size: 200% 100%;
     z-index: 1000001;
     transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 0 10px rgba(123, 63, 228, 0.5);
+    box-shadow: 0 0 15px rgba(123, 63, 228, 0.8), 0 0 30px rgba(123, 63, 228, 0.4);
     animation: gradientMove 3s linear infinite;
     display: none;
+    border-radius: 0 100px 100px 0;
 }
 
 /* --- 2. BRILLO DE FIRMAS (GUIDANCE) --- */
