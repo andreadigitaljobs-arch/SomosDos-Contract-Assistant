@@ -3234,24 +3234,62 @@ body.client-mode .header-actions {
     100% { box-shadow: 0 0 5px rgba(123, 63, 228, 0.2); }
 }
 
-/* --- 5. MODO NOCHE ATMOSFÉRICO AUTOMÁTICO --- */
+/* --- 5. MODO NOCHE ATMOSFÉRICO PREMIUM --- */
 body.is-dark-mode {
-    background-color: #050510 !important;
-    color: #e2e8f0 !important;
+    background-color: #0A0A14 !important; /* Azul medianoche ultra-profundo */
+    color: #F8FAFC !important;
 }
 
 body.is-dark-mode .is-intrigue #editor-view {
-    opacity: 0.2 !important;
-    filter: blur(40px) brightness(0.5) !important;
+    opacity: 0.15 !important;
+    filter: blur(50px) brightness(0.4) !important;
 }
 
 body.is-dark-mode .tutorial-overlay {
-    background: rgba(3, 3, 10, 0.85) !important;
+    background: radial-gradient(circle at center, rgba(13, 13, 30, 0.8), rgba(5, 5, 15, 0.95)) !important;
 }
 
 body.is-dark-mode .tutorial-card {
-    background: rgba(15, 15, 30, 0.95) !important;
-    border: 1px solid rgba(123, 63, 228, 0.3) !important;
+    background: linear-gradient(165deg, #15152E 0%, #0A0A1A 100%) !important;
+    border: 1px solid rgba(123, 63, 228, 0.4) !important;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(123, 63, 228, 0.1) !important;
+}
+
+body.is-dark-mode .tutorial-card h2 {
+    color: #FFFFFF !important;
+    text-shadow: 0 2px 10px rgba(123, 63, 228, 0.3);
+}
+
+body.is-dark-mode .tutorial-card p {
+    color: #94A3B8 !important; /* Gris azulado claro para lectura */
+    line-height: 1.6;
+}
+
+body.is-dark-mode .tutorial-card strong {
+    color: #A78BFA !important; /* Lila vibrante para resaltar */
+}
+
+body.is-dark-mode .tutorial-icon {
+    filter: drop-shadow(0 0 10px rgba(123, 63, 228, 0.4));
+}
+
+body.is-dark-mode .progress-dot {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.is-dark-mode .progress-dot.active {
+    background: #7B3FE4 !important;
+    box-shadow: 0 0 15px #7B3FE4;
+}
+
+body.is-dark-mode .btn-secondary {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #E2E8F0 !important;
+}
+
+body.is-dark-mode .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
 }
 
 body.is-dark-mode #document-container {
