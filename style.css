@@ -1176,9 +1176,16 @@ body.client-mode #sig-canvas-owner {
 }
 
 .page.theme-3 .signature-top h3 {
-    background: linear-gradient(135deg, #FFFFFF 0%, #818CF8 50%, #6366F1 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    background: none !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    color: #FFFFFF !important;
+    text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    opacity: 1 !important;
+}
+
+.page.theme-3 .signature-top p {
+    color: #FFFFFF !important;
+    opacity: 0.9 !important;
 }
 
 .page.theme-3 .cover-title h2 {
