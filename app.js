@@ -1953,11 +1953,12 @@ function injectDashboardStyles() {
         .dashboard-container {
             height: 100vh;
             overflow-y: auto !important;
-            background: #050505; /* Fondo oscuro profundo para que resalten los colores */
+            background: #050505; 
             position: relative;
             overflow-x: hidden;
             font-family: 'Outfit', sans-serif;
             color: white;
+            animation: viewFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         
         /* Evitar doble scroll cuando el dashboard está activo */
