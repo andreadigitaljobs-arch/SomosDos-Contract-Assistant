@@ -1749,19 +1749,27 @@ function nextTutorialStep(n) {
 }
 
 function closeTutorial() { 
-    document.getElementById('client-tutorial')?.classList.add('hidden'); 
+    const tutorial = document.getElementById('client-tutorial');
+    if (tutorial) {
+        tutorial.style.opacity = '0';
+        tutorial.style.transition = 'opacity 0.8s ease';
+        setTimeout(() => tutorial.classList.add('hidden'), 800);
+    }
     
-    // Revelar el editor con elegancia
+    // Revelar el editor con una transición creativa de "desenfoque a foco"
     const editor = document.getElementById('editor-view');
     if (editor) {
-        editor.classList.remove('hidden');
+        editor.style.visibility = 'visible';
         editor.style.opacity = '0';
-        editor.style.transition = 'opacity 1s ease';
+        editor.style.filter = 'blur(20px) scale(1.1)';
+        editor.style.transition = 'all 1.5s cubic-bezier(0.16, 1, 0.3, 1)';
+        
         setTimeout(() => {
             editor.style.opacity = '1';
-            // Ajustar el tamaño del documento a la pantalla ahora que es visible
+            editor.style.filter = 'blur(0) scale(1)';
+            // El smartFit ya se debió haber ejecutado mientras estaba invisible
             smartFit();
-        }, 50);
+        }, 100);
     }
 
     // Mostrar el botón de guardar ahora que el cliente ya leyó las instrucciones
@@ -2436,8 +2444,18 @@ async function initApp() {
     // Si hay ID pero el editor está oculto (carga inicial desde URL), lo mostramos
     if (hasId && !isEditing) {
         document.getElementById('dashboard-view').classList.add('hidden');
-        // REGLA: Si es cliente, el editor permanece oculto hasta que cierre las instrucciones
-        if (!isClient) {
+        
+        if (isClient) {
+            // MODO CLIENTE: Lo dejamos "visible" pero con opacidad 0 para que el layout se calcule
+            // pero el usuario solo vea el tutorial inicialmente.
+            const editor = document.getElementById('editor-view');
+            editor.classList.remove('hidden');
+            editor.style.opacity = '0';
+            editor.style.visibility = 'hidden';
+            
+            // Ejecutar smartFit preventivamente
+            setTimeout(() => smartFit(), 500);
+        } else {
             document.getElementById('editor-view').classList.remove('hidden');
             document.getElementById('design-panel').classList.remove('hidden');
         }
