@@ -1188,8 +1188,7 @@ function renderDocument(data) {
             const globalInput = document.getElementById('global-client-name');
             if (globalInput) globalInput.value = clientNameEls[1].textContent.trim();
         }
-
-    }, 100);
+    }
 }
 
 // Sincroniza el input global de la barra superior con el texto de la firma del cliente y la portada
@@ -1715,6 +1714,16 @@ function nextTutorialStep(n) {
 
 function closeTutorial() { 
     document.getElementById('client-tutorial')?.classList.add('hidden'); 
+    
+    // Revelar el editor con elegancia
+    const editor = document.getElementById('editor-view');
+    if (editor) {
+        editor.classList.remove('hidden');
+        editor.style.opacity = '0';
+        editor.style.transition = 'opacity 1s ease';
+        setTimeout(() => editor.style.opacity = '1', 50);
+    }
+
     // Mostrar el botón de guardar ahora que el cliente ya leyó las instrucciones
     toggleClientFab(true);
 }
@@ -2387,8 +2396,9 @@ async function initApp() {
     // Si hay ID pero el editor está oculto (carga inicial desde URL), lo mostramos
     if (hasId && !isEditing) {
         document.getElementById('dashboard-view').classList.add('hidden');
-        document.getElementById('editor-view').classList.remove('hidden');
+        // REGLA: Si es cliente, el editor permanece oculto hasta que cierre las instrucciones
         if (!isClient) {
+            document.getElementById('editor-view').classList.remove('hidden');
             document.getElementById('design-panel').classList.remove('hidden');
         }
     }
