@@ -3548,3 +3548,7 @@ body.is-client-mode .editable {
         line-height: 1.4 !important;
     }
 }
+
+/* FIX DOUBLE SCROLLBAR */
+body { overflow-y: visible !important; }
+body.dashboard-open { overflow: hidden !important; }

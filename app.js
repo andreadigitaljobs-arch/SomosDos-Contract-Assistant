@@ -2184,7 +2184,7 @@ function showConfirmModal(icon, title, message, confirmText = 'Confirmar', cance
 function dismissModal() {
     const m = document.getElementById('s2-modal');
     if (m) m.remove();
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = '';
 }
 
 function isCanvasBlank(canvas) {
@@ -2563,7 +2563,7 @@ const showMainDashboard = async () => {
     injectDashboardStyles();
     // Resetear scroll al inicio
     window.scrollTo(0, 0);
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = '';
     
     document.getElementById('dashboard-view').classList.remove('hidden');
     document.getElementById('editor-view').classList.add('hidden');
@@ -2799,7 +2799,7 @@ async function initApp() {
     injectCatalogStyles();
     
     // Asegurar que el scroll esté habilitado al iniciar el editor
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = '';
     
     const urlParams = new URLSearchParams(window.location.search);
     const hasId = urlParams.has('id');
