@@ -3552,3 +3552,7 @@ body.is-client-mode .editable {
 /* FIX DOUBLE SCROLLBAR */
 body { overflow-y: visible !important; }
 body.dashboard-open { overflow: hidden !important; }
+
+/* AGGRESSIVE DOUBLE SCROLL FIX */
+html, body { min-height: 100vh; height: auto !important; }
+#editor-view, .editor-layout, #document-container, #zoom-wrapper { overflow-y: visible !important; height: auto !important; max-height: none !important; }
