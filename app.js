@@ -2968,36 +2968,59 @@ function updateZoom(v) {
         container.style.overflow = 'visible';
 
         if (window.innerWidth <= 900) {
-            // FIX SAFARI CLIPPING & CENTERING:
-            container.style.transform = 'none';
-            container.style.zoom = '1'; 
-            container.style.height = 'auto';
-            container.style.display = 'flex';
-            container.style.flexDirection = 'column';
-            container.style.alignItems = 'center';
-            container.style.width = '100%';
+            // FIX SAFARI FONT BUG & CENTERING:
+            // Utilizamos matemáticas puras para centrar y 'transform' para encoger.
+            // Esto erradica el bug de las letras gigantes de Safari sin alterar la posición en escritorio.
+            container.style.width = '800px';
+            container.style.height = (originalHeight * scale) + 'px';
+            container.style.display = 'block';
             container.style.margin = '0';
+            container.style.zoom = '1';
+            
+            const visualWidth = 800 * scale;
+            const screenWidth = window.innerWidth;
+            const offset = Math.max(0, (screenWidth - visualWidth) / 2);
+            
+            container.style.transformOrigin = 'top left';
+            container.style.transform = `scale(${scale})`;
+            container.style.marginLeft = `${offset}px`;
 
             const pages = container.querySelectorAll('.page');
             pages.forEach(p => {
-                p.style.zoom = scale;
-                p.style.margin = '10px 0'; // Pequeño margen para respiro
+                p.style.zoom = '1';
+                p.style.margin = '0 0 60px 0'; 
                 p.style.display = 'block';
-                p.style.flexShrink = '0';
+                p.style.transform = 'none';
             });
             
-            // Asegurar que el contenedor padre no restrinja
             const docContainer = document.getElementById('document-container');
             if (docContainer) {
                 docContainer.style.width = '100vw';
                 docContainer.style.overflowX = 'hidden';
-                docContainer.style.padding = '10px 0';
+                docContainer.style.padding = '20px 0';
+                docContainer.style.display = 'block';
             }
         } else {
-            // En escritorio mantenemos el comportamiento estándar
+            // EN ESCRITORIO MANTENEMOS EL COMPORTAMIENTO EXACTO PARA NO MOVER NADA
+            container.style.width = '100%';
             container.style.transformOrigin = 'top center';
             container.style.transform = `scale(${scale})`;
             container.style.zoom = '1';
+            container.style.marginLeft = '0';
+            
+            const pages = container.querySelectorAll('.page');
+            pages.forEach(p => {
+                p.style.zoom = '1';
+                p.style.margin = '0 0 40px 0';
+            });
+            
+            const docContainer = document.getElementById('document-container');
+            if (docContainer) {
+                docContainer.style.width = '';
+                docContainer.style.overflowX = '';
+                docContainer.style.padding = '';
+                docContainer.style.display = '';
+            }
         }
     }
     const label = document.getElementById('zoom-label');
