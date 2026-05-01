@@ -3037,12 +3037,12 @@ function smartFit() {
 
     let scale = scaleWidth; // Móvil prioriza el ancho
 
-    // En escritorio, usamos la escala que asegure que el documento encaje entero en la pantalla
+    // En escritorio, usamos la escala que asegure que el documento encaje por ancho
     if (window.innerWidth > 900) {
-        scale = Math.min(scaleWidth, scaleHeight);
+        scale = scaleWidth; // Siempre basarse en el ancho
 
         // Evitamos que haga un zoom excesivo si la pantalla es gigante
-        if (scale > 1) scale = 1;
+        if (scale > 1.1) scale = 1.1; // Máximo 110% para que se vea grande pero legible
     }
 
     const finalPercent = Math.max(10, Math.min(200, Math.round(scale * 100)));

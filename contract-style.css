@@ -1210,7 +1210,7 @@ body.client-mode #sig-canvas-owner {
 }
 
 .page.theme-3 .header-tag {
-    font-size: 0.85rem !important;
+    font-size: 0.85rem;
     /* Más grande en móvil */
     font-weight: 700 !important;
 }
@@ -1235,7 +1235,7 @@ body.client-mode #sig-canvas-owner {
     -webkit-text-fill-color: transparent !important;
     text-shadow: 0 4px 20px rgba(129, 140, 248, 0.3);
     opacity: 1 !important;
-    font-size: 2.5rem !important;
+    font-size: 2.5rem;
     /* Ajuste balance */
 }
 
@@ -1453,7 +1453,7 @@ body.client-mode #sig-canvas-owner {
 }
 
 .feature-card p {
-    font-size: 0.9rem !important;
+    font-size: 0.9rem;
     line-height: 1.4 !important;
     color: #64748B !important;
     margin-bottom: 0 !important;
@@ -2560,7 +2560,7 @@ body.client-mode #toggle-client-mode {
         justify-content: center !important;
         padding: 16px !important;
         text-align: center !important;
-        font-size: 1.1rem !important;
+        font-size: 1.1rem;
     }
 
     .design-side-panel .btn span {
@@ -2623,7 +2623,7 @@ body.client-mode #toggle-client-mode {
 
     /* Tamaño de texto del número de página específico para móvil */
     .page.theme-3 .page-number {
-        font-size: 0.122rem !important;
+        font-size: 0.122rem;
     }
 }
 
@@ -2701,7 +2701,7 @@ body.client-mode .header-actions {
 
     .content-body h3 {
         margin-bottom: 35px !important;
-        font-size: 1.8rem !important;
+        font-size: 1.8rem;
     }
 
     .feature-card {
@@ -3128,7 +3128,7 @@ body.client-mode .header-actions {
     padding: 18px !important;
     border-radius: 16px !important;
     font-weight: 800 !important;
-    font-size: 1rem !important;
+    font-size: 1rem;
     box-shadow: 0 12px 24px rgba(45, 62, 175, 0.3) !important;
     margin-top: 10px;
     border: none !important;
@@ -3294,7 +3294,7 @@ body.client-mode .header-actions {
 
 .value-tag-green p,
 .value-tag-blue p {
-    font-size: 0.95rem !important;
+    font-size: 0.95rem;
     line-height: 1.5 !important;
     margin: 0;
 }
@@ -3365,19 +3365,19 @@ body.client-mode .header-actions {
     color: var(--brand-purple) !important;
     background: none !important;
     -webkit-text-fill-color: initial !important;
-    font-size: 1.3rem !important;
+    font-size: 1.3rem;
 }
 
 .theme-3 .feature-card p {
     color: #FFFFFF !important;
     /* Blanco puro para máxima nitidez */
-    font-size: 1.25rem !important;
+    font-size: 1.25rem;
     line-height: 1.6 !important;
     font-weight: 400 !important;
 }
 
 .theme-3 .feature-card p:last-child {
-    font-size: 1.4rem !important;
+    font-size: 1.4rem;
     color: #ffffff !important;
     font-weight: 800 !important;
     margin-top: 10px !important;
@@ -3385,7 +3385,7 @@ body.client-mode .header-actions {
 }
 
 .signature-subtitle {
-    font-size: 0.85rem !important;
+    font-size: 0.85rem;
     color: #FFFFFF !important;
     opacity: 0.8;
     letter-spacing: 0.5px;
@@ -3460,7 +3460,7 @@ body.client-mode .header-actions {
     color: #FFFFFF !important;
     font-weight: 800 !important;
     opacity: 1 !important;
-    font-size: 0.9rem !important;
+    font-size: 0.9rem;
 }
 
 /* COMPACTACIÓN DE BLOQUES INFORMATIVOS */
@@ -3471,20 +3471,20 @@ body.client-mode .header-actions {
 }
 
 .info-block-premium div:first-child {
-    font-size: 1.8rem !important;
+    font-size: 1.8rem;
     min-width: 40px;
 }
 
 .info-block-premium p {
     margin-bottom: 0 !important;
     line-height: 1.5 !important;
-    font-size: 0.85rem !important;
+    font-size: 0.85rem;
     /* Aumentado de 0.85rem */
     color: #FFFFFF !important;
 }
 
 .info-block-premium strong {
-    font-size: 1.15rem !important;
+    font-size: 1.15rem;
     /* Aumentado de 1rem */
     margin-bottom: 4px !important;
 }
@@ -3495,13 +3495,13 @@ body.client-mode .header-actions {
     text-align: center !important;
     width: 100% !important;
     display: block !important;
-    font-size: 0.92rem !important;
+    font-size: 0.92rem;
     letter-spacing: 0.5px;
 }
 
 /* FRASE FINAL DE SOPORTE */
 .content-body p[style*="Este marco de trabajo"] {
-    font-size: 1.3rem !important;
+    font-size: 1.3rem;
     white-space: nowrap !important;
     color: #FFFFFF !important;
     opacity: 1 !important;
@@ -3522,21 +3522,21 @@ body.is-client-mode .editable {
 @media screen and (max-width: 1100px) {
     body.is-client-mode .info-block-premium p,
     body.client-mode .info-block-premium p {
-        font-size: 0.75rem !important;
+        font-size: 0.75rem;
         line-height: 1.4 !important;
     }
     body.is-client-mode .info-block-premium strong,
     body.client-mode .info-block-premium strong {
-        font-size: 0.85rem !important;
+        font-size: 0.85rem;
     }
     body.is-client-mode .info-block-premium div:first-child,
     body.client-mode .info-block-premium div:first-child {
-        font-size: 1.2rem !important;
+        font-size: 1.2rem;
         min-width: 30px !important;
     }
     body.is-client-mode .content-body p[style*="Este marco de trabajo"],
     body.client-mode .content-body p[style*="Este marco de trabajo"] {
-        font-size: 1rem !important;
+        font-size: 1rem;
         white-space: normal !important;
         text-align: center !important;
         line-height: 1.4 !important;
@@ -3544,7 +3544,7 @@ body.is-client-mode .editable {
     body.is-client-mode .content-body div[style*="border-top"] p,
     body.client-mode .content-body div[style*="border-top"] p {
         white-space: normal !important;
-        font-size: 0.85rem !important;
+        font-size: 0.85rem;
         line-height: 1.4 !important;
     }
 }
