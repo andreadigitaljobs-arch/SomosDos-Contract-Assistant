@@ -1309,7 +1309,7 @@ function renderDocument(data) {
     }
 
     container.innerHTML = data.html;
-    const isClient = document.documentElement.classList.contains('is-client-mode') || document.body.classList.contains('client-mode');
+    const isClient = document.documentElement.classList.contains('is-client-mode') || document.body.classList.contains('client-mode') || new URLSearchParams(window.location.search).get('mode') === 'client';
 
     // Inyectar firmas y restaurar datos con prioridad (Acelerado para cliente)
     const delay = isClient ? 20 : 200; 
@@ -2875,7 +2875,12 @@ async function initApp() {
 
         // Auto-scale on window resize
         let resizeTimeout;
+        let lastWidth = window.innerWidth;
         window.addEventListener('resize', () => {
+            // FIX IOS: Evitar que el scroll (que oculta la barra de URL y cambia la altura) haga saltar el documento
+            if (window.innerWidth <= 900 && window.innerWidth === lastWidth) return;
+            lastWidth = window.innerWidth;
+
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
                 smartFit();
@@ -2963,21 +2968,36 @@ function updateZoom(v) {
         container.style.overflow = 'visible';
 
         if (window.innerWidth <= 900) {
-            // Fix centering logic for mobile
-            container.style.transformOrigin = 'top center';
-            container.style.transform = `scale(${scale})`;
+            // FIX SAFARI CLIPPING & CENTERING:
+            container.style.transform = 'none';
+            container.style.zoom = '1'; 
+            container.style.height = 'auto';
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.alignItems = 'center';
+            container.style.width = '100%';
+            container.style.margin = '0';
+
+            const pages = container.querySelectorAll('.page');
+            pages.forEach(p => {
+                p.style.zoom = scale;
+                p.style.margin = '10px 0'; // Pequeño margen para respiro
+                p.style.display = 'block';
+                p.style.flexShrink = '0';
+            });
             
-            // Ensure parent container doesn't restrict the scaled element
+            // Asegurar que el contenedor padre no restrinja
             const docContainer = document.getElementById('document-container');
             if (docContainer) {
                 docContainer.style.width = '100vw';
                 docContainer.style.overflowX = 'hidden';
-                docContainer.style.paddingLeft = '0';
-                docContainer.style.paddingRight = '0';
+                docContainer.style.padding = '10px 0';
             }
         } else {
+            // En escritorio mantenemos el comportamiento estándar
             container.style.transformOrigin = 'top center';
             container.style.transform = `scale(${scale})`;
+            container.style.zoom = '1';
         }
     }
     const label = document.getElementById('zoom-label');
