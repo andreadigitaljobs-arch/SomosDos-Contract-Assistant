@@ -2603,22 +2603,6 @@ body.client-mode #toggle-client-mode {
         width: 100vw !important;
         box-sizing: border-box !important;
         overflow-x: hidden !important;
-        align-items: flex-start !important;
-        /* Volver a pegarlo a la izquierda */
-    }
-
-    #zoom-wrapper {
-        width: 100% !important;
-        max-width: 100% !important;
-        padding: 0 !important;
-        gap: 20px !important;
-        transform-origin: top center !important;
-        margin: 0 auto !important;
-    }
-
-    .page {
-        margin: 0 auto !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
     }
 
     /* Tamaño de texto del número de página específico para móvil */

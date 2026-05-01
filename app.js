@@ -2978,7 +2978,7 @@ function updateZoom(v) {
             container.style.zoom = '1';
             
             const visualWidth = 800 * scale;
-            const screenWidth = window.innerWidth;
+            const screenWidth = document.documentElement.clientWidth;
             const offset = Math.max(0, (screenWidth - visualWidth) / 2);
             
             container.style.transformOrigin = 'top left';
