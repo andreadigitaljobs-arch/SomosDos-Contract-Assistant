@@ -3608,3 +3608,53 @@ html, body { min-height: 100vh; height: auto !important; }
 .feature-card p {
     font-size: 0.9rem !important;
 }
+
+/* =====================================================
+   FIX: Tamaños de tarjetas oscuras (feature-card, scope-card)
+   Los textos dentro de estas tarjetas eran demasiado grandes,
+   causando que el contenido se cortara en la parte inferior.
+   ===================================================== */
+
+/* Tarjetas oscuras en Tema 3 - título */
+.page.theme-3 .feature-card h4,
+.theme-3 .feature-card h4 {
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+}
+
+/* Tarjetas oscuras en Tema 3 - cuerpo (era 1.2rem, causaba overflow) */
+.page.theme-3 .feature-card p,
+.theme-3 .feature-card p {
+    font-size: 0.85rem !important;
+    line-height: 1.5 !important;
+}
+
+/* Tarjeta COMPONENTE TÉCNICO (scope-card-main) */
+.scope-card-main h4,
+.theme-3 .scope-card-main h4 {
+    font-size: 0.85rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 1px !important;
+}
+
+.scope-card-main li,
+.scope-card-main p {
+    font-size: 0.9rem !important;
+    line-height: 1.55 !important;
+}
+
+/* Lista profesional dentro de tarjetas oscuras */
+.professional-list li,
+.theme-3 .professional-list li {
+    font-size: 0.9rem !important;
+    line-height: 1.55 !important;
+}
+
+/* Tarjetas de valor (VALOR AGREGADO / GARANTÍA) */
+.value-tag-green p,
+.value-tag-blue p,
+.theme-3 .value-tag-green p,
+.theme-3 .value-tag-blue p {
+    font-size: 0.85rem !important;
+    line-height: 1.5 !important;
+}
