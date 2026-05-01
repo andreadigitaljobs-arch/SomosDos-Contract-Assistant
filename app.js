@@ -2969,10 +2969,12 @@ function updateZoom(v) {
 
         if (window.innerWidth <= 900) {
             // FIX SAFARI FONT BUG & CENTERING:
-            // Utilizamos matemáticas puras para centrar y 'transform' para encoger.
-            // Esto erradica el bug de las letras gigantes de Safari sin alterar la posición en escritorio.
+            // Usamos transform para escalar (evita el bug de letras gigantes en Safari/iOS).
+            // IMPORTANTE: transform: scale() encoge visualmente pero el layout sigue ocupando
+            // el espacio original. Compensamos con margin-bottom negativo para eliminar el
+            // espacio en blanco gigante al fondo.
             container.style.width = '800px';
-            container.style.height = (originalHeight * scale) + 'px';
+            container.style.height = 'auto';
             container.style.display = 'block';
             container.style.margin = '0';
             container.style.zoom = '1';
@@ -2984,6 +2986,12 @@ function updateZoom(v) {
             container.style.transformOrigin = 'top left';
             container.style.transform = `scale(${scale})`;
             container.style.marginLeft = `${offset}px`;
+
+            // Calcular el espacio sobrante que transform deja en el layout y cancelarlo
+            const layoutHeight = container.scrollHeight;
+            const visualHeight = layoutHeight * scale;
+            const excessSpace = layoutHeight - visualHeight;
+            container.style.marginBottom = `-${excessSpace}px`;
 
             const pages = container.querySelectorAll('.page');
             pages.forEach(p => {
@@ -2997,7 +3005,7 @@ function updateZoom(v) {
             if (docContainer) {
                 docContainer.style.width = '100vw';
                 docContainer.style.overflowX = 'hidden';
-                docContainer.style.padding = '20px 0';
+                docContainer.style.padding = '20px 0 80px';
                 docContainer.style.display = 'block';
             }
         } else {
