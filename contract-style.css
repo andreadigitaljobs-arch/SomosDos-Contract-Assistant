@@ -3550,7 +3550,7 @@ html, body { min-height: 100vh; height: auto !important; }
 /* NIVEL 1 — TÍTULO PRINCIPAL DE PORTADA (el gigante) */
 .cover-title h2,
 .cover-title h1 {
-    font-size: 4rem !important;
+    font-size: 4rem;
     line-height: 1.1 !important;
 }
 
@@ -3559,7 +3559,7 @@ html, body { min-height: 100vh; height: auto !important; }
 .page[data-layout='centered'] .content-body h3,
 .page[data-layout='split'] .content-body h3,
 .page.theme-3 .content-body h3 {
-    font-size: 1.4rem !important;
+    font-size: 1.4rem;
     font-weight: 700 !important;
     line-height: 1.3 !important;
 }
@@ -3569,7 +3569,7 @@ html, body { min-height: 100vh; height: auto !important; }
 .page.theme-3 .content-body p,
 .page[data-layout='centered'] .content-body p,
 .page[data-layout='split'] .content-body p {
-    font-size: 1rem !important;
+    font-size: 1rem;
     line-height: 1.6 !important;
 }
 
@@ -3577,36 +3577,36 @@ html, body { min-height: 100vh; height: auto !important; }
 .content-body ul li,
 .page.theme-3 .content-body ul li,
 .page[data-layout='split'] .content-body ul li {
-    font-size: 0.95rem !important;
+    font-size: 0.95rem;
     line-height: 1.6 !important;
 }
 
 /* NIVEL 5 — ETIQUETA DE ENCABEZADO (el texto pequeño de esquina superior) */
 .header-tag {
-    font-size: 0.62rem !important;
+    font-size: 0.62rem;
     letter-spacing: 2px !important;
 }
 
 /* NIVEL 6 — SUBTÍTULO DE PORTADA */
 .subtitle {
-    font-size: 1rem !important;
+    font-size: 1rem;
 }
 
 /* NIVEL 7 — TÍTULOS DE TARJETAS (h4 genérico dentro de páginas) */
 .page-content h4 {
-    font-size: 1rem !important;
+    font-size: 1rem;
     font-weight: 700 !important;
 }
 
 /* NIVEL 8 — TEXTOS DE TARJETAS PREMIUM / INFO BLOCKS */
 .info-block-premium strong,
 .feature-card strong {
-    font-size: 0.95rem !important;
+    font-size: 0.95rem;
 }
 
 .info-block-premium p,
 .feature-card p {
-    font-size: 0.9rem !important;
+    font-size: 0.9rem;
 }
 
 /* =====================================================
@@ -3618,35 +3618,35 @@ html, body { min-height: 100vh; height: auto !important; }
 /* Tarjetas oscuras en Tema 3 - título */
 .page.theme-3 .feature-card h4,
 .theme-3 .feature-card h4 {
-    font-size: 0.9rem !important;
+    font-size: 0.9rem;
     font-weight: 700 !important;
 }
 
 /* Tarjetas oscuras en Tema 3 - cuerpo (era 1.2rem, causaba overflow) */
 .page.theme-3 .feature-card p,
 .theme-3 .feature-card p {
-    font-size: 0.85rem !important;
+    font-size: 0.85rem;
     line-height: 1.5 !important;
 }
 
 /* Tarjeta COMPONENTE TÉCNICO (scope-card-main) */
 .scope-card-main h4,
 .theme-3 .scope-card-main h4 {
-    font-size: 0.85rem !important;
+    font-size: 0.85rem;
     font-weight: 800 !important;
     letter-spacing: 1px !important;
 }
 
 .scope-card-main li,
 .scope-card-main p {
-    font-size: 0.9rem !important;
+    font-size: 0.9rem;
     line-height: 1.55 !important;
 }
 
 /* Lista profesional dentro de tarjetas oscuras */
 .professional-list li,
 .theme-3 .professional-list li {
-    font-size: 0.9rem !important;
+    font-size: 0.9rem;
     line-height: 1.55 !important;
 }
 
@@ -3655,6 +3655,6 @@ html, body { min-height: 100vh; height: auto !important; }
 .value-tag-blue p,
 .theme-3 .value-tag-green p,
 .theme-3 .value-tag-blue p {
-    font-size: 0.85rem !important;
+    font-size: 0.85rem;
     line-height: 1.5 !important;
 }
