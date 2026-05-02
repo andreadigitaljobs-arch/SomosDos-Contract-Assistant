@@ -180,7 +180,7 @@ const injectCatalogStyles = () => {
             opacity: 0.8;
             letter-spacing: 0.5px;
             margin: 0 auto 25px !important;
-            max-width: 320px !important; 
+            max-width: 750px !important; /* AMPLIADO: Para que se vea como una oración normal */
             white-space: normal !important; 
             line-height: 1.5 !important;
             text-align: center !important;
@@ -3609,6 +3609,13 @@ editorStyles.innerHTML = `
         background: rgba(123, 63, 228, 0.05);
         border-radius: 4px;
         transition: all 0.2s ease;
+    }
+    /* FIX GLOBAL: Asegurar que el texto siempre salte de línea y no se salga de la hoja */
+    .editable, p, h2, h3, h4, span, li {
+        white-space: normal !important;
+        overflow-wrap: break-word !important;
+        word-break: break-word !important;
+        max-width: 100% !important;
     }
 `;
 document.head.appendChild(editorStyles);
