@@ -264,7 +264,7 @@ const injectHeaderStyles = () => {
             align-items: center;
             position: sticky;
             top: 0;
-            z-index: 2000 !important; /* Valor seguro pero superior */
+            z-index: 1000; /* Volver al original */
         }
 
         .owner-grid-2, .client-grid-2 {
@@ -318,7 +318,7 @@ const injectHeaderStyles = () => {
         /* FIX DE MENÚS DESPLEGABLES */
         .dropdown { position: relative; }
         .dropdown-content {
-            z-index: 3000 !important; /* Siempre un poco más que la cabecera */
+            z-index: 2000 !important;
             left: 0 !important;
             right: auto !important;
             min-width: 220px !important;
@@ -3660,25 +3660,19 @@ editorStyles.innerHTML = `
         color: #7B3FE4 !important;
     }
 
-    /* --- FIX DEFINITIVO Z-INDEX PANEL LATERAL --- */
+    /* Forzar el cursor de texto en elementos editables */
+    .editable, [contenteditable="true"] {
+        cursor: text !important;
+    }
+
     #design-panel, .design-side-panel {
-        z-index: 1500 !important; /* Menor que la cabecera (2000) */
-    }
-    
-    /* Asegurar que la cabecera no bloquee el paso de clics abajo */
-    header.main-header {
-        pointer-events: auto !important;
-    }
-    
-    /* El contenedor interno NO debe tener z-index para no crear nuevos contextos */
-    .header-container {
-        z-index: auto !important;
+        z-index: 500 !important;
     }
 `;
 document.head.appendChild(editorStyles);
 
 // Detectar clics en CUALQUIER elemento que sea editable o esté dentro de un bloque editable
-document.addEventListener('mousedown', (e) => {
+document.addEventListener('click', (e) => {
     let target = e.target;
     
     // Evitar que el clic en los controles de la barra lateral o botones sobrescriba el elemento seleccionado
