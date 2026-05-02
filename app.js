@@ -2073,6 +2073,11 @@ function closeTutorial() {
         setTimeout(() => {
             tutorial.classList.add('hidden');
             document.documentElement.classList.remove('is-intrigue');
+            
+            // Revelar el contrato eliminando el desenfoque suavemente
+            const container = document.getElementById('document-container');
+            if (container) container.style.filter = 'blur(0)';
+            
             document.body.classList.remove('is-client-mode', 'client-mode');
             smartFit();
             toggleClientFab(true);

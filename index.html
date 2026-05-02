@@ -31,8 +31,12 @@
             if (urlParams.get('mode') === 'client') {
                 document.documentElement.classList.add('is-client-mode');
                 document.documentElement.classList.add('is-intrigue');
-                // Ocultar preventivamente para evitar parpadeo
-                document.write('<style>.main-header, .design-side-panel, .zoom-controls, .floating-add-btn, #nav-to-dashboard, .page-controls { display: none !important; }</style>');
+                // Bloqueo total de herramientas y activación de desenfoque 'Intrigue'
+                document.write('<style>' + 
+                    '#document-container { filter: blur(25px); transition: filter 1.5s cubic-bezier(0.16, 1, 0.3, 1); } ' +
+                    '.main-header, .design-side-panel, .zoom-controls, .floating-add-btn, #nav-to-dashboard, .page-controls { display: none !important; } ' +
+                    'body { background: #07070F !important; }' +
+                '</style>');
             }
         })();
     </script>

@@ -399,6 +399,10 @@ body.client-mode .page::before {
 }
 
 body.client-mode .page {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
     box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05) !important;
     /* Sombra sutil de papel, sin marco */
     border: none !important;
@@ -495,6 +499,10 @@ body {
 }
 
 .page {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
     position: relative;
     width: var(--page-width);
     height: var(--page-height);
@@ -563,7 +571,11 @@ body {
     z-index: 999999;
 }
 
-.btn-delete-page {
+.btn-delete.page {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
     background: white;
     color: #ef4444;
     border: 1px solid #fee2e2;
@@ -1729,7 +1741,11 @@ body.client-mode .resize-sidebar,
 body.client-mode .zoom-controls,
 body.client-mode .page-controls,
 body.client-mode #save-doc,
-body.client-mode #add-page {
+body.client-mode #add.page {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
     display: none !important;
 }
 
@@ -2842,6 +2858,10 @@ body.client-mode .header-actions {
     }
 
     .page {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
         margin: 0 !important;
         box-shadow: none !important;
         page-break-after: always;
