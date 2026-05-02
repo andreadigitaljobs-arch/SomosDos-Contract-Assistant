@@ -2014,36 +2014,67 @@ function toggleDesignPanel() {
 }
 
 function nextTutorialStep(n) {
-    document.querySelectorAll('.tutorial-step').forEach(s => s.classList.add('hidden'));
-    document.getElementById(`step-${n}`)?.classList.remove('hidden');
+    const current = document.querySelector('.tutorial-step:not(.hidden)');
+    const next = document.getElementById(`step-${n}`);
+    
+    if (current) {
+        current.style.opacity = '0';
+        current.style.transform = 'translateX(-10px)';
+        current.style.transition = 'all 0.3s ease';
+        
+        setTimeout(() => {
+            current.classList.add('hidden');
+            if (next) {
+                next.classList.remove('hidden');
+                next.style.opacity = '0';
+                next.style.transform = 'translateX(10px)';
+                // Force reflow
+                next.offsetHeight;
+                next.style.opacity = '1';
+                next.style.transform = 'translateX(0)';
+                next.style.transition = 'all 0.3s ease';
+            }
+        }, 300);
+    }
+    
     document.querySelectorAll('.progress-dot').forEach((dot, i) => {
         dot.classList.toggle('active', (i + 1) === n);
     });
 }
 
 function closeTutorial() { 
-    // 1. Limpieza total de bloqueos
-    document.documentElement.classList.remove('is-intrigue');
-    document.body.classList.remove('is-client-mode', 'client-mode'); // Asegurar modo diseño
-    
     const tutorial = document.getElementById('client-tutorial');
-    if (tutorial) {
-        tutorial.style.opacity = '0';
-        tutorial.style.transition = 'opacity 0.5s ease';
-        setTimeout(() => tutorial.classList.add('hidden'), 500);
-    }
-    
-    // 2. Revelado limpio del editor
     const editor = document.getElementById('editor-view');
-    if (editor) {
-        editor.style.visibility = 'visible';
-        editor.style.opacity = '1';
-        editor.style.filter = 'none';
-        editor.style.pointerEvents = 'auto'; // FORZAR CLICS
-    }
+    
+    if (tutorial) {
+        // 1. Desvanecer tutorial hacia ARRIBA
+        tutorial.style.opacity = '0';
+        tutorial.style.transform = 'translateY(-30px)';
+        tutorial.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+        
+        // 2. Preparar el Editor para el zoom de entrada
+        if (editor) {
+            editor.style.visibility = 'visible';
+            editor.style.opacity = '0';
+            editor.style.transform = 'scale(0.95)';
+            editor.style.transition = 'none';
+            
+            setTimeout(() => {
+                editor.style.transition = 'all 1s cubic-bezier(0.16, 1, 0.3, 1)';
+                editor.style.opacity = '1';
+                editor.style.transform = 'scale(1)';
+                editor.style.filter = 'none';
+            }, 100);
+        }
 
-    smartFit();
-    toggleClientFab(true);
+        setTimeout(() => {
+            tutorial.classList.add('hidden');
+            document.documentElement.classList.remove('is-intrigue');
+            document.body.classList.remove('is-client-mode', 'client-mode');
+            smartFit();
+            toggleClientFab(true);
+        }, 600);
+    }
 }
 
 function showToast(m) {
