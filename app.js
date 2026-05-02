@@ -3011,10 +3011,17 @@ function updateZoom(v) {
         } else {
             // EN ESCRITORIO MANTENEMOS EL COMPORTAMIENTO EXACTO PARA NO MOVER NADA
             container.style.width = '100%';
+            container.style.height = 'auto'; // Dejar que crezca para medir
             container.style.transformOrigin = 'top center';
             container.style.transform = `scale(${scale})`;
             container.style.zoom = '1';
             container.style.marginLeft = '0';
+
+            // Calcular el espacio sobrante que transform deja en el layout y cancelarlo
+            const layoutHeight = container.scrollHeight;
+            const visualHeight = layoutHeight * scale;
+            const excessSpace = layoutHeight - visualHeight;
+            container.style.marginBottom = `-${excessSpace}px`;
             
             const pages = container.querySelectorAll('.page');
             pages.forEach(p => {
