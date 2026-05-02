@@ -264,7 +264,7 @@ const injectHeaderStyles = () => {
             align-items: center;
             position: sticky;
             top: 0;
-            z-index: 9999999 !important; /* VALOR EXTREMO */
+            z-index: 2000 !important; /* Valor seguro pero superior */
         }
 
         .owner-grid-2, .client-grid-2 {
@@ -318,7 +318,7 @@ const injectHeaderStyles = () => {
         /* FIX DE MENÚS DESPLEGABLES */
         .dropdown { position: relative; }
         .dropdown-content {
-            z-index: 99999999 !important; /* VALOR MÁXIMO POSIBLE */
+            z-index: 3000 !important; /* Siempre un poco más que la cabecera */
             left: 0 !important;
             right: auto !important;
             min-width: 220px !important;
@@ -3661,14 +3661,18 @@ editorStyles.innerHTML = `
     }
 
     /* --- FIX DEFINITIVO Z-INDEX PANEL LATERAL --- */
-    #design-panel, .design-side-panel, aside#design-panel {
-        z-index: 10 !important; /* BAJADO AL MÍNIMO */
-        position: fixed !important;
+    #design-panel, .design-side-panel {
+        z-index: 1500 !important; /* Menor que la cabecera (2000) */
     }
     
-    /* Forzar que el contenedor de la cabecera esté arriba */
-    header.main-header, .header-container {
-        z-index: 9999999 !important;
+    /* Asegurar que la cabecera no bloquee el paso de clics abajo */
+    header.main-header {
+        pointer-events: auto !important;
+    }
+    
+    /* El contenedor interno NO debe tener z-index para no crear nuevos contextos */
+    .header-container {
+        z-index: auto !important;
     }
 `;
 document.head.appendChild(editorStyles);
