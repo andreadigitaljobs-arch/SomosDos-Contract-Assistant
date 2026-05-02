@@ -2730,10 +2730,14 @@ function startEditor() {
 }
 
 function showLoader() {
-    // AHORA: Mostramos el cargador siempre para asegurar una carga limpia
-    showExportLoader("Preparando Acuerdo", "Cargando experiencia SomosDos...");
+    const isClient = new URLSearchParams(window.location.search).get('mode') === 'client' || document.body.classList.contains('client-mode');
     
-    // Bloqueamos la vista del editor completamente para evitar parpadeos
+    // Si no es cliente, mostramos el cargador normal del editor
+    if (!isClient) {
+        showExportLoader("Iniciando Editor", "Preparando tu espacio creativo...");
+    }
+    
+    // En AMBOS casos, mantenemos el editor oculto para evitar el parpadeo de "carga por partes"
     const editor = document.getElementById('editor-view');
     if (editor) {
         editor.style.opacity = '0';
