@@ -3660,46 +3660,35 @@ editorStyles.innerHTML = `
         color: #7B3FE4 !important;
     }
 
-    /* Forzar el cursor de texto en elementos editables */
-    .editable, [contenteditable="true"] {
+    /* FORZAR EDITABILIDAD TOTAL */
+    .editable, [contenteditable="true"], .page-content * {
         cursor: text !important;
+        pointer-events: auto !important;
+        -webkit-user-select: text !important;
+        user-select: text !important;
+    }
+
+    #document-container, #zoom-wrapper {
+        pointer-events: auto !important;
+        z-index: 10 !important;
     }
 
     #design-panel, .design-side-panel {
-        z-index: 500 !important;
+        z-index: 1000 !important;
+    }
+    
+    header.main-header {
+        z-index: 2000 !important;
+        pointer-events: none !important; /* La cabecera no debe atrapar clics fuera de sus botones */
+    }
+    
+    header.main-header * {
+        pointer-events: auto !important; /* Pero sus botones sí */
     }
 `;
 document.head.appendChild(editorStyles);
 
-// Detectar clics en CUALQUIER elemento que sea editable o esté dentro de un bloque editable
-document.addEventListener('click', (e) => {
-    let target = e.target;
-    
-    // Evitar que el clic en los controles de la barra lateral o botones sobrescriba el elemento seleccionado
-    if (target.closest('.design-side-panel') || target.closest('.btn') || target.closest('.control-row')) return;
-
-    // Buscamos el elemento exacto donde se hizo clic
-    const editableElement = target.isContentEditable ? target : target.closest('[contenteditable="true"]');
-
-    if (editableElement) {
-        // Quitar resalte del anterior
-        if (lastActiveEditable) {
-            lastActiveEditable.classList.remove('active-editable-text');
-        }
-        
-        // El target exacto es mejor para redimensionar partes específicas si es necesario
-        lastActiveEditable = target; 
-        lastActiveEditable.classList.add('active-editable-text');
-        
-        console.log("📍 Elemento seleccionado para redimensionar:", target.tagName);
-    } else {
-        // Si haces clic fuera de un texto editable (pero no en los controles), quitamos el resalte
-        if (lastActiveEditable) {
-            lastActiveEditable.classList.remove('active-editable-text');
-            lastActiveEditable = null;
-        }
-    }
-});
+/* Detector de clics temporalmente desactivado para restaurar estabilidad */
 
 
 function changeFontSize(action) {
