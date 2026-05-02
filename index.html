@@ -35,7 +35,7 @@
         html.is-client-mode .page-controls { 
             display: none !important; 
         }
-        html.is-client-mode body { background: #07070F !important; overflow: hidden; }
+        html.is-client-mode body { background: #07070F !important; }
 
         /* CORTINA PREMIUM DE CARGA */
         #premium-curtain {
@@ -69,6 +69,7 @@
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('mode') === 'client') {
                 document.documentElement.classList.add('is-client-mode');
+                document.documentElement.classList.add('is-intrigue');
             }
         })();
     </script>
