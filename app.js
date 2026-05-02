@@ -3516,7 +3516,7 @@ function generateSmartContract() {
                     if (tag) tag.innerText = `ALCANCE DETALLADO: ${sName.toUpperCase()}`;
                     if (body) {
                         body.innerHTML = `
-                            <h2 class="gradient-text editable" contenteditable="true" style="font-size: 2.2rem; margin-bottom: 15px;">${sName}</h2>
+                            <h2 class="gradient-text editable" contenteditable="true" style="font-size: 2rem; margin-bottom: 12px;">${sName}</h2>
                             <p class="editable" contenteditable="true" style="font-size: 1rem; line-height: 1.6; margin-bottom: 20px; opacity: 0.9;">${data.intro}</p>
                             
                             <div class="scope-card-main" style="padding: 25px; background: rgba(255,255,255,0.03); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06);">
