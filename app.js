@@ -2721,24 +2721,29 @@ async function loadContract(id) {
 }
 
 function applyRetroactiveEdits() {
-    console.log("🛠️ Aplicando parche de edición retroactivo...");
+    console.log("🛠️ Aplicando parche de edición retroactivo profundo...");
     const container = getContainer();
     if (!container) return;
 
-    // Buscar todos los elementos de texto que deberían ser editables
-    const textSelectors = 'h2, h3, h4, h5, p, li, .sig-name, .sig-detail, .header-tag, .subtitle, .client-info, .date-info';
+    // Selector ultra-amplio para no dejar nada por fuera
+    const textSelectors = 'h2, h3, h4, h5, p, li, span, div.sig-name, div.sig-detail, .editable, [contenteditable]';
     const elements = container.querySelectorAll(textSelectors);
 
     elements.forEach(el => {
-        // Si no tiene la clase editable, se la ponemos
-        if (!el.classList.contains('editable')) {
-            el.classList.add('editable');
-        }
-        // Forzamos el atributo contenteditable
+        // Ignorar contenedores grandes, solo queremos texto
+        if (el.children.length > 3 && el.tagName === 'DIV') return;
+
+        el.classList.add('editable');
         el.setAttribute('contenteditable', 'true');
-        // Aseguramos que responda a los clics
         el.style.pointerEvents = 'auto';
+        el.style.userSelect = 'text';
         el.style.cursor = 'text';
+        
+        // Si es un nombre de firma, asegurar que esté al frente
+        if (el.classList.contains('sig-name')) {
+            el.style.position = 'relative';
+            el.style.zIndex = '100';
+        }
     });
 
     console.log(`✅ Parche aplicado a ${elements.length} elementos.`);
