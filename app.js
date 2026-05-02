@@ -264,7 +264,7 @@ const injectHeaderStyles = () => {
             align-items: center;
             position: sticky;
             top: 0;
-            z-index: 1000;
+            z-index: 9999 !important; /* ELEVADO: Para mandar sobre el panel lateral */
         }
 
         .owner-grid-2, .client-grid-2 {
@@ -318,7 +318,7 @@ const injectHeaderStyles = () => {
         /* FIX DE MENÚS DESPLEGABLES */
         .dropdown { position: relative; }
         .dropdown-content {
-            z-index: 2000 !important;
+            z-index: 10000 !important; /* MÁXIMA PRIORIDAD: Para el menú de Añadir */
             left: 0 !important;
             right: auto !important;
             min-width: 220px !important;
