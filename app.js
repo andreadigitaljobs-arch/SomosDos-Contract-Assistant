@@ -2843,6 +2843,7 @@ async function initApp() {
     }
     console.log("🏁 Inicializando Aplicación v18.5...");
 
+    try {
         // RASTREADOR DE TEXTO ACTIVO (Soluciona el error "debes darle clic a un texto")
         document.addEventListener('mousedown', (e) => {
             const editable = e.target.closest('.editable');
