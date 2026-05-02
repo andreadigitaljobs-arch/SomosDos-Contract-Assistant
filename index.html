@@ -39,10 +39,20 @@
             pointer-events: none !important;
         }
         html.is-client-mode #document-container { 
-            filter: blur(25px); 
+            filter: blur(20px); 
+            transition: filter 1s ease-out;
         }
         html.is-client-mode body { 
             background: #07070F !important; 
+        }
+        /* Forzar visibilidad de textos en modo oscuro cliente */
+        html.is-client-mode h1, 
+        html.is-client-mode h2, 
+        html.is-client-mode h3,
+        html.is-client-mode .page-content h2,
+        html.is-client-mode .page-content h3 { 
+            color: #FFFFFF !important;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
     </style>
 
