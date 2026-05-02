@@ -175,7 +175,7 @@ body {
     position: fixed;
     top: 0;
     width: 100%;
-    z-index: 11000;
+    z-index: 999999;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
 }
 
@@ -266,7 +266,7 @@ body {
     background-color: #ffffff;
     min-width: 180px;
     box-shadow: 0px 8px 25px 0px rgba(0, 0, 0, 0.1);
-    z-index: 12000;
+    z-index: 1000000;
     border-radius: 12px;
     overflow: hidden;
     top: 100%;
@@ -560,7 +560,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    z-index: 11000;
+    z-index: 999999;
 }
 
 .btn-delete-page {
@@ -1870,7 +1870,7 @@ body.client-mode #toggle-client-mode {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     border-radius: 12px;
     padding: 8px 0;
-    z-index: 12000;
+    z-index: 1000000;
     border: 1px solid #E2E8F0;
     animation: slideUpDropdown 0.2s ease-out;
 }
@@ -2489,7 +2489,7 @@ body.client-mode #toggle-client-mode {
     .design-side-panel {
         width: 300px;
         left: -300px;
-        z-index: 12000;
+        z-index: 1000000;
         box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
     }
 
@@ -2877,7 +2877,7 @@ body.client-mode .header-actions {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
     box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
-    z-index: 12000;
+    z-index: 1000000;
     transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
@@ -3657,4 +3657,20 @@ html, body { min-height: 100vh; height: auto !important; }
 .theme-3 .value-tag-blue p {
     font-size: 0.85rem;
     line-height: 1.5 !important;
+}
+
+/* Corregir alineacin de mens en el centro para que no choquen con la barra lateral */
+.header-center-actions .dropdown-content {
+    left: 0 !important;
+    right: auto !important;
+    transform: translateX(0) !important;
+}
+
+/* Asegurar que la cabecera est por encima de la barra lateral siempre */
+.main-header {
+    z-index: 999999 !important;
+}
+
+.design-side-panel {
+    z-index: 9000 !important;
 }
