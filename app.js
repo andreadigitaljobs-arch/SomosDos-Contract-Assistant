@@ -3634,3 +3634,18 @@ function changeFontSize(action) {
     
     saveHistory(true);
 }
+
+function changeTextFormat(property, value) {
+    if (!lastActiveEditable) {
+        showToast("?? Haz clic en un texto primero");
+        return;
+    }
+    
+    if (property === 'lineHeight') {
+        lastActiveEditable.style.lineHeight = value;
+    } else if (property === 'letterSpacing') {
+        lastActiveEditable.style.letterSpacing = value + 'px';
+    }
+    
+    saveHistory(true);
+}

@@ -80,12 +80,23 @@
         </div>
 
         <div class="panel-section" style="border-top: 1px solid rgba(0,0,0,0.05); padding-top: 15px;">
-            <label>TAMAÑO DE TEXTO (MANUAL)</label>
-            <div style="display: flex; gap: 8px; margin-top: 10px;">
-                <button class="btn btn-secondary" style="flex: 1; padding: 10px 5px; font-size: 0.75rem;" onclick="changeFontSize('increase')">Aumentar +</button>
-                <button class="btn btn-secondary" style="flex: 1; padding: 10px 5px; font-size: 0.75rem;" onclick="changeFontSize('decrease')">Disminuir -</button>
+            <label>FORMATO DE TEXTO (MANUAL)</label>
+            <div style="display: flex; gap: 8px; margin-top: 10px; margin-bottom: 15px;">
+                <button class="btn btn-secondary" style="flex: 1; padding: 10px 5px; font-size: 0.75rem;" onclick="changeFontSize('increase')">Tamaño +</button>
+                <button class="btn btn-secondary" style="flex: 1; padding: 10px 5px; font-size: 0.75rem;" onclick="changeFontSize('decrease')">Tamaño -</button>
             </div>
-            <p class="panel-hint">Haz clic en un texto y luego presiona estos botones</p>
+            
+            <div class="control-row" style="margin-bottom: 10px;">
+                <span style="font-size: 0.65rem; color: #64748b;">Interlineado</span>
+                <input type="range" min="0.8" max="2.5" step="0.1" value="1.5" oninput="changeTextFormat('lineHeight', this.value)">
+            </div>
+            
+            <div class="control-row">
+                <span style="font-size: 0.65rem; color: #64748b;">Interletrado</span>
+                <input type="range" min="-2" max="10" step="0.5" value="0" oninput="changeTextFormat('letterSpacing', this.value)">
+            </div>
+            
+            <p class="panel-hint" style="margin-top: 10px;">Haz clic en un texto y ajusta estos valores</p>
         </div>
 
         <div class="panel-section" style="border-top: 1px solid rgba(0,0,0,0.05); padding-top: 15px;">
