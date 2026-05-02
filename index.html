@@ -45,14 +45,16 @@
         html.is-client-mode body { 
             background: #07070F !important; 
         }
-        /* Forzar visibilidad de textos en modo oscuro cliente */
-        html.is-client-mode h1, 
-        html.is-client-mode h2, 
-        html.is-client-mode h3,
-        html.is-client-mode .page-content h2,
-        html.is-client-mode .page-content h3 { 
+        /* Forzar visibilidad de textos en modo oscuro cliente (Solo para el CONTRATO) */
+        html.is-client-mode #document-container h1, 
+        html.is-client-mode #document-container h2, 
+        html.is-client-mode #document-container h3 { 
             color: #FFFFFF !important;
             text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        /* Asegurar que el tutorial siga siendo legible (Texto Oscuro) */
+        .tutorial-card h2 {
+            color: #1A1A2E !important;
         }
     </style>
 
