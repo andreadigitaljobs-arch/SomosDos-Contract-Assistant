@@ -3597,37 +3597,74 @@ if (document.readyState === 'loading') {
     initApp();
 }
 
-// --- CONTROL DE TAMAO DE TEXTO MANUAL ---
+// --- CONTROL DE TAMAÑO DE TEXTO MANUAL ---
 let lastActiveEditable = null;
 
-document.addEventListener('focusin', (e) => {
-    if (e.target.isContentEditable) {
-        lastActiveEditable = e.target;
-        // Resaltar visualmente para confirmar seleccin
-        console.log("?? Elemento activo para redimensin:", e.target.tagName);
+// Inyectar estilos para el resaltado visual
+const editorStyles = document.createElement('style');
+editorStyles.innerHTML = `
+    .active-editable-text {
+        outline: 2px dashed #7B3FE4 !important;
+        outline-offset: 4px;
+        background: rgba(123, 63, 228, 0.05);
+        border-radius: 4px;
+        transition: all 0.2s ease;
+    }
+`;
+document.head.appendChild(editorStyles);
+
+// Detectar clics en CUALQUIER elemento que sea editable o esté dentro de un bloque editable
+document.addEventListener('mousedown', (e) => {
+    let target = e.target;
+    
+    // Evitar que el clic en los controles de la barra lateral o botones sobrescriba el elemento seleccionado
+    if (target.closest('.design-side-panel') || target.closest('.btn') || target.closest('.control-row')) return;
+
+    // Buscamos el elemento exacto donde se hizo clic
+    const editableElement = target.isContentEditable ? target : target.closest('[contenteditable="true"]');
+
+    if (editableElement) {
+        // Quitar resalte del anterior
+        if (lastActiveEditable) {
+            lastActiveEditable.classList.remove('active-editable-text');
+        }
+        
+        // El target exacto es mejor para redimensionar partes específicas si es necesario
+        lastActiveEditable = target; 
+        lastActiveEditable.classList.add('active-editable-text');
+        
+        console.log("📍 Elemento seleccionado para redimensionar:", target.tagName);
+    } else {
+        // Si haces clic fuera de un texto editable (pero no en los controles), quitamos el resalte
+        if (lastActiveEditable) {
+            lastActiveEditable.classList.remove('active-editable-text');
+            lastActiveEditable = null;
+        }
     }
 });
 
+
 function changeFontSize(action) {
     if (!lastActiveEditable) {
-        showToast("?? Haz clic en un texto primero");
+        showToast("⚠️ Haz clic en un texto primero");
         return;
     }
     
-    // Obtener el tamao actual (calculado por el navegador)
+    // Obtener el tamaño actual (calculado por el navegador)
     const style = window.getComputedStyle(lastActiveEditable);
     let currentSize = parseFloat(style.fontSize);
     
+    // Cambios granulares (de 1 en 1 para mayor precisión)
     if (action === 'increase') {
-        currentSize += 2; // Aumentar de 2 en 2 para que se note
+        currentSize += 1;
     } else {
-        currentSize = Math.max(8, currentSize - 2);
+        currentSize = Math.max(8, currentSize - 1);
     }
     
-    // Aplicar estilo en lnea (que ahora sobreescribe al CSS gracias a que quitamos !important)
+    // Aplicar estilo en línea directamente
     lastActiveEditable.style.fontSize = currentSize + 'px';
     
-    // Si es un h2 o h3, podramos querer ajustar tambin el line-height
+    // Ajuste automático de interlineado para encabezados
     if (lastActiveEditable.tagName.startsWith('H')) {
         lastActiveEditable.style.lineHeight = '1.2';
     }
@@ -3637,7 +3674,7 @@ function changeFontSize(action) {
 
 function changeTextFormat(property, value) {
     if (!lastActiveEditable) {
-        showToast("?? Haz clic en un texto primero");
+        showToast("⚠️ Haz clic en un texto primero");
         return;
     }
     
@@ -3649,3 +3686,4 @@ function changeTextFormat(property, value) {
     
     saveHistory(true);
 }
+
