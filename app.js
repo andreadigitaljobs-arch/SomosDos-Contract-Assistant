@@ -10,6 +10,7 @@ const MAX_HISTORY = 50;
 let historyTimer = null;
 window.ownerSignersCount = 2; // Inicializar por defecto
 window.clientSignersCount = 1; // Inicializar por defecto
+window.lastActiveEditable = null; // VARIABLE MAESTRA DE EDICIÓN
 
 function saveHistory(debounce = false) {
     if (debounce) {
@@ -2719,6 +2720,30 @@ async function loadContract(id) {
     window.location.href = `${window.location.origin}${window.location.pathname}?id=${id}`;
 }
 
+function applyRetroactiveEdits() {
+    console.log("🛠️ Aplicando parche de edición retroactivo...");
+    const container = getContainer();
+    if (!container) return;
+
+    // Buscar todos los elementos de texto que deberían ser editables
+    const textSelectors = 'h2, h3, h4, h5, p, li, .sig-name, .sig-detail, .header-tag, .subtitle, .client-info, .date-info';
+    const elements = container.querySelectorAll(textSelectors);
+
+    elements.forEach(el => {
+        // Si no tiene la clase editable, se la ponemos
+        if (!el.classList.contains('editable')) {
+            el.classList.add('editable');
+        }
+        // Forzamos el atributo contenteditable
+        el.setAttribute('contenteditable', 'true');
+        // Aseguramos que responda a los clics
+        el.style.pointerEvents = 'auto';
+        el.style.cursor = 'text';
+    });
+
+    console.log(`✅ Parche aplicado a ${elements.length} elementos.`);
+}
+
 function startEditor() {
     document.getElementById('dashboard-view').classList.add('hidden');
     document.getElementById('editor-view').classList.remove('hidden');
@@ -2945,6 +2970,9 @@ async function initApp() {
         }, 100);
 
         console.log("🚀 App Init Finalizada con éxito");
+        
+        // Aplicar parche a documentos ya cargados
+        setTimeout(applyRetroactiveEdits, 500);
     } catch (e) {
         console.error("❌ Fallo Crítico en Carga:", e);
         // Rescate: si no hay nada, inyectar algo
@@ -3699,29 +3727,20 @@ document.head.appendChild(editorStyles);
 
 
 function changeFontSize(action) {
-    if (!lastActiveEditable) {
+    const el = window.lastActiveEditable;
+    if (!el) {
         showToast("⚠️ Haz clic en un texto primero");
         return;
     }
     
-    // Obtener el tamaño actual (calculado por el navegador)
-    const style = window.getComputedStyle(lastActiveEditable);
+    const style = window.getComputedStyle(el);
     let currentSize = parseFloat(style.fontSize);
     
-    // Cambios granulares (de 1 en 1 para mayor precisión)
-    if (action === 'increase') {
-        currentSize += 1;
-    } else {
-        currentSize = Math.max(8, currentSize - 1);
-    }
+    if (action === 'increase') currentSize += 1;
+    else currentSize = Math.max(8, currentSize - 1);
     
-    // Aplicar estilo en línea directamente
-    lastActiveEditable.style.fontSize = currentSize + 'px';
-    
-    // Ajuste automático de interlineado para encabezados
-    if (lastActiveEditable.tagName.startsWith('H')) {
-        lastActiveEditable.style.lineHeight = '1.2';
-    }
+    el.style.fontSize = currentSize + 'px';
+    if (el.tagName.startsWith('H')) el.style.lineHeight = '1.2';
     
     saveHistory(true);
 }
