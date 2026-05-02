@@ -2803,35 +2803,23 @@ function hideLoader() {
     const isClient = new URLSearchParams(window.location.search).get('mode') === 'client' || document.body.classList.contains('client-mode');
     const editor = document.getElementById('editor-view');
 
-    // MODO CLIENTE O EDITOR: Esperamos un momento extra para que el navegador pinte todo en memoria
-    const delay = isClient ? 1000 : 1200;
+    // REVELADO INSTANTÁNEO
+    const delay = isClient ? 50 : 200; 
 
     setTimeout(async () => {
-        // Asegurar que las fuentes estén listas antes de mostrar
         if (document.fonts) await document.fonts.ready;
-        
-        // Ajustamos escala en la sombra
         smartFit();
         
-        setTimeout(() => {
-            // Desvanecer el cargador
-            loader.style.opacity = '0';
-            loader.style.pointerEvents = 'none';
+        // Quitar cargador de inmediato
+        loader.style.display = 'none';
+        loader.classList.add('hidden');
 
-            // Revelar el editor con suavidad
-            if (editor) {
-                editor.style.visibility = 'visible';
-                editor.style.opacity = '1';
-                editor.style.transition = 'opacity 0.8s ease-in-out';
-            }
-
-            setTimeout(() => {
-                loader.classList.add('hidden');
-                loader.style.cssText = '';
-                const p = document.getElementById('loader-progress');
-                if (p) p.style.width = '0%';
-            }, 500);
-        }, 200);
+        if (editor) {
+            editor.style.visibility = 'visible';
+            editor.style.opacity = '1';
+            editor.style.transition = 'none'; // Sin transiciones lentas
+            editor.style.filter = 'none';
+        }
     }, delay);
 }
 
@@ -2888,9 +2876,12 @@ async function initApp() {
         const style = document.createElement('style');
         style.innerHTML = `
             .main-header, .design-panel, .zoom-controls, .floating-add-btn { display: none !important; }
-            #zoom-wrapper { margin-top: 0 !important; padding-top: 40px !important; }
-            .page { box-shadow: 0 15px 50px rgba(0,0,0,0.12) !important; }
-            body { background: #fdfdfd !important; }
+            #zoom-wrapper { margin-top: 0 !important; padding-top: 20px !important; }
+            .page { box-shadow: 0 30px 90px rgba(0,0,0,0.8) !important; margin-bottom: 50px !important; border: 1px solid rgba(255,255,255,0.03) !important; }
+            body { background: #07070F !important; color: #E2E8F0 !important; overflow-x: hidden !important; }
+            .page-content h2, .page-content h3 { color: white !important; }
+            .page-content p, .page-content li { color: #CBD5E1 !important; }
+            .is-intrigue { filter: none !important; backdrop-filter: none !important; background: #07070F !important; }
             /* Bloquear Limpiar firma del dueño en modo cliente */
             button[onclick*="'owner'"] { display: none !important; }
         `;
@@ -2983,7 +2974,7 @@ async function initApp() {
         if (urlParams.get('mode') === 'client') {
             const toggleBtn = document.getElementById('toggle-client-mode');
             if (toggleBtn) toggleBtn.style.display = 'none';
-            setTimeout(() => toggleClientMode(true), 500);
+            toggleClientMode(true); // Sin setTimeout, inmediato
 
             // Escuchar scroll para mostrar el botón de acción
             window.addEventListener('scroll', handleClientFabScroll);
