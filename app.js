@@ -3668,6 +3668,15 @@ editorStyles.innerHTML = `
         user-select: text !important;
     }
 
+    /* SEPARACIÓN DE TÍTULOS Y TARJETAS */
+    .content-body h2, .content-body h3 {
+        margin-bottom: 30px !important; /* Más aire abajo del título */
+    }
+
+    .feature-card, .payment-card, .astro-service-card {
+        margin-top: 25px !important; /* Más aire arriba de la tarjeta */
+    }
+
     #document-container, #zoom-wrapper {
         pointer-events: auto !important;
         z-index: 10 !important;
