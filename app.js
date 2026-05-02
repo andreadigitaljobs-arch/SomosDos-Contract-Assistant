@@ -2732,16 +2732,16 @@ function startEditor() {
 function showLoader() {
     const isClient = new URLSearchParams(window.location.search).get('mode') === 'client' || document.body.classList.contains('client-mode');
     
-    // Si no es cliente, mostramos el cargador normal del editor
+    // Si NO es cliente, mostramos el cargador normal del editor
     if (!isClient) {
         showExportLoader("Iniciando Editor", "Preparando tu espacio creativo...");
-    }
-    
-    // En AMBOS casos, mantenemos el editor oculto para evitar el parpadeo de "carga por partes"
-    const editor = document.getElementById('editor-view');
-    if (editor) {
-        editor.style.opacity = '0';
-        editor.style.visibility = 'hidden';
+        
+        // Solo en el editor bloqueamos la vista inicial para evitar parpadeos
+        const editor = document.getElementById('editor-view');
+        if (editor) {
+            editor.style.opacity = '0';
+            editor.style.visibility = 'hidden';
+        }
     }
 }
 
@@ -2811,14 +2811,17 @@ async function initApp() {
         document.getElementById('dashboard-view').classList.add('hidden');
         
         if (isClient) {
-            // MODO CLIENTE: Lo mantenemos oculto hasta que hideLoader lo revele suavemente
+            // MODO CLIENTE: Revelamos el tutorial inmediatamente y el fondo desenfocado
             document.documentElement.classList.add('is-intrigue');
             const editor = document.getElementById('editor-view');
             if (editor) {
                 editor.classList.remove('hidden');
-                editor.style.opacity = '0'; // TOTALMENTE INVISIBLE AL INICIO
-                editor.style.visibility = 'hidden';
+                editor.style.opacity = '0.4'; // Visible pero desenfocado (por is-intrigue)
+                editor.style.visibility = 'visible';
             }
+            
+            // Mostrar tutorial sin esperas
+            document.getElementById('client-tutorial')?.classList.remove('hidden');
         } else {
             document.getElementById('editor-view').classList.remove('hidden');
             document.getElementById('design-panel').classList.remove('hidden');
