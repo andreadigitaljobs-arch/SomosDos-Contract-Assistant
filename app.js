@@ -3617,6 +3617,53 @@ editorStyles.innerHTML = `
         word-break: break-word !important;
         max-width: 100% !important;
     }
+
+    /* --- MEJORA DE BOTONES DE INSTRUCCIONES (MODO CLIENTE) --- */
+    .tutorial-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 25px;
+    }
+    
+    .tutorial-step .btn-active, .btn-modal-primary {
+        background: linear-gradient(135deg, #7B3FE4, #6366F1) !important;
+        color: white !important;
+        padding: 14px 28px !important;
+        border-radius: 12px !important;
+        font-weight: 800 !important;
+        font-size: 1rem !important;
+        border: none !important;
+        box-shadow: 0 8px 20px rgba(123, 63, 228, 0.3) !important;
+        transition: all 0.3s ease !important;
+        cursor: pointer;
+    }
+
+    .tutorial-step .btn-active:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(123, 63, 228, 0.4) !important;
+    }
+
+    .tutorial-step .btn-secondary, .btn-modal-secondary {
+        background: white !important;
+        color: #475569 !important;
+        padding: 14px 28px !important;
+        border-radius: 12px !important;
+        font-weight: 700 !important;
+        border: 2px solid #E2E8F0 !important;
+        transition: all 0.3s ease !important;
+        cursor: pointer;
+    }
+
+    .tutorial-step .btn-secondary:hover {
+        border-color: #7B3FE4 !important;
+        color: #7B3FE4 !important;
+    }
+
+    /* --- FIX DEFINITIVO Z-INDEX PANEL LATERAL --- */
+    #design-panel, .design-side-panel {
+        z-index: 5000 !important; /* Bajado para que la cabecera (9999) gane siempre */
+    }
 `;
 document.head.appendChild(editorStyles);
 
