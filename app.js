@@ -264,7 +264,7 @@ const injectHeaderStyles = () => {
             align-items: center;
             position: sticky;
             top: 0;
-            z-index: 9999 !important; /* ELEVADO: Para mandar sobre el panel lateral */
+            z-index: 9999999 !important; /* VALOR EXTREMO */
         }
 
         .owner-grid-2, .client-grid-2 {
@@ -318,7 +318,7 @@ const injectHeaderStyles = () => {
         /* FIX DE MENÚS DESPLEGABLES */
         .dropdown { position: relative; }
         .dropdown-content {
-            z-index: 10000 !important; /* MÁXIMA PRIORIDAD: Para el menú de Añadir */
+            z-index: 99999999 !important; /* VALOR MÁXIMO POSIBLE */
             left: 0 !important;
             right: auto !important;
             min-width: 220px !important;
@@ -3661,8 +3661,14 @@ editorStyles.innerHTML = `
     }
 
     /* --- FIX DEFINITIVO Z-INDEX PANEL LATERAL --- */
-    #design-panel, .design-side-panel {
-        z-index: 5000 !important; /* Bajado para que la cabecera (9999) gane siempre */
+    #design-panel, .design-side-panel, aside#design-panel {
+        z-index: 10 !important; /* BAJADO AL MÍNIMO */
+        position: fixed !important;
+    }
+    
+    /* Forzar que el contenedor de la cabecera esté arriba */
+    header.main-header, .header-container {
+        z-index: 9999999 !important;
     }
 `;
 document.head.appendChild(editorStyles);
