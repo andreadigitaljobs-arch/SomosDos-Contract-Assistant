@@ -1359,10 +1359,10 @@ function renderDocument(data) {
         setPageTheme(id, theme, true);
     });
 
-    // Update global client input from document
-    const clientNameEl = document.querySelector('.sig-name.editable');
-    if (clientNameEl) {
-        const name = clientNameEl.textContent.trim();
+    // Update global client input from document (Using cover title instead of signer)
+    const coverTitle = document.querySelector('.client-info h2');
+    if (coverTitle) {
+        const name = coverTitle.textContent.trim();
         const globalInput = document.getElementById('global-client-name');
         if (globalInput && name !== "[NOMBRE DEL CLIENTE]" && name !== "[CLIENTE]") {
             globalInput.value = name;
@@ -1370,24 +1370,14 @@ function renderDocument(data) {
     }
 }
 
-// Sincroniza el input global de la barra superior con el texto de la firma del cliente y la portada
+// Sincroniza el input global con la Marca (Portada y textos legales) - NO toca los firmantes
 function syncClientName(val) {
     const upperVal = val.toUpperCase() || "[NOMBRE DEL CLIENTE]";
     
-    // 1. Actualizar cuadros de firma del CLIENTE (solo los editables)
-    const editableNames = document.querySelectorAll('.sig-name.editable');
-    editableNames.forEach(el => {
-        el.textContent = upperVal;
-    });
-
-    // 2. Actualizar Portada y otros placeholders
+    // 1. Actualizar Portada y otros placeholders de MARCA
     const placeholders = document.querySelectorAll('.client-info h2, .client-name-placeholder');
     placeholders.forEach(el => {
-        if (el.tagName === 'H2') {
-            el.textContent = upperVal;
-        } else {
-            el.textContent = upperVal;
-        }
+        el.textContent = upperVal;
     });
 
     // 3. Actualizar mención en el texto de aceptación de firmas
