@@ -787,6 +787,7 @@ function createPageHTML(id, type = 'content') {
     } else if (isSigs) {
         const clientCount = window.clientSignersCount || 1;
         const ownerCount = window.ownerSignersCount || 2;
+        const isClient = document.documentElement.classList.contains('is-client-mode');
         inner = `
             <div class="signature-layout">
                 <div class="signature-top">
@@ -796,35 +797,33 @@ function createPageHTML(id, type = 'content') {
                     </div>
                 </div>
                 
-                <!-- FIRMAS DEL CLIENTE PRIMERO -->
                 <div class="signature-section-title" style="font-size: 0.85rem;">FIRMA(S) DEL CLIENTE</div>
                 <div class="signature-grid client-grid-${clientCount}">
                     <div class="sig-box">
-                        <div class="sig-line-container"><canvas id="sig-canvas-client-1" class="sig-canvas" width="300" height="100"></canvas></div>
+                        <canvas id="sig-canvas-client-1" class="sig-canvas" width="300" height="150" style="${isClient ? 'display:none;' : ''}"></canvas>
+                        ${isClient ? `<button class="btn-sign-here" onclick="openSignatureModal('client-1')">TOCAR AQUÍ PARA FIRMAR</button>` : ''}
                         <p class="sig-name editable" contenteditable="true" style="cursor: text !important;">[NOMBRE FIRMANTE]</p>
-                        <p class="sig-detail editable" contenteditable="true">Firma Digital</p>
                         <button class="btn-clear-sig" onclick="clearSignature('client-1')">Limpiar</button>
                     </div>
                     ${clientCount === 2 ? `
                     <div class="sig-box">
-                        <div class="sig-line-container"><canvas id="sig-canvas-client-2" class="sig-canvas" width="300" height="100"></canvas></div>
+                        <canvas id="sig-canvas-client-2" class="sig-canvas" width="300" height="150" style="${isClient ? 'display:none;' : ''}"></canvas>
+                        ${isClient ? `<button class="btn-sign-here" onclick="openSignatureModal('client-2')">TOCAR AQUÍ PARA FIRMAR</button>` : ''}
                         <p class="sig-name editable" contenteditable="true" style="cursor: text !important;">[NOMBRE FIRMANTE 2]</p>
-                        <p class="sig-detail editable" contenteditable="true">Firma Digital</p>
                         <button class="btn-clear-sig" onclick="clearSignature('client-2')">Limpiar</button>
                     </div>` : ''}
                 </div>
 
-                <!-- REPRESENTANTES SOMOSDOS DEBAJO -->
                 <div class="signature-section-title" style="margin-top: 40px;">REPRESENTANTES SOMOSDOS</div>
                 <div class="signature-grid owner-grid-${ownerCount}">
                     <div class="sig-box">
-                        <div class="sig-line-container"><canvas id="sig-canvas-owner-andrea" class="sig-canvas" width="300" height="100"></canvas></div>
+                        <canvas id="sig-canvas-owner-andrea" class="sig-canvas" width="300" height="150"></canvas>
                         <p class="sig-name editable" contenteditable="true" style="cursor: text !important;">Andrea Reyes</p>
                         <p class="sig-detail editable" contenteditable="true">SomosDos Studio</p>
                         <button class="btn-clear-sig" onclick="clearSignature('owner-andrea')">Limpiar</button>
                     </div>
                     <div class="sig-box">
-                        <div class="sig-line-container"><canvas id="sig-canvas-owner-wai" class="sig-canvas" width="300" height="100"></canvas></div>
+                        <canvas id="sig-canvas-owner-wai" class="sig-canvas" width="300" height="150"></canvas>
                         <p class="sig-name editable" contenteditable="true" style="cursor: text !important;">Wai Harrington</p>
                         <p class="sig-detail editable" contenteditable="true">SomosDos Studio</p>
                         <button class="btn-clear-sig" onclick="clearSignature('owner-wai')">Limpiar</button>
@@ -2045,43 +2044,119 @@ function nextTutorialStep(n) {
 function closeTutorial() { 
     const tutorial = document.getElementById('client-tutorial');
     const editor = document.getElementById('editor-view');
+    const curtain = document.getElementById('premium-curtain');
     
     if (tutorial) {
-        // 0. RESET DE SCROLL: Volver arriba del todo antes de mostrar
+        // 0. RESET DE SCROLL
         window.scrollTo({ top: 0, behavior: 'instant' });
         
-        // 1. Desvanecer tutorial hacia ARRIBA
+        // 1. Desvanecer tutorial y cortina simultáneamente
         tutorial.style.opacity = '0';
         tutorial.style.transform = 'translateY(-30px)';
         tutorial.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
         
-        // 2. Preparar el Editor para el zoom de entrada
+        if (curtain) {
+            curtain.style.opacity = '0';
+            curtain.style.transform = 'scale(1.1)';
+            setTimeout(() => curtain.style.display = 'none', 800);
+        }
+
+        // 2. Revelar Editor con suavidad
         if (editor) {
+            editor.classList.remove('hidden');
             editor.style.visibility = 'visible';
             editor.style.opacity = '0';
-            editor.style.transform = 'scale(0.95)';
-            editor.style.transition = 'none';
+            editor.style.transform = 'scale(0.98)';
             
             setTimeout(() => {
-                editor.style.transition = 'all 1s cubic-bezier(0.16, 1, 0.3, 1)';
+                editor.style.transition = 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
                 editor.style.opacity = '1';
                 editor.style.transform = 'scale(1)';
-                editor.style.filter = 'none';
+                document.body.style.overflow = 'auto'; // Habilitar scroll
             }, 100);
         }
 
         setTimeout(() => {
             tutorial.classList.add('hidden');
-            document.documentElement.classList.remove('is-intrigue');
-            
-            // Revelar el contrato eliminando el desenfoque suavemente
-            const container = document.getElementById('document-container');
-            if (container) container.style.filter = 'blur(0)';
             
             document.body.classList.remove('is-client-mode', 'client-mode');
             smartFit();
             toggleClientFab(true);
         }, 600);
+    }
+}
+
+/* --- NUEVAS FUNCIONES FIRMA 2.0 --- */
+let activeSignerId = null;
+function openSignatureModal(id) {
+    activeSignerId = id;
+    const modal = document.getElementById('signature-modal');
+    const canvas = document.getElementById('fullscreen-canvas');
+    if (!modal || !canvas) return;
+
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    // Ajustar resolución del canvas al tamaño visual
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * 2;
+    canvas.height = rect.height * 2;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(2, 2);
+    ctx.strokeStyle = '#1A1A2E';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+
+    // Lógica de dibujo táctil simplificada para el modal
+    let drawing = false;
+    const getPos = (e) => {
+        const r = canvas.getBoundingClientRect();
+        const ex = e.touches ? e.touches[0].clientX : e.clientX;
+        const ey = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: ex - r.left, y: ey - r.top };
+    };
+    
+    canvas.onmousedown = canvas.ontouchstart = (e) => { 
+        drawing = true; ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); 
+        if (e.type === 'touchstart') e.preventDefault();
+    };
+    canvas.onmousemove = canvas.ontouchmove = (e) => { 
+        if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); 
+        if (e.type === 'touchmove') e.preventDefault();
+    };
+    canvas.onmouseup = canvas.ontouchend = () => { drawing = false; };
+}
+
+function clearFullscreenSignature() {
+    const canvas = document.getElementById('fullscreen-canvas');
+    if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function closeSignatureModal() {
+    document.getElementById('signature-modal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function saveFullscreenSignature() {
+    const modalCanvas = document.getElementById('fullscreen-canvas');
+    const targetCanvas = document.getElementById(`sig-canvas-${activeSignerId}`);
+    
+    if (modalCanvas && targetCanvas) {
+        const tCtx = targetCanvas.getContext('2d');
+        tCtx.clearRect(0, 0, targetCanvas.width, targetCanvas.height);
+        tCtx.drawImage(modalCanvas, 0, 0, targetCanvas.width, targetCanvas.height);
+        targetCanvas.dataset.hasDrawing = 'true';
+        
+        // Actualizar UI del botón si existe
+        const btn = document.querySelector(`button[onclick*='${activeSignerId}']`);
+        if (btn) {
+            btn.innerHTML = '✓ FIRMADO CORRECTAMENTE';
+            btn.style.background = '#059669'; // Verde éxito
+        }
+        
+        closeSignatureModal();
+        saveDocument(true);
+        saveHistory();
     }
 }
 

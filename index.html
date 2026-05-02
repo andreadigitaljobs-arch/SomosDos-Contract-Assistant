@@ -26,7 +26,7 @@
     
     <!-- Early Mode Detection to prevent flickering -->
     <style>
-        /* Reglas de bloqueo instantáneo para evitar el FLASH */
+        /* BLOQUEO INSTANTÁNEO: Nadie ve el editor si es cliente */
         html.is-client-mode .main-header, 
         html.is-client-mode .design-side-panel, 
         html.is-client-mode .zoom-controls, 
@@ -34,27 +34,29 @@
         html.is-client-mode #nav-to-dashboard, 
         html.is-client-mode .page-controls { 
             display: none !important; 
-            opacity: 0 !important;
-            visibility: hidden !important;
-            pointer-events: none !important;
         }
-        html.is-client-mode #document-container { 
-            filter: blur(20px); 
-            transition: filter 1s ease-out;
+        html.is-client-mode body { background: #07070F !important; overflow: hidden; }
+
+        /* CORTINA PREMIUM DE CARGA */
+        #premium-curtain {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #07070F; z-index: 99999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        html.is-client-mode body { 
-            background: #07070F !important; 
+        #premium-curtain img { width: 120px; margin-bottom: 20px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 0.6; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1); } }
+
+        /* MODAL DE FIRMA 2.0 */
+        #signature-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(7, 7, 15, 0.98); z-index: 100000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            backdrop-filter: blur(10px);
         }
-        /* Forzar visibilidad de textos en modo oscuro cliente (Solo para el CONTRATO) */
-        html.is-client-mode #document-container h1, 
-        html.is-client-mode #document-container h2, 
-        html.is-client-mode #document-container h3 { 
-            color: #FFFFFF !important;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-        /* Asegurar que el tutorial siga siendo legible (Texto Oscuro) */
-        .tutorial-card h2 {
-            color: #1A1A2E !important;
+        .signature-pad-container {
+            width: 90%; max-width: 500px; background: #fff; border-radius: 20px;
+            overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
     </style>
 
@@ -63,7 +65,6 @@
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('mode') === 'client') {
                 document.documentElement.classList.add('is-client-mode');
-                document.documentElement.classList.add('is-intrigue');
             }
         })();
     </script>
@@ -178,7 +179,25 @@
     </div>
 
     <div id="editor-view" class="editor-layout hidden">
-        <header class="main-header">
+        <div id="premium-curtain">
+        <img src="assets/logo.png" alt="SomosDos Logo">
+        <div style="color: white; font-weight: 300; letter-spacing: 2px;">PREPARANDO ACUERDO</div>
+    </div>
+
+    <!-- Modal de Firma Full Screen -->
+    <div id="signature-modal">
+        <div style="color: white; margin-bottom: 20px; font-size: 1.2rem; font-weight: 600;">Dibuja tu firma</div>
+        <div class="signature-pad-container">
+            <canvas id="fullscreen-canvas" style="background: white; width: 100%; height: 300px; display: block; touch-action: none;"></canvas>
+            <div style="display: flex; border-top: 1px solid #eee;">
+                <button onclick="clearFullscreenSignature()" style="flex: 1; padding: 15px; background: #f5f5f5; border: none; font-weight: 600; cursor: pointer;">BORRAR</button>
+                <button onclick="saveFullscreenSignature()" style="flex: 1; padding: 15px; background: #7B3FE4; color: white; border: none; font-weight: 600; cursor: pointer;">CONFIRMAR FIRMA</button>
+            </div>
+        </div>
+        <button onclick="closeSignatureModal()" style="margin-top: 20px; color: #94a3b8; background: none; border: none; cursor: pointer;">Cancelar</button>
+    </div>
+
+    <header class="main-header">
             <div class="header-container">
                 <div class="logo-area">
                     <button id="mobile-toggle-design" class="btn-circle-pro" style="display: none;" onclick="toggleDesignPanel()">☰</button>

@@ -401,6 +401,11 @@ body.client-mode .page::before {
 body.client-mode .page {
     will-change: transform, opacity;
     transform: translateZ(0);
+    contain: layout paint style;
+    position: relative;
+    overflow: hidden;
+    will-change: transform, opacity;
+    transform: translateZ(0);
     -webkit-transform: translateZ(0);
     backface-visibility: hidden;
     box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05) !important;
@@ -501,6 +506,11 @@ body {
 .page {
     will-change: transform, opacity;
     transform: translateZ(0);
+    contain: layout paint style;
+    position: relative;
+    overflow: hidden;
+    will-change: transform, opacity;
+    transform: translateZ(0);
     -webkit-transform: translateZ(0);
     backface-visibility: hidden;
     position: relative;
@@ -572,6 +582,11 @@ body {
 }
 
 .btn-delete.page {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    contain: layout paint style;
+    position: relative;
+    overflow: hidden;
     will-change: transform, opacity;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
@@ -1744,6 +1759,11 @@ body.client-mode #save-doc,
 body.client-mode #add.page {
     will-change: transform, opacity;
     transform: translateZ(0);
+    contain: layout paint style;
+    position: relative;
+    overflow: hidden;
+    will-change: transform, opacity;
+    transform: translateZ(0);
     -webkit-transform: translateZ(0);
     backface-visibility: hidden;
     display: none !important;
@@ -2860,6 +2880,11 @@ body.client-mode .header-actions {
     .page {
     will-change: transform, opacity;
     transform: translateZ(0);
+    contain: layout paint style;
+    position: relative;
+    overflow: hidden;
+    will-change: transform, opacity;
+    transform: translateZ(0);
     -webkit-transform: translateZ(0);
     backface-visibility: hidden;
         margin: 0 !important;
@@ -3694,3 +3719,21 @@ html, body { min-height: 100vh; height: auto !important; }
 .design-side-panel {
     z-index: 9000 !important;
 }
+
+/* BOTON DE FIRMA PREMIUM */
+.btn-sign-here {
+    background: linear-gradient(135deg, #2D3EAF, #7B3FE4) !important;
+    color: white !important;
+    padding: 18px 30px !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    border: none !important;
+    cursor: pointer !important;
+    box-shadow: 0 10px 20px rgba(123, 63, 228, 0.4) !important;
+    transition: all 0.3s ease !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    display: block !important;
+    margin: 20px auto !important;
+}
+.btn-sign-here:active { transform: scale(0.95); box-shadow: 0 5px 10px rgba(123, 63, 228, 0.2); }
