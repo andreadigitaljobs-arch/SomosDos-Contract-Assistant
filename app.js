@@ -3483,24 +3483,24 @@ function generateSmartContract() {
                     if (tag) tag.innerText = `ALCANCE DETALLADO: ${sName.toUpperCase()}`;
                     if (body) {
                         body.innerHTML = `
-                            <h2 class="gradient-text" style="font-size: 2.2rem; margin-bottom: 15px;">${sName}</h2>
-                            <p style="font-size: 1rem; line-height: 1.6; margin-bottom: 20px; opacity: 0.9;">${data.intro}</p>
+                            <h2 class="gradient-text editable" contenteditable="true" style="font-size: 2.2rem; margin-bottom: 15px;">${sName}</h2>
+                            <p class="editable" contenteditable="true" style="font-size: 1rem; line-height: 1.6; margin-bottom: 20px; opacity: 0.9;">${data.intro}</p>
                             
                             <div class="scope-card-main" style="padding: 25px; background: rgba(255,255,255,0.03); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06);">
-                                <h4 style="margin-bottom: 12px; color: var(--brand-blue); letter-spacing: 1px; font-size: 0.85rem;">COMPONENTE TÉCNICO</h4>
+                                <h4 class="editable" contenteditable="true" style="margin-bottom: 12px; color: var(--brand-blue); letter-spacing: 1px; font-size: 0.85rem;">COMPONENTE TÉCNICO</h4>
                                 <ul class="professional-list" style="margin: 0; padding-left: 20px;">
-                                    ${data.details.map(d => `<li style="margin-bottom: 8px; font-weight: 500; font-size: 0.9rem; line-height: 1.4;">${d}</li>`).join('')}
+                                    ${data.details.map(d => `<li class="editable" contenteditable="true" style="margin-bottom: 8px; font-weight: 500; font-size: 0.9rem; line-height: 1.4;">${d}</li>`).join('')}
                                 </ul>
                             </div>
 
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
                                 <div class="value-tag-green" style="padding: 15px;">
-                                    <strong style="font-size: 0.85rem; display: block; margin-bottom: 4px;">VALOR AGREGADO</strong>
-                                    <p style="font-size: 0.8rem; line-height: 1.3;">Optimización estratégica de procesos y tiempos operativos.</p>
+                                    <strong class="editable" contenteditable="true" style="font-size: 0.85rem; display: block; margin-bottom: 4px;">VALOR AGREGADO</strong>
+                                    <p class="editable" contenteditable="true" style="font-size: 0.8rem; line-height: 1.3;">Optimización estratégica de procesos y tiempos operativos.</p>
                                 </div>
                                 <div class="value-tag-blue" style="padding: 15px;">
-                                    <strong style="font-size: 0.85rem; display: block; margin-bottom: 4px;">GARANTÍA SOMOSDOS</strong>
-                                    <p style="font-size: 0.8rem; line-height: 1.3;">Soporte técnico prioritario y revisiones post-entrega.</p>
+                                    <strong class="editable" contenteditable="true" style="font-size: 0.85rem; display: block; margin-bottom: 4px;">GARANTÍA SOMOSDOS</strong>
+                                    <p class="editable" contenteditable="true" style="font-size: 0.8rem; line-height: 1.3;">Soporte técnico prioritario y revisiones post-entrega.</p>
                                 </div>
                             </div>
                         `;
