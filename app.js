@@ -789,7 +789,7 @@ function createPageHTML(id, type = 'content') {
             <div class="signature-layout">
                 <div class="signature-top">
                     <h3 class="editable" contenteditable="true">ACEPTACIÓN Y FIRMAS</h3>
-                    <div class="signature-subtitle" style="font-size: 0.85rem !important; white-space: normal !important; text-align: center; margin: 0 auto 25px; max-width: 320px; display: block; overflow-wrap: break-word; word-break: break-word;">
+                    <div class="signature-subtitle" style="font-size: 1rem !important; white-space: normal !important; text-align: center; margin: 0 auto 25px; max-width: 600px; display: block;">
                         <p style="margin: 0; line-height: 1.5; white-space: normal !important;">Al firmar este documento, ambas partes aceptan los términos y condiciones para <strong>${clientName}</strong>.</p>
                     </div>
                 </div>
