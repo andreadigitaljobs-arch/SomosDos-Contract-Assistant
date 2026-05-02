@@ -3691,39 +3691,30 @@ editorStyles.innerHTML = `
         color: #7B3FE4 !important;
     }
 
-    /* FORZAR EDITABILIDAD TOTAL */
-    .editable, [contenteditable="true"], .page-content * {
-        cursor: text !important;
+    /* DESBLOQUEO NUCLEAR DE FIRMAS */
+    .sig-box, .sig-box-container {
         pointer-events: auto !important;
+        position: relative;
+    }
+
+    .sig-name {
+        position: relative !important;
+        z-index: 9999 !important; /* Por encima de todo */
+        pointer-events: auto !important;
+        cursor: text !important;
         -webkit-user-select: text !important;
         user-select: text !important;
+        display: block !important;
+        min-height: 1.2em;
+        min-width: 100px;
     }
 
-    /* SEPARACIÓN DE TÍTULOS Y TARJETAS */
-    .content-body h2, .content-body h3 {
-        margin-bottom: 30px !important; /* Más aire abajo del título */
+    .sig-line-container {
+        pointer-events: none !important; /* Que el contenedor del canvas no atrape clics */
     }
 
-    .feature-card, .payment-card, .astro-service-card {
-        margin-top: 25px !important; /* Más aire arriba de la tarjeta */
-    }
-
-    #document-container, #zoom-wrapper {
-        pointer-events: auto !important;
-        z-index: 10 !important;
-    }
-
-    #design-panel, .design-side-panel {
-        z-index: 1000 !important;
-    }
-    
-    header.main-header {
-        z-index: 2000 !important;
-        pointer-events: none !important; /* La cabecera no debe atrapar clics fuera de sus botones */
-    }
-    
-    header.main-header * {
-        pointer-events: auto !important; /* Pero sus botones sí */
+    .sig-canvas {
+        pointer-events: auto !important; /* Pero el canvas sí para firmar */
     }
 `;
 document.head.appendChild(editorStyles);
