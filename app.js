@@ -11,6 +11,7 @@ let historyTimer = null;
 window.ownerSignersCount = 2; // Inicializar por defecto
 window.clientSignersCount = 1; // Inicializar por defecto
 window.lastActiveEditable = null; // VARIABLE MAESTRA DE EDICIÓN
+window.isEditLocked = true; // El editor arranca en modo lectura para mayor fluidez
 
 function saveHistory(debounce = false) {
     if (debounce) {
@@ -2711,32 +2712,62 @@ async function loadContract(id) {
 }
 
 function applyRetroactiveEdits() {
+    // Si el candado está cerrado, no hacemos nada (máxima velocidad)
+    if (window.isEditLocked) {
+        console.log("🔒 Edición bloqueada: Saltando parche para mayor rendimiento.");
+        setAllEditable(false);
+        return;
+    }
+
     console.log("🛠️ Aplicando parche de edición retroactivo profundo...");
     const container = getContainer();
     if (!container) return;
+    
+    setAllEditable(true);
+    console.log("✅ Edición habilitada en todo el documento.");
+}
 
-    // Selector ultra-amplio para no dejar nada por fuera
-    const textSelectors = 'h2, h3, h4, h5, p, li, span, div.sig-name, div.sig-detail, .editable, [contenteditable]';
-    const elements = container.querySelectorAll(textSelectors);
-
+function setAllEditable(enabled) {
+    const container = getContainer();
+    if (!container) return;
+    
+    const elements = container.querySelectorAll('h2, h3, h4, h5, p, li, span, div.sig-name, div.sig-detail, .editable, [contenteditable]');
     elements.forEach(el => {
-        // Ignorar contenedores grandes, solo queremos texto
+        // Ignorar contenedores grandes
         if (el.children.length > 3 && el.tagName === 'DIV') return;
-
-        el.classList.add('editable');
-        el.setAttribute('contenteditable', 'true');
-        el.style.pointerEvents = 'auto';
-        el.style.userSelect = 'text';
-        el.style.cursor = 'text';
         
-        // Si es un nombre de firma, asegurar que esté al frente
-        if (el.classList.contains('sig-name')) {
-            el.style.position = 'relative';
-            el.style.zIndex = '100';
+        el.setAttribute('contenteditable', enabled ? 'true' : 'false');
+        if (enabled) {
+            el.classList.add('editable');
+            el.style.pointerEvents = 'auto';
+            el.style.cursor = 'text';
+        } else {
+            el.style.cursor = 'default';
+            // IMPORTANTE: En lectura no bloqueamos clics para permitir scroll y firmas
+            el.style.pointerEvents = 'auto'; 
         }
     });
+}
 
-    console.log(`✅ Parche aplicado a ${elements.length} elementos.`);
+function toggleEditLock() {
+    window.isEditLocked = !window.isEditLocked;
+    const btn = document.getElementById('toggle-edit-lock');
+    
+    if (window.isEditLocked) {
+        btn.innerHTML = '🔒';
+        btn.style.background = 'rgba(0,0,0,0.05)';
+        btn.style.color = '#94A3B8';
+        btn.title = 'Habilitar Edición';
+        showToast("Modo Lectura: Rendimiento Máximo");
+    } else {
+        btn.innerHTML = '🔓';
+        btn.style.background = 'rgba(123, 63, 228, 0.1)';
+        btn.style.color = '#7B3FE4';
+        btn.title = 'Bloquear Edición';
+        showToast("Modo Edición: Activado");
+    }
+    
+    applyRetroactiveEdits();
 }
 
 function startEditor() {
@@ -2850,7 +2881,9 @@ async function initApp() {
     
     // DETECTAR MODO CLIENTE
     if (isClient) {
+        window.isEditLocked = true; // SIEMPRE bloqueado en modo cliente
         document.body.classList.add('is-client-mode');
+        // ... (resto del código de estilos)
         // Ocultar elementos de edición inmediatamente y limpiar espacio
         const style = document.createElement('style');
         style.innerHTML = `
