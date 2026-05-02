@@ -2730,11 +2730,10 @@ function startEditor() {
 }
 
 function showLoader() {
-    const isClient = new URLSearchParams(window.location.search).get('mode') === 'client';
-    if (isClient) return; // En modo cliente no queremos página de carga
-
-    showExportLoader("Iniciando Editor", "Preparando tu espacio creativo...");
-    // Bloqueamos la vista del editor completamente
+    // AHORA: Mostramos el cargador siempre para asegurar una carga limpia
+    showExportLoader("Preparando Acuerdo", "Cargando experiencia SomosDos...");
+    
+    // Bloqueamos la vista del editor completamente para evitar parpadeos
     const editor = document.getElementById('editor-view');
     if (editor) {
         editor.style.opacity = '0';
@@ -2808,17 +2807,14 @@ async function initApp() {
         document.getElementById('dashboard-view').classList.add('hidden');
         
         if (isClient) {
-            // MODO CLIENTE: Lo dejamos visible con baja opacidad para que se vea tras el blur del tutorial
+            // MODO CLIENTE: Lo mantenemos oculto hasta que hideLoader lo revele suavemente
             document.documentElement.classList.add('is-intrigue');
             const editor = document.getElementById('editor-view');
             if (editor) {
                 editor.classList.remove('hidden');
-                editor.style.opacity = '0.4';
-                editor.style.visibility = 'visible';
+                editor.style.opacity = '0'; // TOTALMENTE INVISIBLE AL INICIO
+                editor.style.visibility = 'hidden';
             }
-            
-            // Ejecutar smartFit preventivamente
-            setTimeout(() => smartFit(), 300);
         } else {
             document.getElementById('editor-view').classList.remove('hidden');
             document.getElementById('design-panel').classList.remove('hidden');
