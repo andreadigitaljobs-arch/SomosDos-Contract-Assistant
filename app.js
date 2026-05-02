@@ -799,14 +799,14 @@ function createPageHTML(id, type = 'content') {
                 <div class="signature-grid client-grid-${clientCount}">
                     <div class="sig-box">
                         <div class="sig-line-container"><canvas id="sig-canvas-client-1" class="sig-canvas" width="300" height="100"></canvas></div>
-                        <p class="sig-name editable" contenteditable="true">${clientNameUpper}</p>
+                        <p class="sig-name" contenteditable="true">[NOMBRE FIRMANTE]</p>
                         <p class="sig-detail">Firma Digital</p>
                         <button class="btn-clear-sig" onclick="clearSignature('client-1')">Limpiar</button>
                     </div>
                     ${clientCount === 2 ? `
                     <div class="sig-box">
                         <div class="sig-line-container"><canvas id="sig-canvas-client-2" class="sig-canvas" width="300" height="100"></canvas></div>
-                        <p class="sig-name editable" contenteditable="true">[NOMBRE SOCIO]</p>
+                        <p class="sig-name" contenteditable="true">[NOMBRE FIRMANTE 2]</p>
                         <p class="sig-detail">Firma Digital</p>
                         <button class="btn-clear-sig" onclick="clearSignature('client-2')">Limpiar</button>
                     </div>` : ''}
