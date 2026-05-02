@@ -606,19 +606,19 @@ function createPageHTML(id, type = 'content') {
                 <img src="${logoSrc}" class="brand-logo-small">
                 <div class="header-tag">PROPUESTA DE ESTRATEGIA</div>
             </div>
-            <div class="content-body editable" contenteditable="true">
-                <h2 class="gradient-text">Estrategia de Reactivación Digital</h2>
-                <p>Para la marca <strong>${clientName}</strong>, iniciaremos una fase intensiva de posicionamiento y captación.</p>
+            <div class="content-body">
+                <h2 class="gradient-text editable" contenteditable="true">Estrategia de Reactivación Digital</h2>
+                <p class="editable" contenteditable="true">Para la marca <strong>${clientName}</strong>, iniciaremos una fase intensiva de posicionamiento y captación.</p>
                 
-                <p><strong>Esta fase incluiría:</strong></p>
-                <ul>
+                <p class="editable" contenteditable="true"><strong>Esta fase incluiría:</strong></p>
+                <ul class="editable" contenteditable="true">
                     <li>Auditoría y reorganización estratégica del ecosistema digital.</li>
                     <li>Definición de pilares de contenido y tono de comunicación.</li>
                     <li>Producción de contenido audiovisual de alto impacto.</li>
                     <li>Edición profesional optimizada para conversión.</li>
                     <li>Configuración y optimización de pauta publicitaria (Ads).</li>
                 </ul>
-                <p><em>Este plan está diseñado para generar resultados medibles en el corto plazo.</em></p>
+                <p class="editable" contenteditable="true"><em>Este plan está diseñado para generar resultados medibles en el corto plazo.</em></p>
             </div>
             <div class="content-footer"><span class="page-number">Plan de Acción</span></div>`;
     } else if (type === 'landing') {
@@ -627,8 +627,8 @@ function createPageHTML(id, type = 'content') {
                 <img src="${logoSrc}" class="brand-logo-small">
                 <div class="header-tag">SERVICIOS DIGITALES</div>
             </div>
-            <div class="content-body editable" contenteditable="true">
-                <h2 class="gradient-text">Desarrollo de Landing Page</h2>
+            <div class="content-body">
+                <h2 class="gradient-text editable" contenteditable="true">Desarrollo de Landing Page</h2>
                 <div class="spacer-sm"></div>
                 <p>Desarrollaremos una plataforma de aterrizaje optimizada para convertir los leads de <strong>${clientName}</strong>.</p>
                 <div class="landing-grid">
@@ -737,9 +737,9 @@ function createPageHTML(id, type = 'content') {
                 <img src="${logoSrc}" class="brand-logo-small">
                 <div class="header-tag">BIENVENIDA</div>
             </div>
-            <div class="content-body editable" contenteditable="true" style="text-align: center; padding: 60px 60px 0;">
-                <h2 class="gradient-text" style="font-size: 3rem; margin-bottom: 25px;">¡Gracias por elegirnos!</h2>
-                <p style="font-size: 1.25rem; line-height: 1.8; color: var(--text-main); font-weight: 500;">
+            <div class="content-body" style="text-align: center; padding: 60px 60px 0;">
+                <h2 class="gradient-text editable" contenteditable="true" style="font-size: 3rem; margin-bottom: 25px;">¡Gracias por elegirnos!</h2>
+                <p class="editable" contenteditable="true" style="font-size: 1.25rem; line-height: 1.8; color: var(--text-main); font-weight: 500;">
                     En <strong>SomosDos Studio</strong>, nos apasiona colaborar con marcas que tienen una visión clara y ambiciosa. Es un verdadero privilegio para nuestro equipo ser seleccionados para acompañar a <strong>${clientName}</strong> en este viaje de innovación y crecimiento.
                 </p>
                 <div style="width: 60px; height: 3px; background: var(--brand-gradient); margin: 40px auto; border-radius: 10px;"></div>
@@ -755,13 +755,13 @@ function createPageHTML(id, type = 'content') {
                 <img src="${logoSrc}" class="brand-logo-small">
                 <div class="header-tag">INVERSIÓN Y PAGOS</div>
             </div>
-            <div class="content-body editable" contenteditable="true">
-                <h2 class="gradient-text">Propuesta Económica</h2>
-                <p>Para la ejecución integral del proyecto <strong>${clientName}</strong>, se ha definido la siguiente inversión estratégica:</p>
+            <div class="content-body">
+                <h2 class="gradient-text editable" contenteditable="true">Propuesta Económica</h2>
+                <p class="editable" contenteditable="true">Para la ejecución integral del proyecto <strong>${clientName}</strong>, se ha definido la siguiente inversión estratégica:</p>
                 
                 <div class="payment-card" style="background: var(--brand-gradient); color: white; padding: 40px; border-radius: 20px; text-align: center; margin: 30px 0; box-shadow: 0 10px 30px rgba(123, 63, 228, 0.3);">
                     <label style="opacity: 0.8; font-size: 0.9rem; letter-spacing: 2px; font-weight: 800;">TOTAL INVERSIÓN</label>
-                    <h2 style="font-size: 4rem; margin: 10px 0;">$ [MONTO]</h2>
+                    <h2 class="editable" contenteditable="true" style="font-size: 4rem; margin: 10px 0;">$ [MONTO]</h2>
                 </div>
                 
                 <h4>Condiciones y Cronograma de Pagos:</h4>
@@ -799,15 +799,15 @@ function createPageHTML(id, type = 'content') {
                 <div class="signature-grid client-grid-${clientCount}">
                     <div class="sig-box">
                         <div class="sig-line-container"><canvas id="sig-canvas-client-1" class="sig-canvas" width="300" height="100"></canvas></div>
-                        <p class="sig-name" contenteditable="true">[NOMBRE FIRMANTE]</p>
-                        <p class="sig-detail">Firma Digital</p>
+                        <p class="sig-name editable" contenteditable="true" style="cursor: text !important;">[NOMBRE FIRMANTE]</p>
+                        <p class="sig-detail editable" contenteditable="true">Firma Digital</p>
                         <button class="btn-clear-sig" onclick="clearSignature('client-1')">Limpiar</button>
                     </div>
                     ${clientCount === 2 ? `
                     <div class="sig-box">
                         <div class="sig-line-container"><canvas id="sig-canvas-client-2" class="sig-canvas" width="300" height="100"></canvas></div>
-                        <p class="sig-name" contenteditable="true">[NOMBRE FIRMANTE 2]</p>
-                        <p class="sig-detail">Firma Digital</p>
+                        <p class="sig-name editable" contenteditable="true" style="cursor: text !important;">[NOMBRE FIRMANTE 2]</p>
+                        <p class="sig-detail editable" contenteditable="true">Firma Digital</p>
                         <button class="btn-clear-sig" onclick="clearSignature('client-2')">Limpiar</button>
                     </div>` : ''}
                 </div>
@@ -817,14 +817,14 @@ function createPageHTML(id, type = 'content') {
                 <div class="signature-grid owner-grid-${ownerCount}">
                     <div class="sig-box">
                         <div class="sig-line-container"><canvas id="sig-canvas-owner-andrea" class="sig-canvas" width="300" height="100"></canvas></div>
-                        <p class="sig-name">Andrea Reyes</p>
-                        <p class="sig-detail">SomosDos Studio</p>
+                        <p class="sig-name editable" contenteditable="true" style="cursor: text !important;">Andrea Reyes</p>
+                        <p class="sig-detail editable" contenteditable="true">SomosDos Studio</p>
                         <button class="btn-clear-sig" onclick="clearSignature('owner-andrea')">Limpiar</button>
                     </div>
                     <div class="sig-box">
                         <div class="sig-line-container"><canvas id="sig-canvas-owner-wai" class="sig-canvas" width="300" height="100"></canvas></div>
-                        <p class="sig-name">Wai Harrington</p>
-                        <p class="sig-detail">SomosDos Studio</p>
+                        <p class="sig-name editable" contenteditable="true" style="cursor: text !important;">Wai Harrington</p>
+                        <p class="sig-detail editable" contenteditable="true">SomosDos Studio</p>
                         <button class="btn-clear-sig" onclick="clearSignature('owner-wai')">Limpiar</button>
                     </div>
                 </div>
@@ -2838,13 +2838,12 @@ async function initApp() {
     console.log("🏁 Inicializando Aplicación v18.5...");
 
     try {
-        // RASTREADOR DE TEXTO ACTIVO (Soluciona el error "debes darle clic a un texto")
+        // RASTREADOR DE TEXTO ACTIVO (MAESTRO)
         document.addEventListener('mousedown', (e) => {
-            const editable = e.target.closest('.editable');
+            const editable = e.target.closest('.editable') || (e.target.getAttribute('contenteditable') === 'true' ? e.target : null);
             if (editable) {
-                window.activeEditable = editable;
-                // Pequeño feedback visual opcional
-                console.log("Texto seleccionado:", editable.innerText.substring(0, 10));
+                window.lastActiveEditable = editable; // Unificado con las funciones de abajo
+                console.log("Texto detectado:", editable.tagName);
             }
         }, true);
 
@@ -2852,7 +2851,7 @@ async function initApp() {
         document.getElementById('zoom-fit')?.addEventListener('click', () => smartFit());
 
         document.addEventListener('input', (e) => {
-            if (e.target.classList.contains('editable')) saveHistory(true);
+            if (e.target.classList.contains('editable') || e.target.getAttribute('contenteditable') === 'true') saveHistory(true);
         });
 
         window.addEventListener('keydown', (e) => {
