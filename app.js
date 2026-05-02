@@ -2693,12 +2693,24 @@ function createFromTemplate(type) {
 }
 
 function createNewContract() {
-    // 1. Limpiar rastro local
+    // 1. Limpiar rastro local por completo
     localStorage.removeItem('somosdos_agreement_state');
     localStorage.removeItem('somosdos_current_contract_id');
+    localStorage.removeItem('s2_data_v2'); // Limpiar la versión 2 también
     
-    // 2. REINICIO TOTAL: Redirigir a la página limpia sin parámetros ID
-    window.location.href = window.location.origin + window.location.pathname;
+    // 2. Limpiar la URL sin recargar la página (esto rompe el bucle)
+    const cleanUrl = window.location.origin + window.location.pathname;
+    window.history.pushState({}, document.title, cleanUrl);
+
+    // 3. Limpiar visualmente el editor y resetear contadores
+    const container = getContainer();
+    if (container) container.innerHTML = '';
+    window.clientSignersCount = 1;
+    window.ownerSignersCount = 2;
+    
+    // 4. Mostrar estado vacío y abrir editor
+    showEmptyState();
+    startEditor();
 }
 
 async function loadContract(id) {
