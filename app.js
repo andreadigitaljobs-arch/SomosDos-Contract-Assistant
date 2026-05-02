@@ -2030,33 +2030,27 @@ function nextTutorialStep(n) {
 }
 
 function closeTutorial() { 
-    // Eliminar estado de intriga para permitir la transición fluida
+    // 1. Limpieza total de bloqueos
     document.documentElement.classList.remove('is-intrigue');
+    document.body.classList.remove('is-client-mode', 'client-mode'); // Asegurar modo diseño
     
     const tutorial = document.getElementById('client-tutorial');
     if (tutorial) {
         tutorial.style.opacity = '0';
-        tutorial.style.transition = 'opacity 0.8s ease';
-        setTimeout(() => tutorial.classList.add('hidden'), 800);
+        tutorial.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => tutorial.classList.add('hidden'), 500);
     }
     
-    // Revelar el editor con una transición creativa de "desenfoque a foco"
+    // 2. Revelado limpio del editor
     const editor = document.getElementById('editor-view');
     if (editor) {
         editor.style.visibility = 'visible';
-        editor.style.opacity = '0';
-        editor.style.filter = 'blur(10px) scale(0.95)';
-        editor.style.transition = 'all 1.2s cubic-bezier(0.16, 1, 0.3, 1)';
-        
-        setTimeout(() => {
-            editor.style.opacity = '1';
-            editor.style.filter = 'blur(0) scale(1)';
-            // El smartFit ya se debió haber ejecutado mientras estaba invisible
-            smartFit();
-        }, 100);
+        editor.style.opacity = '1';
+        editor.style.filter = 'none';
+        editor.style.pointerEvents = 'auto'; // FORZAR CLICS
     }
 
-    // Mostrar el botón de guardar ahora que el cliente ya leyó las instrucciones
+    smartFit();
     toggleClientFab(true);
 }
 
@@ -2849,8 +2843,16 @@ async function initApp() {
     }
     console.log("🏁 Inicializando Aplicación v18.5...");
 
-    // REGISTRO DE EVENTOS (Hacerlo PRIMERO para que los botones funcionen pase lo que pase)
-    try {
+        // RASTREADOR DE TEXTO ACTIVO (Soluciona el error "debes darle clic a un texto")
+        document.addEventListener('mousedown', (e) => {
+            const editable = e.target.closest('.editable');
+            if (editable) {
+                window.activeEditable = editable;
+                // Pequeño feedback visual opcional
+                console.log("Texto seleccionado:", editable.innerText.substring(0, 10));
+            }
+        }, true);
+
         document.getElementById('zoom-range')?.addEventListener('input', (e) => updateZoom(e.target.value));
         document.getElementById('zoom-fit')?.addEventListener('click', () => smartFit());
 
