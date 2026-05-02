@@ -3596,3 +3596,41 @@ if (document.readyState === 'loading') {
 } else {
     initApp();
 }
+
+// --- CONTROL DE TAMAO DE TEXTO MANUAL ---
+let lastActiveEditable = null;
+
+document.addEventListener('focusin', (e) => {
+    if (e.target.hasAttribute('contenteditable')) {
+        lastActiveEditable = e.target;
+        // Resaltar visualmente para confirmar seleccin
+        console.log("?? Elemento activo para redimensin:", e.target.tagName);
+    }
+});
+
+function changeFontSize(action) {
+    if (!lastActiveEditable) {
+        showToast("?? Haz clic en un texto primero");
+        return;
+    }
+    
+    // Obtener el tamao actual (calculado por el navegador)
+    const style = window.getComputedStyle(lastActiveEditable);
+    let currentSize = parseFloat(style.fontSize);
+    
+    if (action === 'increase') {
+        currentSize += 2; // Aumentar de 2 en 2 para que se note
+    } else {
+        currentSize = Math.max(8, currentSize - 2);
+    }
+    
+    // Aplicar estilo en lnea (que ahora sobreescribe al CSS gracias a que quitamos !important)
+    lastActiveEditable.style.fontSize = currentSize + 'px';
+    
+    // Si es un h2 o h3, podramos querer ajustar tambin el line-height
+    if (lastActiveEditable.tagName.startsWith('H')) {
+        lastActiveEditable.style.lineHeight = '1.2';
+    }
+    
+    saveHistory(true);
+}
