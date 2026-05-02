@@ -2044,45 +2044,24 @@ function nextTutorialStep(n) {
 function closeTutorial() { 
     const tutorial = document.getElementById('client-tutorial');
     const editor = document.getElementById('editor-view');
-    const curtain = document.getElementById('premium-curtain');
     
     if (tutorial) {
-        // 0. RESET DE SCROLL
         window.scrollTo({ top: 0, behavior: 'instant' });
-        
-        // 1. Desvanecer tutorial y cortina simultáneamente
         tutorial.style.opacity = '0';
-        tutorial.style.transform = 'translateY(-30px)';
-        tutorial.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
         
-        if (curtain) {
-            curtain.style.opacity = '0';
-            curtain.style.transform = 'scale(1.1)';
-            setTimeout(() => curtain.style.display = 'none', 800);
-        }
-
-        // 2. Revelar Editor con suavidad
         if (editor) {
             editor.classList.remove('hidden');
             editor.style.visibility = 'visible';
-            editor.style.opacity = '0';
-            editor.style.transform = 'scale(0.98)';
-            
-            setTimeout(() => {
-                editor.style.transition = 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
-                editor.style.opacity = '1';
-                editor.style.transform = 'scale(1)';
-                document.body.style.overflow = 'auto'; // Habilitar scroll
-            }, 100);
+            editor.style.opacity = '1';
+            editor.style.transform = 'scale(1)';
+            document.body.style.overflow = 'auto';
         }
 
         setTimeout(() => {
             tutorial.classList.add('hidden');
-            
-            document.body.classList.remove('is-client-mode', 'client-mode');
             smartFit();
             toggleClientFab(true);
-        }, 600);
+        }, 300);
     }
 }
 
