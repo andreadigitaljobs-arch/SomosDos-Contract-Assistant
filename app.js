@@ -2693,18 +2693,12 @@ function createFromTemplate(type) {
 }
 
 function createNewContract() {
-    // Generar un ID único para el nuevo contrato
-    const newId = 'SD-' + Date.now();
-    localStorage.setItem('somosdos_current_contract_id', newId);
-    
-    // Limpiar el estado actual para empezar de cero
+    // 1. Limpiar rastro local
     localStorage.removeItem('somosdos_agreement_state');
+    localStorage.removeItem('somosdos_current_contract_id');
     
-    // Mostrar mensaje de inicio
-    showEmptyState();
-    
-    // Abrir el editor
-    startEditor();
+    // 2. REINICIO TOTAL: Redirigir a la página limpia sin parámetros ID
+    window.location.href = window.location.origin + window.location.pathname;
 }
 
 async function loadContract(id) {
