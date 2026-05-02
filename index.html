@@ -46,6 +46,18 @@
                 onclick="toggleDesignPanel()">✕</button>
         </div>
 
+        <!-- SECCIÓN MOVIDA: ESTRUCTURA DEL ACUERDO -->
+        <div class="panel-section" style="background: rgba(123, 63, 228, 0.03); border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid rgba(123, 63, 228, 0.1);">
+            <label style="color: #7B3FE4; font-weight: 800; font-size: 0.7rem; letter-spacing: 1px; display: block; margin-bottom: 12px;">ESTRUCTURA DEL ACUERDO</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <button class="btn btn-secondary" style="font-size: 0.7rem; padding: 8px; text-align: left;" onclick="addNewPage('cover')">📄 Portada</button>
+                <button class="btn btn-secondary" style="font-size: 0.7rem; padding: 8px; text-align: left;" onclick="addNewPage('content')">📝 Texto</button>
+                <button class="btn btn-secondary" style="font-size: 0.7rem; padding: 8px; text-align: left;" onclick="addNewPage('signatures')">✍🏻 Firmas</button>
+                <button class="btn btn-secondary" style="font-size: 0.7rem; padding: 8px; text-align: left;" onclick="addNewPage('exchange')">🤝🏻 Canje</button>
+                <button class="btn btn-secondary" style="font-size: 0.7rem; padding: 8px; text-align: left; grid-column: span 2;" onclick="addNewPage('payment')">💰 Propuesta Económica</button>
+            </div>
+        </div>
+
         <div class="panel-section">
             <label>TAMAÑO DEL LOGO</label>
             <div class="control-row">
@@ -140,19 +152,7 @@
 
                 <div class="header-center-actions">
                     <div class="header-section-pill">
-                        <div class="dropdown">
-                            <button class="btn-premium btn-ghost-pro" style="border: none !important;">➕ Añadir</button>
-                            <div class="dropdown-content">
-                                <div class="menu-header">ESTRUCTURA</div>
-                                <a href="#" onclick="addNewPage('cover')">📄 Portada</a>
-                                <a href="#" onclick="addNewPage('content')">📝 Cuerpo de Texto</a>
-                                <a href="#" onclick="addNewPage('signatures')">✍🏻 Firmas</a>
-                                <div class="menu-sep"></div>
-                                <div class="menu-header">ACUERDOS</div>
-                                <a href="#" onclick="addNewPage('exchange')">🤝🏻 Intercambio</a>
-                                <a href="#" onclick="addNewPage('payment')">💰 Propuesta Económica</a>
-                            </div>
-                        </div>
+                    <!-- El botón Añadir ha sido movido al panel lateral para mayor limpieza -->
                     </div>
 
                     <div class="header-section-pill">
