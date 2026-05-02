@@ -1619,14 +1619,11 @@ function hideExportLoader() {
     const loader = document.getElementById('loader');
     if (!loader) return;
 
-    // Fade out
     loader.style.opacity = '0';
     loader.style.pointerEvents = 'none';
 
     setTimeout(() => {
-        // After transition, hide completely via class (not inline display)
         loader.classList.add('hidden');
-        // Clear ALL inline styles so next showExportLoader starts clean
         loader.style.cssText = '';
         const p = document.getElementById('loader-progress');
         if (p) p.style.width = '0%';
@@ -1635,12 +1632,10 @@ function hideExportLoader() {
 
 async function generateProfessionalPDF() {
     await showExportLoader("Generando PDF Premium", "Iniciando motor de alta fidelidad...");
-
     try {
         const { jsPDF } = window.jspdf;
         const pages = document.querySelectorAll('.page');
         const pdf = new jsPDF('p', 'mm', 'a4');
-
         for (let i = 0; i < pages.length; i++) {
             updateExportProgress((i / pages.length) * 100, `Capturando página ${i + 1} de ${pages.length}...`);
             const canvas = await captureZeroLoss(pages[i]);
@@ -1648,13 +1643,12 @@ async function generateProfessionalPDF() {
             const imgData = canvas.toDataURL('image/jpeg', 1.0);
             pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
         }
-
         updateExportProgress(100, "¡Todo listo! Descargando...");
         pdf.save("SomosDos_Acuerdo_HD.pdf");
         setTimeout(hideExportLoader, 1000);
     } catch (e) {
         console.error("PDF Export Error:", e);
-        showModal('❌', 'Error en PDF', 'Ocurrió un error al generar el PDF. Intenta de nuevo o revisa la consola.');
+        showModal('❌', 'Error en PDF', 'Ocurrió un error al generar el PDF.');
         hideExportLoader();
     } finally {
         setTimeout(hideExportLoader, 3000);
@@ -1663,7 +1657,6 @@ async function generateProfessionalPDF() {
 
 async function downloadAsImages(mode = 'zip') {
     await showExportLoader(mode === 'zip' ? "Preparando ZIP 4K" : "Procesando Imagen HD", "Inicializando captura...");
-
     try {
         const pages = document.querySelectorAll('.page');
         if (mode === 'zip') {
@@ -1674,39 +1667,24 @@ async function downloadAsImages(mode = 'zip') {
                 const imgData = canvas.toDataURL('image/png').split(',')[1];
                 zip.file(`SomosDos_Pagina_${i + 1}.png`, imgData, { base64: true });
             }
-            updateExportProgress(95, "Comprimiendo paquete ZIP...");
             const content = await zip.generateAsync({ type: "blob" });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(content);
             link.download = "SomosDos_Fotos_4K.zip";
             link.click();
         } else {
-            updateExportProgress(30, "Buscando página activa...");
             let targetPage = pages[0];
-            let minDiff = Infinity;
-            const viewportCenter = window.scrollY + (window.innerHeight / 2);
-            pages.forEach(p => {
-                const rect = p.getBoundingClientRect();
-                const pageCenter = window.scrollY + rect.top + (rect.height / 2);
-                const diff = Math.abs(viewportCenter - pageCenter);
-                if (diff < minDiff) { minDiff = diff; targetPage = p; }
-            });
-            updateExportProgress(60, "Capturando con fidelidad 4K...");
             const canvas = await captureZeroLoss(targetPage);
             const link = document.createElement('a');
             link.href = canvas.toDataURL('image/png');
-            const pageIdx = Array.from(pages).indexOf(targetPage) + 1;
-            link.download = `SomosDos_Pagina_${pageIdx}.png`;
+            link.download = `SomosDos_Pagina_1.png`;
             link.click();
         }
         updateExportProgress(100, "¡Finalizado con éxito!");
         setTimeout(hideExportLoader, 1000);
     } catch (e) {
-        console.error("Image/ZIP Export Error:", e);
-        showModal('❌', 'Error en Exportación', 'Ocurrió un error al exportar. Intenta de nuevo o revisa la consola.');
+        console.error("Image Export Error:", e);
         hideExportLoader();
-    } finally {
-        setTimeout(hideExportLoader, 3000);
     }
 }
 
@@ -2765,33 +2743,42 @@ function showLoader() {
 }
 
 function hideLoader() {
-    const isClient = new URLSearchParams(window.location.search).get('mode') === 'client';
+    const loader = document.getElementById('loader');
+    if (!loader) return;
+
+    const isClient = new URLSearchParams(window.location.search).get('mode') === 'client' || document.body.classList.contains('client-mode');
     const editor = document.getElementById('editor-view');
-    
-    if (isClient) {
-        if (editor) {
-            editor.style.visibility = 'visible';
-            editor.style.opacity = '1';
-        }
-        smartFit();
-        return;
-    }
 
-    // Primero lo hacemos "presente" para el navegador (pero sigue invisible al ojo)
-    if (editor) {
-        editor.style.visibility = 'visible';
-    }
+    // MODO CLIENTE O EDITOR: Esperamos un momento extra para que el navegador pinte todo en memoria
+    const delay = isClient ? 1000 : 1200;
 
-    // Aumentamos el delay a 1.2s para que el smartFit tenga tiempo de sobra
-    setTimeout(() => {
-        // Ajustamos escala mientras el usuario aún ve el cargador negro
+    setTimeout(async () => {
+        // Asegurar que las fuentes estén listas antes de mostrar
+        if (document.fonts) await document.fonts.ready;
+        
+        // Ajustamos escala en la sombra
         smartFit();
         
         setTimeout(() => {
-            hideExportLoader();
-            if (editor) editor.style.opacity = '1';
-        }, 150);
-    }, 1200);
+            // Desvanecer el cargador
+            loader.style.opacity = '0';
+            loader.style.pointerEvents = 'none';
+
+            // Revelar el editor con suavidad
+            if (editor) {
+                editor.style.visibility = 'visible';
+                editor.style.opacity = '1';
+                editor.style.transition = 'opacity 0.8s ease-in-out';
+            }
+
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                loader.style.cssText = '';
+                const p = document.getElementById('loader-progress');
+                if (p) p.style.width = '0%';
+            }, 500);
+        }, 200);
+    }, delay);
 }
 
 async function initApp() {
