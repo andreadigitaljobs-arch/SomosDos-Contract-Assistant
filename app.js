@@ -306,7 +306,7 @@ const injectHeaderStyles = () => {
             gap: 8px !important;
             border: none !important;
             cursor: pointer;
-            white-space: nowrap;
+            white-space: normal;
             height: 36px;
         }
 
@@ -737,7 +737,7 @@ function createPageHTML(id, type = 'content') {
                 <img src="${logoSrc}" class="brand-logo-small">
                 <div class="header-tag">BIENVENIDA</div>
             </div>
-            <div class="content-body editable" contenteditable="true" style="display: flex; flex-direction: column; justify-content: center; height: 75%; text-align: center; padding: 0 60px;">
+            <div class="content-body editable" contenteditable="true" style="text-align: center; padding: 60px 60px 0;">
                 <h2 class="gradient-text" style="font-size: 3rem; margin-bottom: 25px;">¡Gracias por elegirnos!</h2>
                 <p style="font-size: 1.25rem; line-height: 1.8; color: var(--text-main); font-weight: 500;">
                     En <strong>SomosDos Studio</strong>, nos apasiona colaborar con marcas que tienen una visión clara y ambiciosa. Es un verdadero privilegio para nuestro equipo ser seleccionados para acompañar a <strong>${clientName}</strong> en este viaje de innovación y crecimiento.
@@ -790,7 +790,7 @@ function createPageHTML(id, type = 'content') {
                 <div class="signature-top">
                     <h3 class="editable" contenteditable="true">ACEPTACIÓN Y FIRMAS</h3>
                     <div class="signature-subtitle" style="font-size: 1rem !important; white-space: normal !important; text-align: center; margin: 0 auto 25px; max-width: 600px; display: block;">
-                        <p style="margin: 0; line-height: 1.5; white-space: normal !important;">Al firmar este documento, ambas partes aceptan los términos y condiciones para <strong>${clientName}</strong>.</p>
+                        <p class="editable" contenteditable="true" style="margin: 0; line-height: 1.5; white-space: normal !important;">Al firmar este documento, ambas partes aceptan los términos y condiciones para <strong>${clientName}</strong>.</p>
                     </div>
                 </div>
                 
@@ -3546,7 +3546,7 @@ function generateSmartContract() {
                             </div>
                         </div>
 
-                        <p style="margin-top: 50px; font-size: 1.3rem; color: #FFFFFF; text-align: center; font-weight: 500; letter-spacing: 0.5px; opacity: 1 !important; white-space: nowrap;">Este marco de trabajo asegura la máxima calidad y transparencia en la ejecución del proyecto.</p>
+                        <p style="margin-top: 50px; font-size: 1.3rem; color: var(--text-main); text-align: center; font-weight: 500; letter-spacing: 0.5px; opacity: 0.8; white-space: normal;">Este marco de trabajo asegura la máxima calidad y transparencia en la ejecución del proyecto.</p>
                     `;
                 }
             }
@@ -3601,7 +3601,7 @@ if (document.readyState === 'loading') {
 let lastActiveEditable = null;
 
 document.addEventListener('focusin', (e) => {
-    if (e.target.hasAttribute('contenteditable')) {
+    if (e.target.isContentEditable) {
         lastActiveEditable = e.target;
         // Resaltar visualmente para confirmar seleccin
         console.log("?? Elemento activo para redimensin:", e.target.tagName);
