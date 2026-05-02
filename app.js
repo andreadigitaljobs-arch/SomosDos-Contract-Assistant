@@ -2047,6 +2047,9 @@ function closeTutorial() {
     const editor = document.getElementById('editor-view');
     
     if (tutorial) {
+        // 0. RESET DE SCROLL: Volver arriba del todo antes de mostrar
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        
         // 1. Desvanecer tutorial hacia ARRIBA
         tutorial.style.opacity = '0';
         tutorial.style.transform = 'translateY(-30px)';
