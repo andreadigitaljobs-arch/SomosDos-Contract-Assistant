@@ -25,18 +25,33 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <!-- Early Mode Detection to prevent flickering -->
+    <style>
+        /* Reglas de bloqueo instantáneo para evitar el FLASH */
+        html.is-client-mode .main-header, 
+        html.is-client-mode .design-side-panel, 
+        html.is-client-mode .zoom-controls, 
+        html.is-client-mode .floating-add-btn, 
+        html.is-client-mode #nav-to-dashboard, 
+        html.is-client-mode .page-controls { 
+            display: none !important; 
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }
+        html.is-client-mode #document-container { 
+            filter: blur(25px); 
+        }
+        html.is-client-mode body { 
+            background: #07070F !important; 
+        }
+    </style>
+
     <script>
         (function() {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('mode') === 'client') {
                 document.documentElement.classList.add('is-client-mode');
                 document.documentElement.classList.add('is-intrigue');
-                // Bloqueo total de herramientas y activación de desenfoque 'Intrigue'
-                document.write('<style>' + 
-                    '#document-container { filter: blur(25px); transition: filter 1.5s cubic-bezier(0.16, 1, 0.3, 1); } ' +
-                    '.main-header, .design-side-panel, .zoom-controls, .floating-add-btn, #nav-to-dashboard, .page-controls { display: none !important; } ' +
-                    'body { background: #07070F !important; }' +
-                '</style>');
             }
         })();
     </script>
