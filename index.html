@@ -36,8 +36,15 @@
             display: none !important; 
         }
         html.is-client-mode body { background: #07070F !important; }
-        #premium-curtain img { width: 120px; margin-bottom: 20px; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 0.6; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1); } }
+        
+        /* FORZAR VISIBILIDAD TOTAL */
+        html.is-client-mode #editor-view,
+        html.is-client-mode #document-container {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            filter: none !important;
+        }
 
         /* MODAL DE FIRMA 2.0 */
         #signature-modal {
