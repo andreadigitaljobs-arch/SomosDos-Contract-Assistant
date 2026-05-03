@@ -15,9 +15,9 @@
     <link rel="preconnect" href="https://yumoofwfcxujcdhelwjj.supabase.co">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap&font-display=swap" rel="stylesheet">
     <link rel="stylesheet" href="contract-style.css?v=1.0.2">
-    <link rel="stylesheet" href="client-style.css?v=1.0.8">
+    <link rel="stylesheet" href="client-style.css?v=1.0.9">
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script defer src="client.js?v=1.0.7"></script>
+    <script defer src="client.js?v=1.0.8"></script>
 </head>
 
 <body class="client-view is-client-mode">
@@ -36,6 +36,28 @@
             <div id="zoom-wrapper"></div>
         </div>
     </main>
+
+    <nav id="client-zoom-controls" class="client-zoom-controls hidden" aria-label="Zoom del documento">
+        <button id="client-zoom-out" class="client-zoom-btn" type="button" title="Reducir zoom" aria-label="Reducir zoom">-</button>
+        <div class="client-zoom-picker">
+            <button id="client-zoom-toggle" class="client-zoom-toggle" type="button" aria-haspopup="true" aria-expanded="false">
+                <span id="client-zoom-percent">100%</span>
+            </button>
+            <div id="client-zoom-menu" class="client-zoom-menu hidden" role="menu">
+                <button type="button" data-client-zoom="3" role="menuitem">300%</button>
+                <button type="button" data-client-zoom="2" role="menuitem">200%</button>
+                <button type="button" data-client-zoom="1.25" role="menuitem">125%</button>
+                <button type="button" data-client-zoom="1" role="menuitem">100%</button>
+                <button type="button" data-client-zoom="0.75" role="menuitem">75%</button>
+                <button type="button" data-client-zoom="0.5" role="menuitem">50%</button>
+                <button type="button" data-client-zoom="0.25" role="menuitem">25%</button>
+                <button type="button" data-client-zoom="0.1" role="menuitem">10%</button>
+                <button class="zoom-action" type="button" data-client-zoom-action="out" role="menuitem">Reducir</button>
+                <button class="zoom-action" type="button" data-client-zoom-action="in" role="menuitem">Ampliar</button>
+            </div>
+        </div>
+        <button id="client-zoom-in" class="client-zoom-btn" type="button" title="Ampliar zoom" aria-label="Ampliar zoom">+</button>
+    </nav>
 
     <section id="client-tutorial" class="client-tutorial hidden" aria-modal="true" role="dialog">
         <div class="client-tutorial-card">

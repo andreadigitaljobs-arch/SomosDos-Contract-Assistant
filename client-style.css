@@ -278,6 +278,94 @@ button[onclick*="owner-"] {
     background: #F1F5F9;
 }
 
+.client-zoom-controls {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 999998;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px;
+    border: 1px solid rgba(123, 63, 228, 0.16);
+    border-radius: 18px;
+    color: #1A1A2E;
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: 0 18px 48px rgba(7, 7, 15, 0.28);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+}
+
+.client-zoom-picker {
+    position: relative;
+}
+
+.client-zoom-btn,
+.client-zoom-toggle {
+    height: 42px;
+    border: 0;
+    border-radius: 12px;
+    color: #1A1A2E;
+    background: #F4F0FF;
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.client-zoom-btn {
+    width: 42px;
+    font-size: 1.35rem;
+    line-height: 1;
+}
+
+.client-zoom-toggle {
+    min-width: 78px;
+    padding: 0 14px;
+    font-size: 0.98rem;
+}
+
+.client-zoom-btn:hover,
+.client-zoom-toggle:hover,
+.client-zoom-menu button:hover,
+.client-zoom-menu button.active {
+    color: #5B21B6;
+    background: #ECE3FF;
+}
+
+.client-zoom-btn:disabled {
+    opacity: 0.38;
+    cursor: not-allowed;
+}
+
+.client-zoom-menu {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 10px);
+    width: 160px;
+    padding: 8px 0;
+    border: 1px solid rgba(123, 63, 228, 0.12);
+    border-radius: 16px;
+    background: #FFFFFF;
+    box-shadow: 0 24px 60px rgba(7, 7, 15, 0.3);
+    overflow: hidden;
+}
+
+.client-zoom-menu button {
+    width: 100%;
+    border: 0;
+    padding: 12px 20px;
+    color: #334155;
+    background: transparent;
+    font: inherit;
+    font-size: 1rem;
+    text-align: left;
+    cursor: pointer;
+}
+
+.client-zoom-menu .zoom-action {
+    border-top: 1px solid #E2E8F0;
+}
+
 .client-fab-save {
     position: fixed;
     left: 50%;
@@ -307,6 +395,33 @@ button[onclick*="owner-"] {
 .client-fab-save[disabled] {
     opacity: 0.72;
     cursor: progress;
+}
+
+@media (min-width: 900px) {
+    html.client-view,
+    body.client-view {
+        overflow-x: auto;
+    }
+
+    .client-document {
+        overflow-x: visible !important;
+    }
+
+    .client-viewport {
+        min-width: 100vw;
+    }
+}
+
+@media (min-width: 900px) and (max-width: 1040px) {
+    .client-zoom-controls {
+        bottom: 100px;
+    }
+}
+
+@media (max-width: 899px) {
+    .client-zoom-controls {
+        display: none !important;
+    }
 }
 
 @media (max-width: 460px) {

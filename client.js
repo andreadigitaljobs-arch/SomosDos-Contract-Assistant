@@ -6,10 +6,34 @@ let agreementId = null;
 let agreementRow = null;
 let agreementData = null;
 let clientSignersCount = 1;
+const CLIENT_ZOOM_STORAGE_KEY = 'somosdos.clientZoom';
+const CLIENT_ZOOM_OPTIONS = [0.1, 0.25, 0.5, 0.75, 1, 1.25, 2, 3];
+let clientZoom = getStoredClientZoom();
 
 function getDb() {
     if (!db && window.supabase) db = window.supabase.createClient(SU_URL, SU_KEY);
     return db;
+}
+
+function getStoredClientZoom() {
+    try {
+        const stored = Number(window.localStorage?.getItem(CLIENT_ZOOM_STORAGE_KEY));
+        return Number.isFinite(stored) ? clampClientZoom(stored) : 1;
+    } catch (_) {
+        return 1;
+    }
+}
+
+function storeClientZoom() {
+    try {
+        window.localStorage?.setItem(CLIENT_ZOOM_STORAGE_KEY, String(clientZoom));
+    } catch (_) {}
+}
+
+function clampClientZoom(value) {
+    const min = CLIENT_ZOOM_OPTIONS[0];
+    const max = CLIENT_ZOOM_OPTIONS[CLIENT_ZOOM_OPTIONS.length - 1];
+    return Math.min(max, Math.max(min, Number(value) || 1));
 }
 
 function parseAgreementContent(content) {
@@ -46,6 +70,105 @@ function hideLoader() {
 
 function getZoomWrapper() {
     return document.getElementById('zoom-wrapper');
+}
+
+function isDesktopZoomEnabled() {
+    return window.matchMedia?.('(min-width: 900px)')?.matches ?? false;
+}
+
+function getNextZoom(direction) {
+    if (direction > 0) {
+        return CLIENT_ZOOM_OPTIONS.find(option => option > clientZoom + 0.001) || CLIENT_ZOOM_OPTIONS[CLIENT_ZOOM_OPTIONS.length - 1];
+    }
+
+    return [...CLIENT_ZOOM_OPTIONS].reverse().find(option => option < clientZoom - 0.001) || CLIENT_ZOOM_OPTIONS[0];
+}
+
+function formatZoomLabel(value) {
+    return `${Math.round(value * 100)}%`;
+}
+
+function syncZoomControls() {
+    const controls = document.getElementById('client-zoom-controls');
+    if (!controls) return;
+
+    const viewport = document.getElementById('client-viewport');
+    const shouldShow = isDesktopZoomEnabled() && viewport && !viewport.classList.contains('hidden');
+    controls.classList.toggle('hidden', !shouldShow);
+
+    const percent = document.getElementById('client-zoom-percent');
+    if (percent) percent.textContent = formatZoomLabel(clientZoom);
+
+    document.querySelectorAll('[data-client-zoom]').forEach(btn => {
+        const value = Number(btn.dataset.clientZoom);
+        btn.classList.toggle('active', Math.abs(value - clientZoom) < 0.001);
+    });
+
+    const zoomOut = document.getElementById('client-zoom-out');
+    const zoomIn = document.getElementById('client-zoom-in');
+    if (zoomOut) zoomOut.disabled = clientZoom <= CLIENT_ZOOM_OPTIONS[0] + 0.001;
+    if (zoomIn) zoomIn.disabled = clientZoom >= CLIENT_ZOOM_OPTIONS[CLIENT_ZOOM_OPTIONS.length - 1] - 0.001;
+}
+
+function toggleZoomMenu(forceOpen) {
+    const menu = document.getElementById('client-zoom-menu');
+    const toggle = document.getElementById('client-zoom-toggle');
+    if (!menu || !toggle) return;
+
+    const willOpen = forceOpen ?? menu.classList.contains('hidden');
+    menu.classList.toggle('hidden', !willOpen);
+    toggle.setAttribute('aria-expanded', String(willOpen));
+}
+
+function setClientZoom(nextZoom) {
+    const scrollRoot = document.scrollingElement || document.documentElement;
+    const previousMaxY = Math.max(0, scrollRoot.scrollHeight - window.innerHeight);
+    const previousRatioY = previousMaxY > 0 ? scrollRoot.scrollTop / previousMaxY : 0;
+
+    clientZoom = clampClientZoom(nextZoom);
+    storeClientZoom();
+    fitDocument();
+    syncZoomControls();
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            const nextMaxY = Math.max(0, scrollRoot.scrollHeight - window.innerHeight);
+            window.scrollTo({ top: previousRatioY * nextMaxY });
+            toggleFabByScroll();
+        });
+    });
+}
+
+function initClientZoomControls() {
+    const controls = document.getElementById('client-zoom-controls');
+    if (!controls) return;
+
+    document.getElementById('client-zoom-out')?.addEventListener('click', () => setClientZoom(getNextZoom(-1)));
+    document.getElementById('client-zoom-in')?.addEventListener('click', () => setClientZoom(getNextZoom(1)));
+    document.getElementById('client-zoom-toggle')?.addEventListener('click', event => {
+        event.stopPropagation();
+        toggleZoomMenu();
+    });
+
+    document.getElementById('client-zoom-menu')?.addEventListener('click', event => {
+        const target = event.target.closest('button');
+        if (!target) return;
+
+        if (target.dataset.clientZoom) setClientZoom(Number(target.dataset.clientZoom));
+        if (target.dataset.clientZoomAction === 'out') setClientZoom(getNextZoom(-1));
+        if (target.dataset.clientZoomAction === 'in') setClientZoom(getNextZoom(1));
+        toggleZoomMenu(false);
+    });
+
+    document.addEventListener('click', event => {
+        if (!controls.contains(event.target)) toggleZoomMenu(false);
+    });
+
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') toggleZoomMenu(false);
+    });
+
+    syncZoomControls();
 }
 
 function replaceClientPlaceholders(html) {
@@ -102,8 +225,12 @@ function fitDocument() {
 
     const pageWidth = 800;
     const availableWidth = Math.max(320, document.documentElement.clientWidth);
-    const scale = Math.min((availableWidth - 46) / pageWidth, 1);
+    const desktopZoom = isDesktopZoomEnabled();
+    const pageGutter = desktopZoom ? 80 : 46;
+    const fitScale = Math.min((availableWidth - pageGutter) / pageWidth, 1);
+    const scale = Math.max(CLIENT_ZOOM_OPTIONS[0], fitScale * (desktopZoom ? clientZoom : 1));
     const visualWidth = pageWidth * scale;
+    const viewportWidth = desktopZoom ? Math.max(availableWidth, visualWidth + 80) : availableWidth;
 
     zoom.style.position = 'relative';
     zoom.style.top = '';
@@ -114,6 +241,7 @@ function fitDocument() {
     zoom.style.zoom = '1';
     zoom.style.marginLeft = 'auto';
     zoom.style.marginRight = 'auto';
+    viewport.style.width = `${viewportWidth}px`;
 
     requestAnimationFrame(() => {
         zoom.querySelectorAll('.client-page-slot').forEach(slot => {
@@ -137,6 +265,7 @@ function fitDocument() {
             page.style.left = '0';
         });
         viewport.style.height = '';
+        syncZoomControls();
     });
 }
 
@@ -441,6 +570,7 @@ window.addEventListener('scroll', toggleFabByScroll, { passive: true });
 document.addEventListener('DOMContentLoaded', () => {
     document.documentElement.classList.add('is-client-mode');
     document.body.classList.add('is-client-mode');
+    initClientZoomControls();
     document.getElementById('client-modal-close')?.addEventListener('click', closeModal);
     document.getElementById('client-modal')?.addEventListener('click', event => {
         if (event.target.id === 'client-modal') closeModal();
