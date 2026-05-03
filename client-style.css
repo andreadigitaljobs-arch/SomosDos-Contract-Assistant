@@ -251,6 +251,7 @@ button[onclick*="owner-"] {
     font-weight: 800;
     font-size: 1rem;
     cursor: pointer;
+    white-space: nowrap;
 }
 
 .btn-active {
