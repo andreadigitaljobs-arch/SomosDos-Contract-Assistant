@@ -450,6 +450,19 @@ function getClientSignatureId(canvas) {
     return canvas.id.replace('sig-canvas-', '');
 }
 
+function openClientSignatureFromButton(signatureId, event) {
+    const button = event.currentTarget;
+    const now = Date.now();
+    const lastOpen = Number(button?.dataset.lastSignatureOpen || 0);
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (now - lastOpen < 650) return;
+    if (button) button.dataset.lastSignatureOpen = String(now);
+    openClientSignatureModal(signatureId);
+}
+
 function ensureClientSignatureButton(canvas) {
     const box = canvas.closest('.sig-box');
     if (!box) return null;
@@ -462,7 +475,9 @@ function ensureClientSignatureButton(canvas) {
         button.type = 'button';
         button.dataset.signatureId = signatureId;
         button.textContent = 'Firmar';
-        button.addEventListener('click', () => openClientSignatureModal(signatureId));
+        button.addEventListener('pointerdown', event => openClientSignatureFromButton(signatureId, event));
+        button.addEventListener('touchstart', event => openClientSignatureFromButton(signatureId, event), { passive: false });
+        button.addEventListener('click', event => openClientSignatureFromButton(signatureId, event));
         canvas.before(button);
     }
 
