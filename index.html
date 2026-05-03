@@ -7,6 +7,18 @@
     <title>Contrato SomosDos Studio</title>
     <meta name="description" content="Acuerdo de colaboración profesional y creativo por SomosDos Studio.">
 
+    <script>
+        (function () {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('mode') === 'client') {
+                params.delete('mode');
+                const target = new URL('client.html', window.location.href);
+                target.search = params.toString();
+                window.location.replace(target.toString());
+            }
+        })();
+    </script>
+
     <!-- Open Graph (Link Preview) -->
     <meta property="og:title" content="Contrato SomosDos Studio">
     <meta property="og:description" content="Propuesta de colaboración creativa y compromiso profesional.">
@@ -17,12 +29,13 @@
     <link rel="icon" href="assets/logo.png" sizes="any">
     <link rel="apple-touch-icon" href="assets/logo.png">
 
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap&font-display=block" rel="stylesheet">
-    <link rel="stylesheet" href="contract-style.css?v=1.0.0">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://yumoofwfcxujcdhelwjj.supabase.co">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap&font-display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="contract-style.css?v=1.0.2">
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <!-- Early Mode Detection to prevent flickering -->
     <style>
@@ -385,8 +398,7 @@
         </div>
     </aside>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="app.js?v=48.2.5"></script>
+    <script defer src="app.js?v=48.2.8"></script>
 </body>
 
 </html>

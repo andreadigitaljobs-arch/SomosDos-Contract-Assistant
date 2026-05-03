@@ -3737,3 +3737,8 @@ html, body { min-height: 100vh; height: auto !important; }
     margin: 20px auto !important;
 }
 .btn-sign-here:active { transform: scale(0.95); box-shadow: 0 5px 10px rgba(123, 63, 228, 0.2); }
+
+body.is-client-mode button[onclick*="owner-"],
+body.client-mode button[onclick*="owner-"] {
+    display: none !important;
+}

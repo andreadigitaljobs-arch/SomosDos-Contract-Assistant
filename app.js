@@ -79,6 +79,51 @@ function getSupabase() {
     return _supabase;
 }
 
+const lazyScriptPromises = {};
+
+function loadScriptOnce(src, isReady) {
+    if (isReady && isReady()) return Promise.resolve();
+    if (!lazyScriptPromises[src]) {
+        lazyScriptPromises[src] = new Promise((resolve, reject) => {
+            const existing = Array.from(document.scripts).find(script => script.src === src);
+            if (existing) {
+                existing.addEventListener('load', resolve, { once: true });
+                existing.addEventListener('error', reject, { once: true });
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.src = src;
+            script.async = true;
+            script.onload = resolve;
+            script.onerror = () => reject(new Error(`No se pudo cargar ${src}`));
+            document.head.appendChild(script);
+        });
+    }
+
+    return lazyScriptPromises[src].then(() => {
+        if (isReady && !isReady()) throw new Error(`La libreria no quedo disponible: ${src}`);
+    });
+}
+
+async function ensureCaptureLibrary() {
+    await loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', () => !!window.html2canvas);
+}
+
+async function ensurePdfLibraries() {
+    await Promise.all([
+        ensureCaptureLibrary(),
+        loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', () => !!window.jspdf)
+    ]);
+}
+
+async function ensureZipLibraries() {
+    await Promise.all([
+        ensureCaptureLibrary(),
+        loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js', () => !!window.JSZip)
+    ]);
+}
+
 // --- ADN DE MARCA SOMOSDOS (Gradients DNA) ---
 const SOMOSDOS_DNA = {
     theme1: {
@@ -1139,8 +1184,24 @@ async function saveDocument(isAuto = false) {
 
 // Handler exclusivo para el botón del Cliente
 async function saveClientSignature() {
-    const clientCanvas = document.getElementById('sig-canvas-client');
-    if (clientCanvas) {
+    const detectedClientCanvases = document.querySelectorAll('[id^="sig-canvas-client-"]').length;
+    const requiredCount = Math.max(window.clientSignersCount || 1, detectedClientCanvases);
+    const clientCanvases = Array.from({ length: requiredCount }, (_, i) =>
+        document.getElementById(`sig-canvas-client-${i + 1}`)
+    ).filter(Boolean);
+
+    if (clientCanvases.length === 0) {
+        showModal('!', 'Firma no encontrada', 'No encontramos el espacio de firma del cliente. Recarga el enlace e intenta de nuevo.');
+        return;
+    }
+
+    const unsignedIndex = clientCanvases.findIndex(canvas => isCanvasBlank(canvas));
+    if (unsignedIndex !== -1) {
+        showModal('!', 'Firma pendiente', `Falta la firma ${unsignedIndex + 1}. Por favor firma antes de enviar el acuerdo.`);
+        return;
+    }
+
+    {
         showExportLoader("Enviando...", "Guardando tu firma segura en la nube");
         try {
             // Marcar explícitamente que el cliente firmó
@@ -1624,6 +1685,8 @@ function hideExportLoader() {
 async function generateProfessionalPDF() {
     await showExportLoader("Generando PDF Premium", "Iniciando motor de alta fidelidad...");
     try {
+        updateExportProgress(8, "Cargando motor de exportaciÃ³n...");
+        await ensurePdfLibraries();
         const { jsPDF } = window.jspdf;
         const pages = document.querySelectorAll('.page');
         const pdf = new jsPDF('p', 'mm', 'a4');
@@ -1649,6 +1712,9 @@ async function generateProfessionalPDF() {
 async function downloadAsImages(mode = 'zip') {
     await showExportLoader(mode === 'zip' ? "Preparando ZIP 4K" : "Procesando Imagen HD", "Inicializando captura...");
     try {
+        updateExportProgress(8, "Cargando motor de exportaciÃ³n...");
+        if (mode === 'zip') await ensureZipLibraries();
+        else await ensureCaptureLibrary();
         const pages = document.querySelectorAll('.page');
         if (mode === 'zip') {
             const zip = new JSZip();
@@ -1725,6 +1791,8 @@ function generateGradientBuffer(themeNum, width, height) {
 
 // --- CAPTURA PIXEL-PARITY (DNA Match Engine) ---
 async function captureZeroLoss(pageEl) {
+    if (!window.html2canvas) await ensureCaptureLibrary();
+
     const themeNum = pageEl.classList.contains('theme-3') ? 3 : (pageEl.classList.contains('theme-2') ? 2 : 1);
     const content = pageEl.querySelector('.canvas-element');
     const container = getContainer();
@@ -1923,10 +1991,23 @@ async function captureZeroLoss(pageEl) {
     }
 }
 
+function getClientAgreementUrl(id) {
+    const url = new URL('client.html', window.location.href);
+    url.searchParams.set('id', id);
+    return url.toString();
+}
+
+function getEditorAgreementUrl(id) {
+    const url = new URL(window.location.pathname, window.location.origin);
+    url.searchParams.set('id', id);
+    return url.toString();
+}
+
 function publishAgreement() {
     const id = crypto.randomUUID();
-    const url = `${window.location.origin}${window.location.pathname}?id=${id}&mode=client`;
-    window.history.pushState({}, '', url);
+    const editorUrl = getEditorAgreementUrl(id);
+    const url = getClientAgreementUrl(id);
+    window.history.pushState({}, '', editorUrl);
     saveDocument();
     showPublishModal(url);
 }
@@ -1973,7 +2054,9 @@ function toggleClientMode(autoShowTutorial = true) {
 
 function toggleClientFab(show) {
     const existingFab = document.getElementById('client-fab-save');
-    const isClient = document.body.classList.contains('client-mode') || document.body.classList.contains('is-client-mode');
+    const isClient = document.documentElement.classList.contains('is-client-mode') ||
+        document.body.classList.contains('client-mode') ||
+        document.body.classList.contains('is-client-mode');
     
     if (show && isClient) {
         if (!existingFab) {
@@ -2329,7 +2412,8 @@ function renderDashboard(agreements) {
             ? '<span class="s2-status-badge signed">✅ Firmado</span>'
             : '<span class="s2-status-badge pending">⏳ Pendiente</span>';
 
-        const url = `${window.location.origin}${window.location.pathname}?id=${doc.id}`;
+        const url = getEditorAgreementUrl(doc.id);
+        const clientUrl = getClientAgreementUrl(doc.id);
         const escapedName = name.replace(/'/g, "\\'");
 
         html += `
@@ -2342,7 +2426,7 @@ function renderDashboard(agreements) {
                 ${badgeHTML}
                 <div class="s2-client-actions">
                     <button class="btn btn-modal-secondary" onclick="window.open('${url}', '_blank')">👁️ Abrir</button>
-                    <button class="btn btn-modal-primary" onclick="copyDashboardLink(this, '${url}&mode=client')">📋 Link Cliente</button>
+                    <button class="btn btn-modal-primary" onclick="copyDashboardLink(this, '${clientUrl}')">Link Cliente</button>
                 </div>
             </div>
         `;
@@ -2976,7 +3060,7 @@ async function initApp() {
             .page-content p, .page-content li { color: #CBD5E1 !important; }
             .is-intrigue { filter: none !important; backdrop-filter: none !important; background: #07070F !important; }
             /* Bloquear Limpiar firma del dueño en modo cliente */
-            button[onclick*="'owner'"] { display: none !important; }
+            button[onclick*="owner-"] { display: none !important; }
         `;
         document.head.appendChild(style);
     } else {
@@ -3073,7 +3157,7 @@ async function initApp() {
             window.addEventListener('scroll', handleClientFabScroll);
         }
 
-        setTimeout(() => saveHistory(), 1000);
+        if (!isClient) setTimeout(() => saveHistory(), 1000);
 
         // Ejecutar escala automática inicialmente
         setTimeout(() => {
@@ -3084,7 +3168,7 @@ async function initApp() {
         console.log("🚀 App Init Finalizada con éxito");
         
         // Aplicar parche a documentos ya cargados
-        setTimeout(applyRetroactiveEdits, 500);
+        if (!isClient) setTimeout(applyRetroactiveEdits, 500);
     } catch (e) {
         console.error("❌ Fallo Crítico en Carga:", e);
         // Rescate: si no hay nada, inyectar algo

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es" class="client-view is-client-mode">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acuerdo SomosDos Studio</title>
+    <meta name="description" content="Acuerdo preparado por SomosDos Studio.">
+
+    <link rel="icon" href="assets/logo.png" sizes="any">
+    <link rel="apple-touch-icon" href="assets/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://yumoofwfcxujcdhelwjj.supabase.co">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap&font-display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="contract-style.css?v=1.0.2">
+    <link rel="stylesheet" href="client-style.css?v=1.0.5">
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script defer src="client.js?v=1.0.6"></script>
+</head>
+
+<body class="client-view is-client-mode">
+    <main id="document-container" class="client-document" aria-live="polite">
+        <div id="client-loader" class="client-loader">
+            <img src="assets/logo-white.png" alt="SomosDos Studio">
+            <p>Cargando acuerdo...</p>
+        </div>
+
+        <div id="client-error" class="client-error hidden">
+            <h1>No pudimos abrir este acuerdo</h1>
+            <p>Revisa el enlace o intenta abrirlo de nuevo.</p>
+        </div>
+
+        <div id="client-viewport" class="client-viewport hidden">
+            <div id="zoom-wrapper"></div>
+        </div>
+    </main>
+
+    <section id="client-tutorial" class="client-tutorial hidden" aria-modal="true" role="dialog">
+        <div class="client-tutorial-card">
+            <div class="tutorial-progress">
+                <span class="progress-dot active" data-step="1"></span>
+                <span class="progress-dot" data-step="2"></span>
+                <span class="progress-dot" data-step="3"></span>
+            </div>
+
+            <div class="tutorial-step" data-step="1">
+                <div class="tutorial-icon">👋🏻</div>
+                <h2>Hola, bienvenido</h2>
+                <p>Estas viendo el acuerdo preparado por <strong>SomosDos Studio</strong>.</p>
+                <button class="btn btn-active" type="button" data-next-step="2">Empezar lectura</button>
+            </div>
+
+            <div class="tutorial-step hidden" data-step="2">
+                <div class="tutorial-icon">📖</div>
+                <h2>Revisa con calma</h2>
+                <p>Lee el acuerdo completo. Al final encontraras el area para firmar.</p>
+                <div class="tutorial-actions">
+                    <button class="btn btn-secondary" type="button" data-next-step="1">Atras</button>
+                    <button class="btn btn-active" type="button" data-next-step="3">Como firmo?</button>
+                </div>
+            </div>
+
+            <div class="tutorial-step hidden" data-step="3">
+                <div class="tutorial-icon">✏️</div>
+                <h2>Firma y envia</h2>
+                <p>Dibuja tu firma en el recuadro correspondiente y toca el boton final para enviarla.</p>
+                <div class="tutorial-actions">
+                    <button class="btn btn-secondary" type="button" data-next-step="2">Atras</button>
+                    <button class="btn btn-active" type="button" id="close-client-tutorial">Entendido</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <button id="client-fab-save" class="client-fab-save" type="button">
+        <span>✨ Finalizar y Enviar Acuerdo</span>
+    </button>
+
+    <div id="client-modal" class="client-modal hidden" role="dialog" aria-modal="true">
+        <div class="client-modal-card">
+            <div id="client-modal-icon" class="client-modal-icon">!</div>
+            <h2 id="client-modal-title"></h2>
+            <p id="client-modal-message"></p>
+            <button id="client-modal-close" class="btn btn-active" type="button">Entendido</button>
+        </div>
+    </div>
+</body>
+
+</html>
