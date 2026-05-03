@@ -355,10 +355,10 @@ async function saveClientSignature() {
         if (error) throw error;
 
         document.getElementById('client-fab-save')?.classList.remove('visible');
-        showModal('✓', 'Firma enviada', 'Gracias por confiar en SomosDos Studio. Hemos recibido tu aceptacion correctamente.');
+        showModal('✓', 'Firma enviada', 'Gracias por confiar en SomosDos Studio. Hemos recibido tu aceptación correctamente.');
     } catch (error) {
         console.error('Client signature save error:', error);
-        showModal('!', 'Error de conexion', 'Hubo un problema enviando tu firma. Comprueba tu conexion e intenta de nuevo.');
+        showModal('!', 'Error de conexión', 'Hubo un problema enviando tu firma. Comprueba tu conexión e intenta de nuevo.');
     } finally {
         setSaving(false);
     }
@@ -414,7 +414,7 @@ async function loadAgreement() {
 
     const client = getDb();
     if (!client) {
-        showError('No se pudo inicializar la conexion.');
+        showError('No se pudo inicializar la conexión.');
         return;
     }
 
