@@ -11,6 +11,10 @@ const CLIENT_ZOOM_OPTIONS = [0.1, 0.25, 0.5, 0.75, 1, 1.25, 2, 3];
 let clientZoom = getStoredClientZoom();
 let lastClientFitWidth = 0;
 
+if ('scrollRestoration' in window.history) {
+    window.history.scrollRestoration = 'manual';
+}
+
 function getDb() {
     if (!db && window.supabase) db = window.supabase.createClient(SU_URL, SU_KEY);
     return db;
@@ -71,6 +75,12 @@ function hideLoader() {
 
 function getZoomWrapper() {
     return document.getElementById('zoom-wrapper');
+}
+
+function resetClientScroll() {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
 }
 
 async function waitForClientFonts() {
@@ -551,6 +561,8 @@ async function renderAgreement() {
     hideLoader();
     viewport.classList.remove('hidden');
     fitDocument(true);
+    resetClientScroll();
+    requestAnimationFrame(resetClientScroll);
     initTutorial();
 }
 
@@ -586,10 +598,12 @@ async function loadAgreement() {
 
 window.addEventListener('resize', () => fitDocument());
 window.addEventListener('scroll', toggleFabByScroll, { passive: true });
+window.addEventListener('pageshow', () => requestAnimationFrame(resetClientScroll));
 
 document.addEventListener('DOMContentLoaded', () => {
     document.documentElement.classList.add('is-client-mode');
     document.body.classList.add('is-client-mode');
+    resetClientScroll();
     initClientZoomControls();
     document.getElementById('client-modal-close')?.addEventListener('click', closeModal);
     document.getElementById('client-modal')?.addEventListener('click', event => {
