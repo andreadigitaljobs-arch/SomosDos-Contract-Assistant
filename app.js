@@ -624,6 +624,39 @@ function getCurrentClientName() {
     return (input && input.value && input.value.trim() !== "") ? input.value.trim() : "[NOMBRE DEL CLIENTE]";
 }
 
+function isPlaceholderClientName(name) {
+    const normalized = (name || '').trim().toUpperCase();
+    return !normalized ||
+        normalized === '[NOMBRE DEL CLIENTE]' ||
+        normalized === '[CLIENTE]' ||
+        normalized === 'NOMBRE DEL CLIENTE' ||
+        normalized === 'CLIENTE' ||
+        normalized === 'CLIENTE SIN NOMBRE' ||
+        normalized === 'CLIENTE NUEVO (SIN NOMBRAR)';
+}
+
+function cleanClientName(name) {
+    return (name || '').replace(/^PREPARADO PARA:\s*/i, '').trim();
+}
+
+function getCoverClientName() {
+    const cover = document.querySelector('.client-info');
+    return cover ? cleanClientName(cover.textContent) : '';
+}
+
+function getAgreementClientName() {
+    const inputName = cleanClientName(getCurrentClientName());
+    if (!isPlaceholderClientName(inputName)) return inputName;
+
+    const coverName = getCoverClientName();
+    if (!isPlaceholderClientName(coverName)) return coverName;
+
+    const signatureName = cleanClientName(document.querySelector('.signature-top p strong')?.textContent);
+    if (!isPlaceholderClientName(signatureName)) return signatureName;
+
+    return 'Cliente Nuevo (Sin nombrar)';
+}
+
 // --- MOTOR DE PLANTILLAS ---
 function createPageHTML(id, type = 'content') {
     const isCover = type === 'cover';
@@ -1117,9 +1150,19 @@ async function saveDocument(isAuto = false) {
         }
     });
 
+    const clientName = getAgreementClientName();
+    const paymentH2 = container.querySelector('.payment-card h2');
+    let docPrice = 0;
+    if (paymentH2) {
+        const priceText = paymentH2.innerText.replace(/[^0-9]/g, '');
+        docPrice = parseInt(priceText) || 0;
+    }
+
     const data = {
         id: new URLSearchParams(window.location.search).get('id') || null,
+        clientName,
         html: container.innerHTML,
+        price: docPrice,
         clientSignersCount: window.clientSignersCount || 1,
         sigs: {
             'owner-andrea': document.getElementById('sig-canvas-owner-andrea')?.toDataURL() || null,
@@ -1143,23 +1186,6 @@ async function saveDocument(isAuto = false) {
     const db = getSupabase();
     if (db && data.id) {
         try {
-            // Buscamos el nombre del cliente de forma segura
-            let clientName = getCurrentClientName();
-            if (clientName === "[NOMBRE DEL CLIENTE]") {
-                // Fallback a los elementos del DOM si el input fallara
-                const clientNameEls = document.querySelectorAll('.client-grid-1 .sig-name, .client-grid-2 .sig-name');
-                if (clientNameEls.length > 0) clientName = clientNameEls[0].textContent.trim();
-            }
-
-            // Intentar extraer el precio para el dashboard
-            const paymentH2 = container.querySelector('.payment-card h2');
-            let docPrice = 0;
-            if (paymentH2) {
-                const priceText = paymentH2.innerText.replace(/[^0-9]/g, '');
-                docPrice = parseInt(priceText) || 0;
-            }
-            data.price = docPrice;
-
             const { error } = await db.from('agreements').upsert({
                 id: data.id,
                 client_name: clientName,
@@ -1241,7 +1267,7 @@ async function loadDocument() {
         if (db) {
             try {
                 // Timeout de 4 segundos para la nube
-                const cloudPromise = db.from('agreements').select('html_content').eq('id', cloudId).single();
+                const cloudPromise = db.from('agreements').select('html_content, client_name').eq('id', cloudId).single();
                 const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Supabase Timeout")), 30000));
 
                 const { data, error } = await Promise.race([cloudPromise, timeoutPromise]);
@@ -1276,7 +1302,7 @@ async function loadDocument() {
                                                          .replace(/\[CLIENTE\]/g, upperClient);
                     }
 
-                    renderDocument(parsedData);
+                    renderDocument(parsedData, data.client_name);
                     return;
                 }
             } catch (e) {
@@ -1327,7 +1353,7 @@ function showEmptyState() {
     pages = [];
 }
 
-function renderDocument(data) {
+function renderDocument(data, cloudClientName = '') {
     const container = getContainer();
     if (!container || !data) return;
 
@@ -1371,6 +1397,14 @@ function renderDocument(data) {
     }
 
     container.innerHTML = data.html;
+
+    const restoredClientName = cleanClientName(data.clientName || cloudClientName || getCoverClientName());
+    const globalInput = document.getElementById('global-client-name');
+    if (globalInput && !isPlaceholderClientName(restoredClientName)) {
+        globalInput.value = restoredClientName;
+        syncClientName(restoredClientName);
+    }
+
     const isClient = document.documentElement.classList.contains('is-client-mode') || document.body.classList.contains('client-mode') || new URLSearchParams(window.location.search).get('mode') === 'client';
 
     // Inyectar firmas y restaurar datos con prioridad (Acelerado para cliente)
@@ -1420,15 +1454,7 @@ function renderDocument(data) {
         setPageTheme(id, theme, true);
     });
 
-    // Update global client input from document (Using cover title instead of signer)
-    const coverTitle = document.querySelector('.client-info h2');
-    if (coverTitle) {
-        const name = coverTitle.textContent.trim();
-        const globalInput = document.getElementById('global-client-name');
-        if (globalInput && name !== "[NOMBRE DEL CLIENTE]" && name !== "[CLIENTE]") {
-            globalInput.value = name;
-        }
-    }
+    // El input global ya se restauró desde data.clientName / client_name / portada.
 }
 
 // Sincroniza el input global con la Marca (Portada y textos legales) - NO toca los firmantes
@@ -1436,8 +1462,13 @@ function syncClientName(val) {
     const upperVal = val.toUpperCase() || "[NOMBRE DEL CLIENTE]";
     
     // 1. Actualizar Portada y otros placeholders de MARCA
-    const placeholders = document.querySelectorAll('.client-info h2, .client-name-placeholder');
-    placeholders.forEach(el => {
+    document.querySelectorAll('.client-info').forEach(el => {
+        const nestedTitle = el.querySelector('h2');
+        if (nestedTitle) nestedTitle.textContent = upperVal;
+        else el.textContent = `PREPARADO PARA: ${upperVal}`;
+    });
+
+    document.querySelectorAll('.client-name-placeholder').forEach(el => {
         el.textContent = upperVal;
     });
 
