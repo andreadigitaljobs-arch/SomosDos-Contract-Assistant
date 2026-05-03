@@ -57,8 +57,10 @@ body.client-view {
     backface-visibility: visible !important;
     -webkit-backface-visibility: visible !important;
     transition: none !important;
-    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.8) !important;
-    border: 1px solid rgba(255, 255, 255, 0.03) !important;
+    box-shadow:
+        0 30px 90px rgba(0, 0, 0, 0.8),
+        0 0 22px rgba(123, 63, 228, 0.14) !important;
+    border: 1px solid rgba(139, 92, 246, 0.58) !important;
 }
 
 body.client-view .client-page-slot .page,
@@ -69,7 +71,8 @@ body.client-view .client-page-slot .page * {
 body.client-view .client-page-slot .page::before {
     animation: none !important;
     background-size: 100% 100% !important;
-    box-shadow: 0 0 14px rgba(99, 102, 241, 0.22) !important;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(168, 85, 247, 0.78), rgba(124, 58, 237, 0.86)) !important;
+    box-shadow: 0 0 18px rgba(123, 63, 228, 0.28) !important;
 }
 
 body.client-view .blob {
