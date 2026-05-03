@@ -10,6 +10,10 @@ const CLIENT_ZOOM_STORAGE_KEY = 'somosdos.clientZoom';
 const CLIENT_ZOOM_OPTIONS = [0.1, 0.25, 0.5, 0.75, 1, 1.25, 2, 3];
 let clientZoom = getStoredClientZoom();
 let lastClientFitWidth = 0;
+let activeSignatureModalId = null;
+let signatureModalHasDrawing = false;
+let signatureModalDrawing = false;
+let signatureModalPointerId = null;
 
 if ('scrollRestoration' in window.history) {
     window.history.scrollRestoration = 'manual';
@@ -96,6 +100,10 @@ async function waitForClientFonts() {
 
 function isDesktopZoomEnabled() {
     return window.matchMedia?.('(min-width: 900px)')?.matches ?? false;
+}
+
+function isMobileSignatureFlow() {
+    return window.matchMedia?.('(max-width: 899px)')?.matches ?? false;
 }
 
 function getNextZoom(direction) {
@@ -220,6 +228,8 @@ function sanitizeClientDocument() {
         if (action.includes("clearSignature('client-")) {
             btn.removeAttribute('onclick');
             const id = action.match(/clearSignature\('([^']+)'\)/)?.[1];
+            btn.type = 'button';
+            btn.textContent = 'Rehacer firma';
             if (id) btn.addEventListener('click', () => clearSignature(id));
             return;
         }
@@ -295,6 +305,7 @@ function fitDocument(force = false) {
         });
         viewport.style.height = '';
         syncZoomControls();
+        syncMobileSignatureUi();
     });
 }
 
@@ -413,6 +424,7 @@ function restoreSig(id, url) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         canvas.dataset.hasDrawing = 'true';
+        syncMobileSignatureUi();
     };
     img.src = url;
 }
@@ -423,6 +435,7 @@ function clearSignature(id) {
     if (!canvas) return;
     canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
     canvas.dataset.hasDrawing = 'false';
+    syncMobileSignatureUi();
 }
 
 function isCanvasBlank(canvas) {
@@ -431,6 +444,234 @@ function isCanvasBlank(canvas) {
         if (data[i] !== 0) return false;
     }
     return true;
+}
+
+function getClientSignatureId(canvas) {
+    return canvas.id.replace('sig-canvas-', '');
+}
+
+function ensureClientSignatureButton(canvas) {
+    const box = canvas.closest('.sig-box');
+    if (!box) return null;
+
+    const signatureId = getClientSignatureId(canvas);
+    let button = box.querySelector(`.client-signature-open[data-signature-id="${signatureId}"]`);
+    if (!button) {
+        button = document.createElement('button');
+        button.className = 'client-signature-open hidden';
+        button.type = 'button';
+        button.dataset.signatureId = signatureId;
+        button.textContent = 'Firmar';
+        button.addEventListener('click', () => openClientSignatureModal(signatureId));
+        canvas.before(button);
+    }
+
+    return button;
+}
+
+function syncMobileSignatureUi() {
+    const mobile = isMobileSignatureFlow();
+    document.body.classList.toggle('client-mobile-signature-flow', mobile);
+
+    document.querySelectorAll('[id^="sig-canvas-client-"]').forEach(canvas => {
+        const button = ensureClientSignatureButton(canvas);
+        const box = canvas.closest('.sig-box');
+        const signed = !isCanvasBlank(canvas);
+
+        box?.classList.toggle('client-signature-signed', signed);
+        box?.classList.toggle('client-signature-empty', !signed);
+
+        if (mobile) {
+            button?.classList.toggle('hidden', signed);
+            canvas.classList.toggle('client-signature-canvas-hidden', !signed);
+            canvas.style.display = signed ? 'block' : 'none';
+            canvas.style.pointerEvents = 'none';
+        } else {
+            button?.classList.add('hidden');
+            canvas.classList.remove('client-signature-canvas-hidden');
+            canvas.style.display = 'block';
+            canvas.style.pointerEvents = '';
+        }
+    });
+}
+
+function getSignatureModalCanvas() {
+    return document.getElementById('client-signature-canvas');
+}
+
+function getSignatureModalContext() {
+    const canvas = getSignatureModalCanvas();
+    if (!canvas) return null;
+
+    const ctx = canvas.getContext('2d');
+    const ratio = Math.min(window.devicePixelRatio || 1, 2);
+    ctx.strokeStyle = '#111827';
+    ctx.lineWidth = Math.max(3, 3 * ratio);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    return ctx;
+}
+
+function resizeSignatureModalCanvas() {
+    const canvas = getSignatureModalCanvas();
+    if (!canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const ratio = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.max(1, Math.round(rect.width * ratio));
+    canvas.height = Math.max(1, Math.round(rect.height * ratio));
+    getSignatureModalContext();
+}
+
+function clearSignatureModalCanvas() {
+    const canvas = getSignatureModalCanvas();
+    if (!canvas) return;
+
+    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+    signatureModalHasDrawing = false;
+    signatureModalDrawing = false;
+    const status = document.getElementById('client-signature-status');
+    if (status) status.textContent = '';
+}
+
+function openClientSignatureModal(id) {
+    activeSignatureModalId = id;
+    const modal = document.getElementById('client-signature-modal');
+    if (!modal) return;
+
+    modal.classList.remove('hidden');
+    document.body.classList.add('signature-modal-open');
+    requestAnimationFrame(() => {
+        resizeSignatureModalCanvas();
+        clearSignatureModalCanvas();
+    });
+}
+
+function closeClientSignatureModal() {
+    document.getElementById('client-signature-modal')?.classList.add('hidden');
+    document.body.classList.remove('signature-modal-open');
+    activeSignatureModalId = null;
+    signatureModalDrawing = false;
+    signatureModalPointerId = null;
+}
+
+function saveClientSignatureFromModal() {
+    const modalCanvas = getSignatureModalCanvas();
+    const targetCanvas = document.getElementById(`sig-canvas-${activeSignatureModalId}`);
+    const status = document.getElementById('client-signature-status');
+
+    if (!modalCanvas || !targetCanvas) return;
+    if (!signatureModalHasDrawing || isCanvasBlank(modalCanvas)) {
+        if (status) status.textContent = 'Dibuja tu firma antes de guardarla.';
+        return;
+    }
+
+    const targetCtx = targetCanvas.getContext('2d');
+    targetCtx.clearRect(0, 0, targetCanvas.width, targetCanvas.height);
+    targetCtx.drawImage(modalCanvas, 0, 0, targetCanvas.width, targetCanvas.height);
+    targetCanvas.dataset.hasDrawing = 'true';
+    closeClientSignatureModal();
+    syncMobileSignatureUi();
+    toggleFabByScroll();
+}
+
+function initClientSignatureModal() {
+    const modal = document.getElementById('client-signature-modal');
+    const canvas = getSignatureModalCanvas();
+    if (!modal || !canvas || canvas.dataset.bound === 'true') return;
+
+    canvas.dataset.bound = 'true';
+    let modalPointerEventsSeen = false;
+
+    const start = event => {
+        if (event.button !== undefined && event.button !== 0) return;
+        const ctx = getSignatureModalContext();
+        if (!ctx) return;
+
+        signatureModalHasDrawing = true;
+        signatureModalDrawing = true;
+        signatureModalPointerId = event.pointerId ?? null;
+        if (signatureModalPointerId !== null && canvas.setPointerCapture) {
+            try { canvas.setPointerCapture(signatureModalPointerId); } catch (_) {}
+        }
+
+        ctx.beginPath();
+        const pos = getPos(canvas, event);
+        ctx.moveTo(pos.x, pos.y);
+        event.preventDefault();
+    };
+
+    const move = event => {
+        if (!signatureModalDrawing) return;
+        if (signatureModalPointerId !== null && event.pointerId !== undefined && event.pointerId !== signatureModalPointerId) return;
+
+        const ctx = getSignatureModalContext();
+        if (!ctx) return;
+        const pos = getPos(canvas, event);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        event.preventDefault();
+    };
+
+    const stop = event => {
+        if (signatureModalPointerId !== null && event?.pointerId !== undefined && event.pointerId !== signatureModalPointerId) return;
+        if (signatureModalPointerId !== null && canvas.releasePointerCapture) {
+            try { canvas.releasePointerCapture(signatureModalPointerId); } catch (_) {}
+        }
+        signatureModalDrawing = false;
+        signatureModalPointerId = null;
+    };
+
+    if (window.PointerEvent) {
+        const pointerStart = event => {
+            modalPointerEventsSeen = true;
+            start(event);
+        };
+        const pointerMove = event => {
+            modalPointerEventsSeen = true;
+            move(event);
+        };
+        const pointerStop = event => {
+            modalPointerEventsSeen = true;
+            stop(event);
+        };
+        const touchStart = event => {
+            if (!modalPointerEventsSeen) start(event);
+        };
+        const touchMove = event => {
+            if (!modalPointerEventsSeen) move(event);
+        };
+        const touchStop = event => {
+            if (!modalPointerEventsSeen) stop(event);
+        };
+
+        canvas.addEventListener('pointerdown', pointerStart);
+        canvas.addEventListener('pointermove', pointerMove);
+        window.addEventListener('pointerup', pointerStop);
+        window.addEventListener('pointercancel', pointerStop);
+        canvas.addEventListener('touchstart', touchStart, { passive: false });
+        canvas.addEventListener('touchmove', touchMove, { passive: false });
+        canvas.addEventListener('touchend', touchStop);
+        canvas.addEventListener('touchcancel', touchStop);
+    } else {
+        canvas.addEventListener('mousedown', start);
+        canvas.addEventListener('mousemove', move);
+        window.addEventListener('mouseup', stop);
+        canvas.addEventListener('touchstart', start, { passive: false });
+        canvas.addEventListener('touchmove', move, { passive: false });
+        canvas.addEventListener('touchend', stop);
+        canvas.addEventListener('touchcancel', stop);
+    }
+
+    modal.addEventListener('click', event => {
+        if (event.target === modal) closeClientSignatureModal();
+    });
+    document.getElementById('client-signature-close')?.addEventListener('click', closeClientSignatureModal);
+    document.getElementById('client-signature-clear')?.addEventListener('click', clearSignatureModalCanvas);
+    document.getElementById('client-signature-save')?.addEventListener('click', saveClientSignatureFromModal);
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && !modal.classList.contains('hidden')) closeClientSignatureModal();
+    });
 }
 
 function initSignatures() {
@@ -442,6 +683,7 @@ function initSignatures() {
 
     const sigs = agreementData.sigs || {};
     Object.keys(sigs).forEach(id => restoreSig(id, sigs[id]));
+    syncMobileSignatureUi();
 }
 
 function toggleFabByScroll() {
@@ -605,6 +847,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.add('is-client-mode');
     resetClientScroll();
     initClientZoomControls();
+    initClientSignatureModal();
     document.getElementById('client-modal-close')?.addEventListener('click', closeModal);
     document.getElementById('client-modal')?.addEventListener('click', event => {
         if (event.target.id === 'client-modal') closeModal();
@@ -614,3 +857,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 window.clearSignature = clearSignature;
+window.openClientSignatureModal = openClientSignatureModal;

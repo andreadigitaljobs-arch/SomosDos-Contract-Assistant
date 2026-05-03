@@ -15,9 +15,9 @@
     <link rel="preconnect" href="https://yumoofwfcxujcdhelwjj.supabase.co">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap&font-display=swap" rel="stylesheet">
     <link rel="stylesheet" href="contract-style.css?v=1.0.2">
-    <link rel="stylesheet" href="client-style.css?v=1.1.0">
+    <link rel="stylesheet" href="client-style.css?v=1.1.1">
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script defer src="client.js?v=1.1.0"></script>
+    <script defer src="client.js?v=1.1.1"></script>
 </head>
 
 <body class="client-view is-client-mode">
@@ -106,6 +106,21 @@
             <h2 id="client-modal-title"></h2>
             <p id="client-modal-message"></p>
             <button id="client-modal-close" class="btn btn-active" type="button">Entendido</button>
+        </div>
+    </div>
+
+    <div id="client-signature-modal" class="client-signature-modal hidden" role="dialog" aria-modal="true" aria-labelledby="client-signature-title">
+        <div class="client-signature-panel">
+            <div class="client-signature-header">
+                <h2 id="client-signature-title">Firma digital</h2>
+                <button id="client-signature-close" class="client-signature-close" type="button" aria-label="Cerrar">Cerrar</button>
+            </div>
+            <canvas id="client-signature-canvas" class="client-signature-canvas"></canvas>
+            <p id="client-signature-status" class="client-signature-status" aria-live="polite"></p>
+            <div class="client-signature-actions">
+                <button id="client-signature-clear" class="btn btn-secondary" type="button">Limpiar</button>
+                <button id="client-signature-save" class="btn btn-active" type="button">Guardar firma</button>
+            </div>
         </div>
     </div>
 </body>
