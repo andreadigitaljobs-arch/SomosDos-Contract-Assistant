@@ -144,13 +144,23 @@ button[onclick*="owner-"] {
 
 .client-loader,
 .client-error {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    width: 100vw;
     min-height: 100vh;
+    min-height: 100svh;
+    min-height: 100dvh;
     display: grid;
     place-items: center;
     align-content: center;
     gap: 18px;
     padding: 32px;
+    padding: calc(24px + env(safe-area-inset-top)) 32px calc(24px + env(safe-area-inset-bottom));
+    box-sizing: border-box;
     text-align: center;
+    overflow: hidden;
+    background: #07070F !important;
 }
 
 .client-loader img {
