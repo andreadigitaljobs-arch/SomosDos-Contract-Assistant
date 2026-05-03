@@ -5,6 +5,8 @@ body.client-view {
     color: #E2E8F0;
     overflow-x: hidden;
     scroll-behavior: auto;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 body.client-view {
@@ -66,6 +68,8 @@ body.client-view {
 body.client-view .client-page-slot .page,
 body.client-view .client-page-slot .page * {
     transition: none !important;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 body.client-view .client-page-slot .page::before {
@@ -110,6 +114,12 @@ body.client-view .signature-subtitle {
 body.client-view .signature-subtitle p {
     white-space: nowrap !important;
     width: 100% !important;
+}
+
+body.client-view .page.theme-3 .signature-top .signature-subtitle p,
+body.client-view .page.theme-3 .signature-top .signature-subtitle strong {
+    font-size: 0.8rem !important;
+    line-height: 1.5 !important;
 }
 
 [id^="sig-canvas-client-"] {

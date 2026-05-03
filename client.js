@@ -9,6 +9,7 @@ let clientSignersCount = 1;
 const CLIENT_ZOOM_STORAGE_KEY = 'somosdos.clientZoom';
 const CLIENT_ZOOM_OPTIONS = [0.1, 0.25, 0.5, 0.75, 1, 1.25, 2, 3];
 let clientZoom = getStoredClientZoom();
+let lastClientFitWidth = 0;
 
 function getDb() {
     if (!db && window.supabase) db = window.supabase.createClient(SU_URL, SU_KEY);
@@ -72,6 +73,17 @@ function getZoomWrapper() {
     return document.getElementById('zoom-wrapper');
 }
 
+async function waitForClientFonts() {
+    if (!document.fonts?.ready) return;
+
+    try {
+        await Promise.race([
+            document.fonts.ready,
+            new Promise(resolve => setTimeout(resolve, 1600))
+        ]);
+    } catch (_) {}
+}
+
 function isDesktopZoomEnabled() {
     return window.matchMedia?.('(min-width: 900px)')?.matches ?? false;
 }
@@ -127,7 +139,7 @@ function setClientZoom(nextZoom) {
 
     clientZoom = clampClientZoom(nextZoom);
     storeClientZoom();
-    fitDocument();
+    fitDocument(true);
     syncZoomControls();
 
     requestAnimationFrame(() => {
@@ -218,7 +230,7 @@ function wrapClientPages() {
     });
 }
 
-function fitDocument() {
+function fitDocument(force = false) {
     const viewport = document.getElementById('client-viewport');
     const zoom = getZoomWrapper();
     if (!viewport || !zoom) return;
@@ -226,6 +238,13 @@ function fitDocument() {
     const pageWidth = 800;
     const availableWidth = Math.max(320, document.documentElement.clientWidth);
     const desktopZoom = isDesktopZoomEnabled();
+    const hasPages = Boolean(zoom.querySelector('.client-page-slot'));
+    if (!force && hasPages && !desktopZoom && Math.abs(availableWidth - lastClientFitWidth) < 1) {
+        syncZoomControls();
+        return;
+    }
+
+    lastClientFitWidth = availableWidth;
     const pageGutter = desktopZoom ? 80 : 46;
     const fitScale = Math.min((availableWidth - pageGutter) / pageWidth, 1);
     const scale = Math.max(CLIENT_ZOOM_OPTIONS[0], fitScale * (desktopZoom ? clientZoom : 1));
@@ -515,7 +534,7 @@ function initTutorial() {
     document.getElementById('client-tutorial')?.classList.remove('hidden');
 }
 
-function renderAgreement() {
+async function renderAgreement() {
     const zoom = getZoomWrapper();
     const viewport = document.getElementById('client-viewport');
     if (!zoom || !viewport || !agreementData?.html) {
@@ -527,10 +546,11 @@ function renderAgreement() {
     sanitizeClientDocument();
     wrapClientPages();
     initSignatures();
+    await waitForClientFonts();
 
     hideLoader();
     viewport.classList.remove('hidden');
-    fitDocument();
+    fitDocument(true);
     initTutorial();
 }
 
@@ -557,14 +577,14 @@ async function loadAgreement() {
         if (error) throw error;
         agreementRow = data;
         agreementData = parseAgreementContent(data.html_content);
-        renderAgreement();
+        await renderAgreement();
     } catch (error) {
         console.error('Client agreement load error:', error);
         showError('No pudimos cargar este acuerdo desde la nube.');
     }
 }
 
-window.addEventListener('resize', fitDocument);
+window.addEventListener('resize', () => fitDocument());
 window.addEventListener('scroll', toggleFabByScroll, { passive: true });
 
 document.addEventListener('DOMContentLoaded', () => {
